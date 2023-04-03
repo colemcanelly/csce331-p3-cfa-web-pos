@@ -106,6 +106,16 @@ export default {
           icon: 'mdi-chart-bubble',
           title: 'Inspire',
           to: '/inspire'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Manager Menu',
+          to: '/managerMenu'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Manager Home',
+          to: '/managerHome'
         }
       ],
       miniVariant: false,
