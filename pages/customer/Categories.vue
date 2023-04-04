@@ -1,14 +1,20 @@
 <template>
-    <div 
-    class="product-container"
-    v-for="cat in categories"
-    :key="cat.id"
-    >
         <!-- <img class="product-image" :src="product.imageName" /> -->
         <div class="details=wrap">
-            <h3>{{  cat.name }}</h3>
+            <NuxtLink to="./Combos.vue">COMBOS</NuxtLink>
         </div>
-    </div>
+
+        <div class="details=wrap">
+            <NuxtLink to="./Breakfast.vue">BREAKFAST</NuxtLink>
+        </div>
+
+        <div class="details=wrap">
+            <NuxtLink to="./Drinks.vue">DRINKS</NuxtLink>
+        </div>
+
+        <div class="details=wrap">
+            <NuxtLink to="./Desserts.vue">DESSERTS</NuxtLink>
+        </div>
 </template>
 
 <script>
