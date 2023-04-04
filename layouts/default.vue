@@ -109,13 +109,8 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Manager Menu',
-          to: '/managerMenu'
-        },
-        {
-          icon: 'mdi-chart-bubble',
           title: 'Manager Home',
-          to: '/managerHome'
+          to: '/manager'
         }
       ],
       miniVariant: false,

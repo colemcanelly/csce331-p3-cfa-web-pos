@@ -1,19 +1,24 @@
 <template>
-    <div class="chick-fil-a-theme">
+    <v-app>
+    <v-container>
+        <div class="chick-fil-a-theme">
       <div class="column-selectors">
-        <v-combobox v-model="menuItem" :items="menuItems" label="Menu Item" />
+        <v-combobox class="menuName" v-model="menuItem" :items="menuItems" label="Menu Item" />
         <v-text-field v-model="menuPrice" label="Menu Price" />
         <v-select v-model="combo" :items="comboOptions" label="Combo" />
         <v-combobox v-model="category" :items="categories" label="Category" />
       </div>
       <v-data-table :headers="headers" :items="tableData" />
     </div>
+    </v-container>
+  </v-app>
   </template>
   
   <script>
   import { VDataTable, VCombobox, VTextField, VSelect } from 'vuetify/lib'
   
   export default {
+    layout: 'manager',
     components: {
       VDataTable,
       VCombobox,
@@ -61,9 +66,12 @@
     color: #FFFFFF;
     font-weight: 300;
     font-family: 'Didact Gothic', sans-serif;
-    width: calc(100% - 10px);
+    /* width: calc(100% - 10px); */
     margin:0;
 
+  }
+  .menuName label{
+    padding: 0 10px;
   }
   
     .column-selectors {
