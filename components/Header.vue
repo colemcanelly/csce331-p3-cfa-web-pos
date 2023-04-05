@@ -46,17 +46,17 @@ export default {
         {
           icon: 'mdi-silverware-fork-knife',
           title: 'Customer',
-          to: ''
+          to: '/customer/categories'
         },
         {
           icon: 'mdi-account',
           title: 'Server',
-          to: '/test'
+          to: '/server'
         },
         {
           icon: 'mdi-cash-multiple',
           title: 'Manager',
-          to: ''
+          to: '/managerMenu'
         }
       ],
       miniVariant: false,

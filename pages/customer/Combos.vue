@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import { combos } from '../temp-data';
-import { cartItems } from '../temp-data';
-import basilBottle from '../assets/basil-bottle.webp';
+import { combos } from '~/static/temp-data';
+import { cartItems } from '~/static/temp-data';
+// import basilBottle from '../assets/basil-bottle.webp';
 
 export default {
     name: "CombosPage",

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {categories} from '../temp-data'
+import {categories} from '~/static/temp-data'
 
 export default {
     name: "CategoriesPage",

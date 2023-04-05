@@ -27,12 +27,12 @@ export default {
                 {
                 icon: 'mdi-silverware-fork-knife',
                 label: 'Menu',
-                to: ''
+                to: '/customer/Categories'
                 },
                 {
                 icon: 'mdi-shopping',
                 label: 'My Order',
-                to: ''
+                to: '/customer/Order'
                 },
                 {
                 icon: 'mdi-account',

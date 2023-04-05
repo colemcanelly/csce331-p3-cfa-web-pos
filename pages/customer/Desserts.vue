@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { desserts } from '../temp-data';
+import { desserts } from '~/static/temp-data';
 
 export default {
     name: "DessertsPage",

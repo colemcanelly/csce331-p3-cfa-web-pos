@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { cartItems } from '../temp-data';
+import { cartItems } from '~/static/temp-data';
 
 export default {
     name: "OrderPage",
