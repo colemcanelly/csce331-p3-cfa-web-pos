@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { drinks } from '../temp-data';
+import { drinks } from '../../assets/temp-data';
 
 export default {
     name: "DrinksPage",

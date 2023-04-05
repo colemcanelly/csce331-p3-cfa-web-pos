@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { breakfast } from '../temp-data';
+import { breakfast } from '../../assets/temp-data';
 
 export default {
     name: "BreakfastPage",

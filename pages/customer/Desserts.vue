@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { desserts } from '../temp-data';
+import { desserts } from '../../assets/temp-data';
 
 export default {
     name: "DessertsPage",

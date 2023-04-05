@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {categories} from '../temp-data'
+import {categories} from '../../assets/temp-data';
 
 export default {
     name: "CategoriesPage",

@@ -1,6 +1,6 @@
-import basilBottle from './assets/basil-bottle.webp';
-import lemonBottle from './assets/lemon-bottle.webp';
-import garlicBottle from './assets/garlic-bottle.webp';
+import basilBottle from './basil-bottle.webp';
+import lemonBottle from './lemon-bottle.webp';
+import garlicBottle from './garlic-bottle.webp';
 
 export const categories = [{
     name: 'Combos',
