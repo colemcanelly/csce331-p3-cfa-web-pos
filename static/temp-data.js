@@ -1,12 +1,6 @@
-<<<<<<< HEAD:assets/temp-data.js
-import basilBottle from './basil-bottle.webp';
-import lemonBottle from './lemon-bottle.webp';
-import garlicBottle from './garlic-bottle.webp';
-=======
 // import basilBottle from './assets/basil-bottle.webp';
 // import lemonBottle from './assets/lemon-bottle.webp';
 // import garlicBottle from './assets/garlic-bottle.webp';
->>>>>>> 88ddaefc0d9579644a7a50a6a5071654dc478288:static/temp-data.js
 
 export const categories = [{
     name: 'Combos',
