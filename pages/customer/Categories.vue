@@ -1,4 +1,5 @@
 <template>
+    <div>
         <!-- <img class="product-image" :src="product.imageName" /> -->
         <div class="details=wrap">
             <NuxtLink to="./Combos.vue">COMBOS</NuxtLink>
@@ -15,10 +16,11 @@
         <div class="details=wrap">
             <NuxtLink to="./Desserts.vue">DESSERTS</NuxtLink>
         </div>
+    </div>
 </template>
 
 <script>
-import {categories} from '../../assets/temp-data';
+import {categories} from '~/static/temp-data'
 
 export default {
     name: "CategoriesPage",

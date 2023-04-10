@@ -1,23 +1,25 @@
 <template>
-    <h1>Combos</h1>
-    <div class="grid-wrap">
-        <div 
-        class="product-item"
-        v-for="combo in combos"
-        :key="combo.id"
-        >
-            <!-- <img :src="product.imageName" /> -->
-            <h3 class="product-name"> {{ combo.name }}</h3>
-            <p class="product-price"> {{ combo.price }}</p>
-            <button @click="addItemToOrder()">Add to Order</button>
+    <div>
+        <h1>Combos</h1>
+        <div class="grid-wrap">
+            <div 
+            class="product-item"
+            v-for="combo in combos"
+            :key="combo.id"
+            >
+                <!-- <img :src="product.imageName" /> -->
+                <h3 class="product-name"> {{ combo.name }}</h3>
+                <p class="product-price"> {{ combo.price }}</p>
+                <button @click="addItemToOrder()">Add to Order</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { combos } from '../../assets/temp-data';
-import { cartItems } from '../../assets/temp-data';
-import basilBottle from '../assets/basil-bottle.webp';
+import { combos } from '~/static/temp-data';
+import { cartItems } from '~/static/temp-data';
+// import basilBottle from '../assets/basil-bottle.webp';
 
 export default {
     name: "CombosPage",

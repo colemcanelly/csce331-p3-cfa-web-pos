@@ -66,7 +66,7 @@
           <v-btn
             color="primary"
             nuxt
-            to="/inspire"
+            to="/landing"
           >
             Continue
           </v-btn>
@@ -77,6 +77,7 @@
 </template>
 
 <script>
+console.log("Using pages/index.vue");
 export default {
   name: 'IndexPage'
 }

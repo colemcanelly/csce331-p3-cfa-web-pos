@@ -50,8 +50,21 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
       themes: {
+        light: {
+          'cfa-red': '#dd0031',
+          'cfa-red-lighten-1': colors.red.lighten1,
+          'cfa-red-lighten-2': colors.red.lighten2,
+          'cfa-red-lighten-3': colors.red.lighten3,
+          'cfa-red-lighten-4': colors.red.lighten4,
+          primary: '#dd0031',    // Links, etc
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3
+        },
         dark: {
           primary: colors.blue.darken2,
           accent: colors.grey.darken3,
