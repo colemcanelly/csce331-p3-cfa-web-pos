@@ -31,25 +31,46 @@
         menuPrice: null,
         combo: null,
         category: null,
-        menuItems: ['Hamburger', 'French Fries', 'Soft Drink'],
+        // menuItems: ['Hamburger', 'French Fries', 'Soft Drink'],
         categories: ['Entree', 'Side', 'Beverage'],
         comboOptions: [
           { text: 'True', value: true },
           { text: 'False', value: false }
         ],
-        tableData: [
-          { menuItem: 'Hamburger', menuPrice: '$5.00', combo: false, category: 'Entree' },
-          { menuItem: 'French Fries', menuPrice: '$2.50', combo: true, category: 'Side' },
-          { menuItem: 'Soft Drink', menuPrice: '$1.50', combo: true, category: 'Beverage' },
-        ],
+        // tableData: [
+        //   { menuItem: 'Hamburger', menuPrice: '$5.00', combo: false, category: 'Entree' },
+        //   { menuItem: 'French Fries', menuPrice: '$2.50', combo: true, category: 'Side' },
+        //   { menuItem: 'Soft Drink', menuPrice: '$1.50', combo: true, category: 'Beverage' },
+        // ],
+        tableData: [{}],
         headers: [
-          { text: 'Menu Item', value: 'menuItem' },
-          { text: 'Menu Price', value: 'menuPrice' },
+          { text: 'Menu Item', value: 'menu_item' },
+          { text: 'Menu Price', value: 'food_price' },
           { text: 'Combo', value: 'combo' },
-          { text: 'Category', value: 'category' },
+          { text: 'Category', value: 'menu_cat' },
         ]
       }
-    }
+    },
+    
+    mounted: function() {
+      this.getMenu();
+    },
+    methods: {
+      async getMenu () {
+        try {
+          // console.log("Getting menu");
+          const response = await this.$axios.get('/menu');
+          // console.log(response.data);
+          this.tableData = response.data;
+        } catch (err) {
+          console.log("ERROR");
+          console.log(err);
+        }
+      }
+    },
+    computed: {
+      menuItems() { return this.tableData.map( _ => _.menuItem ); }
+    },
   }
   </script>
   
