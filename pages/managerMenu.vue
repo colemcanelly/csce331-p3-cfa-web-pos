@@ -52,6 +52,11 @@
       }
     },
     
+    /* Cole McAnelly's changes:
+        `mounted` - runs after the component is created and mounted on the page
+        `methods` - Added getMenu to fetch the menu, and possibly add refresh in the future
+        `computed` - same as `data` but they are computed and *constantly* updated
+    */
     mounted: function() {
       this.getMenu();
     },
