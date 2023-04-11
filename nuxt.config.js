@@ -5,7 +5,12 @@ export default {
   ssr: false,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
+
+  // Server Middleware
+  serverMiddleware: {
+    '/api': '~/api'
+  },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -33,6 +38,11 @@ export default {
   plugins: [
   ],
 
+  // Configure the axios module
+  axios: {
+    baseURL: 'http://localhost:3000/api'
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -40,6 +50,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/axios'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
