@@ -83,7 +83,6 @@
 </template>
 
 <script>
-console.log("Using pages/index.vue");
 export default {
   name: 'IndexPage',
 
