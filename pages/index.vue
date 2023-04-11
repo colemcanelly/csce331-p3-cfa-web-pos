@@ -10,7 +10,6 @@
           Welcome to the Vuetify + Nuxt.js template
         </v-card-title>
         <v-card-text>
-          <button @click="showMessageFromBackend">Show message from backend</button>
           <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
           <p>
             For more information on Vuetify, check out the <a
@@ -63,6 +62,12 @@
           </a>
         </v-card-text>
         <v-card-actions>
+          <v-btn
+            color="primary"
+            @click="showMessageFromBackend"
+          >
+            Load Menu
+          </v-btn>
           <v-spacer />
           <v-btn
             color="primary"
@@ -85,12 +90,13 @@ export default {
   methods: {
     async showMessageFromBackend () {
       try {
-        console.log("hello")
-        const response = await this.$axios.get('/menu')
-        console.log(response.data)
+        console.log("Logging menu:");
+        const response = await this.$axios.get('/menu');
+        console.log(response.data);
+        alert("Menu has been loaded");
       } catch (err) {
-        console.log("ERROR")
-        console.log(err)
+        console.log("ERROR");
+        console.log(err);
       }
     }
   }
