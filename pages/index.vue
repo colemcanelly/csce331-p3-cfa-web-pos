@@ -62,6 +62,12 @@
           </a>
         </v-card-text>
         <v-card-actions>
+          <v-btn
+            color="primary"
+            @click="showMessageFromBackend"
+          >
+            Load Menu
+          </v-btn>
           <v-spacer />
           <v-btn
             color="primary"
@@ -77,8 +83,21 @@
 </template>
 
 <script>
-console.log("Using pages/index.vue");
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+
+  methods: {
+    async showMessageFromBackend () {
+      try {
+        console.log("Logging menu:");
+        const response = await this.$axios.get('/menu');
+        console.log(response.data);
+        alert("Menu has been loaded");
+      } catch (err) {
+        console.log("ERROR");
+        console.log(err);
+      }
+    }
+  }
 }
 </script>

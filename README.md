@@ -79,3 +79,33 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+### Addition Of Express
+```bash
+# Add Express to project
+$ yarn add express
+# Add Axios to project
+$ yarn add @nuxtjs/axios
+# Add pg to project
+$ yarn add pg
+
+
+```
+Added Folder api, which include
+* db.js - contains the login information for our database
+* index.js - basic express server used as middleware between the front end and the postgresql database
+
+In nuxt.config.js, I added 
+```
+  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
+  buildModules: [
+    // https://go.nuxtjs.dev/vuetify
+    '@nuxtjs/vuetify',
+    '@nuxtjs/axios'
+  ],
+
+  // Configure the axios module
+  axios: {
+    baseURL: 'http://localhost:3000/api'
+  }
+```
