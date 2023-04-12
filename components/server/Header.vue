@@ -15,8 +15,6 @@
 export default {
   data: function () {
     return {
-      title: "Chick-Fil-A",
-      image: "/cfa-logo.svg",
       kiosk_num: '#'
     };
   },

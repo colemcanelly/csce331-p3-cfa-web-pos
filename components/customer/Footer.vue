@@ -17,7 +17,7 @@ export default {
         {
           icon: 'mdi-map-marker',
           label: 'Nearby',
-          to: ''
+          to: '/test'
         },
         {
           icon: 'mdi-silverware-fork-knife',
