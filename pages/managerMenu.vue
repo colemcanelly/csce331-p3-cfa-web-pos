@@ -8,7 +8,10 @@
           <v-select v-model="combo" :items="comboOptions" label="Combo" />
           <v-combobox v-model="category" :items="categories" label="Category" />
         </div>
-        <v-data-table :headers="headers" :items="tableData" />
+        <v-data-table
+          :headers="headers"
+          :items="tableData"
+        />
       </div>
     </v-container>
   </v-app>
@@ -63,9 +66,7 @@
     methods: {
       async getMenu () {
         try {
-          // console.log("Getting menu");
           const response = await this.$axios.get('/menu');
-          // console.log(response.data);
           this.tableData = response.data;
         } catch (err) {
           console.log("ERROR");
