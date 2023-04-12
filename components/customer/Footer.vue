@@ -1,6 +1,6 @@
 <!-- CUSTOMER FOOTER -->
 <template>
-  <v-bottom-navigation active color="primary">
+  <v-bottom-navigation color="primary">
     <v-btn v-for="(item, i) in items" nuxt :key="i" :to="item.to" :value="item.label">
       <v-icon>{{ item.icon }}</v-icon>
       <span>{{ item.label }}</span>

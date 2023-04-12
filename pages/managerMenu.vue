@@ -1,21 +1,21 @@
 <template>
     <v-app>
     <v-container>
-        <div class="chick-fil-a-theme">
-      <div class="column-selectors">
-        <v-combobox class="menuName" v-model="menuItem" :items="menuItems" label="Menu Item" />
-        <v-text-field v-model="menuPrice" label="Menu Price" />
-        <v-select v-model="combo" :items="comboOptions" label="Combo" />
-        <v-combobox v-model="category" :items="categories" label="Category" />
+      <div class="chick-fil-a-theme">
+        <div class="column-selectors">
+          <v-combobox class="menuName" v-model="menuItem" :items="menuItems" label="Menu Item" />
+          <v-text-field v-model="menuPrice" label="Menu Price" />
+          <v-select v-model="combo" :items="comboOptions" label="Combo" />
+          <v-combobox v-model="category" :items="categories" label="Category" />
+        </div>
+        <v-data-table :headers="headers" :items="tableData" />
       </div>
-      <v-data-table :headers="headers" :items="tableData" />
-    </div>
     </v-container>
   </v-app>
   </template>
   
   <script>
-  import { VDataTable, VCombobox, VTextField, VSelect } from 'vuetify/lib'
+  import { VDataTable, VCombobox, VTextField, VSelect } from 'vuetify/lib';
   
   export default {
     layout: 'manager',
