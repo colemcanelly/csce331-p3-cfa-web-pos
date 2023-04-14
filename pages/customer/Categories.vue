@@ -5,14 +5,10 @@
         <v-card class="center">
             <v-row>
                 <v-col cols="7">
-                    <v-card-item>
                         <div><img src="/combos.png" class="image"></div>
-                    </v-card-item>
                 </v-col>
                 <v-col cols="5">
-                    <v-card-item>
                         <div><v-card-title class="text-center">Combos</v-card-title></div>
-                    </v-card-item>
                 </v-col>
             </v-row>
         </v-card>
@@ -21,14 +17,10 @@
         <v-card class="center">
             <v-row>
                 <v-col cols="7">
-                    <v-card-item>
                         <div><img src="/breakfast.png" class="image"></div>
-                    </v-card-item>
                 </v-col>
                 <v-col cols="5">
-                    <v-card-item>
                         <div><v-card-title class="text-center align-center">Breakfast</v-card-title></div>
-                    </v-card-item>
                 </v-col>
             </v-row>
         </v-card>
@@ -37,14 +29,10 @@
         <v-card class="center">
             <v-row>
                 <v-col cols="7">
-                    <v-card-item>
                         <div><img src="/drink.jpeg" class="image"></div>
-                    </v-card-item>
                 </v-col>
                 <v-col cols="5">
-                    <v-card-item>
                         <div><v-card-title class="text-center">Drinks</v-card-title></div>
-                    </v-card-item>
                 </v-col>
             </v-row>
         </v-card>
@@ -53,14 +41,10 @@
         <v-card class="center">
             <v-row>
                 <v-col cols="7">
-                    <v-card-item>
                         <div><img src="/dessert.png" class="image"></div>
-                    </v-card-item>
                 </v-col>
                 <v-col cols="5">
-                    <v-card-item>
                         <div><v-card-title class="text-center">Desserts</v-card-title></div>
-                    </v-card-item>
                 </v-col>
             </v-row>
         </v-card>
