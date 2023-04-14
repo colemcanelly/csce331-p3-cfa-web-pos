@@ -55,8 +55,52 @@ app.get("/orders", async (req,res) => {
   }
 });
 
+// Get Excess Report
+/*
+MUST Pass in a json file like this 
+
+{
+  "date": "2023-4-12"
+}
+
+*/
+app.post("/excess-report", async (req, res) => {
+    console.log("Hello");
+    try {
+      const { date } = req.body;
+      const query = `WITH cte AS (
+          SELECT 
+              ingredient, 
+              qty_sod, 
+              SUM(qty_sold) as total_qty_sold, 
+              ((qty_sod - SUM(qty_sold))/qty_sod)*100 as percentage_diff
+          FROM 
+              daily_inventory
+          WHERE 
+              entry_date >= '${date}' 
+          GROUP BY 
+              ingredient, qty_sod
+      )
+      SELECT 
+          ingredient, 
+          qty_sod, 
+          total_qty_sold, 
+          percentage_diff
+      FROM 
+          cte
+      WHERE 
+          percentage_diff > 90;`;
+  
+      const result = await pool.query(query);
+      res.json(result.rows);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
 // Get Restock Report
-app.get('/restock_report', async (req, res) => {
+app.get('/restock-report', async (req, res) => {
   try {
       const restock_report = `
           SELECT 
@@ -83,6 +127,55 @@ app.get('/restock_report', async (req, res) => {
       res.status(500).send('Error fetching restock report');
   }
 });
+
+
+// Get Sales Report
+/*
+MUST Pass in a json file like this 
+
+{
+  {
+  "start_date": "2023-04-01",
+  "end_date": "2023-04-12",
+  "start_time": "06:00:00",
+  "end_time": "22:30:00"
+  }
+}
+*/
+app.post("/sales-report", async (req, res) => {
+    try {
+      const { start_date, end_date, start_time, end_time } = req.body;
+  
+      const sales_report_by_item =
+        "SELECT COALESCE(menu.menu_item, 'Total') AS menu_item, COALESCE(SUM(order_items.menu_item_quantity * order_items.food_price), 0) AS total_revenue " +
+        "FROM orders " +
+        "JOIN menu ON 1=1 " +
+        "LEFT JOIN order_items ON orders.order_id = order_items.order_id AND menu.menu_item = order_items.menu_item" +
+        " WHERE orders.order_date BETWEEN $1 AND $2 " +
+        "AND orders.order_time BETWEEN $3 AND $4 " +
+        "GROUP BY ROLLUP(menu.menu_item);";
+  
+      const { rows } = await pool.query(sales_report_by_item, [
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+      ]);
+  
+      const salesReportTable = {};
+  
+      for (let row of rows) {
+        salesReportTable[row.menu_item] = {
+          total_revenue: row.total_revenue,
+        };
+      }
+  
+      res.json(salesReportTable);
+    } catch (err) {
+      console.error(err.message);
+      res.send("Server Error");
+    }
+  });
 
 
 
