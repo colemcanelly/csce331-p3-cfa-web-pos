@@ -54,16 +54,10 @@
 </template>
 
 <script>
-import {categories} from '~/static/temp-data'
 
 export default {
     name: "CategoriesPage",
     layout: 'customer',
-    data() {
-        return {
-            categories,
-        }
-    }
 }
 </script>
 

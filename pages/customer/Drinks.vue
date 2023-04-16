@@ -9,7 +9,7 @@
                 <v-card-title class="text-center">{{ menuItem.menu_item }}</v-card-title>
                 <v-img :src="menuItem.img"></v-img>
                 <v-card-text class="text-center">{{  menuItem.food_price }}</v-card-text>
-                <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="addItemToOrder">Add to Order</v-btn>
+                <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="addItemToOrder(menuItem)">Add to Order</v-btn>
             </v-card>
         </v-col>
     </v-row>
@@ -20,12 +20,14 @@
     </template>
 
 <script>
+import {currentOrder} from '~/static/temp-data'
+
 export default {
     name: "DrinksPage",
     layout: 'customer',
     data() {
         return {
-
+            currentOrder,
             tableData: [{}],
             
         };
@@ -43,8 +45,12 @@ export default {
                 console.log(err);
             }
         },
-        addItemToOrder() {
-            console.log(this.tableData);
+        addItemToOrder(item) {
+            console.log(item);
+
+            this.$set(this.currentOrder, this.currentOrder.length, item);
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+
         },
     },
     computed: {
