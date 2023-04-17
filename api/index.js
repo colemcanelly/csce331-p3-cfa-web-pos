@@ -25,17 +25,6 @@ app.get('/test', function (req, res) {
 //     }
 // });
 
-// Post entry to Menu
-app.post("/menu", async (req,res) => {
-  try{
-      const allTodos = await pool.query("SELECT * FROM menu");
-      res.json(allTodos.rows)
-  }
-  catch (err){
-      console.error(err.message);
-  }
-});
-
 // Get Supply
 app.get("/supply", async (req,res) => {
   try{
