@@ -47,8 +47,7 @@ export default {
             console.log(this.currentOrder);
             try {
                 // no chance this works whatsoever but it is a start!
-                const response = await this.$axios.post('/menu', this.currentOrder);  
-                this.tableData = response.data;
+                await this.$axios.post('/menu', this.currentOrder);                                                                                                                                                     
             } catch (err) {
                 console.log("ERROR");
                 console.log(err);

@@ -12,14 +12,28 @@ app.get('/test', function (req, res) {
 });
 
 // Get Menu
-app.get("/menu", async (req,res) => {
-    try{
-        const allTodos = await pool.query("SELECT * FROM menu");
-        res.json(allTodos.rows)
-    }
-    catch (err){
-        console.error(err.message);
-    }
+// app.get("/orders", async (req,res) => {
+//     try{
+//         const {order_id, order_num, order_date, order_time, order_total, customer_name, kiosk_id} = req.body;
+//         const newTodo = await pool.query (
+//           "INSERT INTO orders (order_id, order_num, order_date, order_time, order_total, customer_name, kiosk_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+//           [order_id, order_num, order_date, order_time, order_total, customer_name, kiosk_id]
+//         );
+//     }
+//     catch (err){
+//         console.error(err.message);
+//     }
+// });
+
+// Post entry to Menu
+app.post("/menu", async (req,res) => {
+  try{
+      const allTodos = await pool.query("SELECT * FROM menu");
+      res.json(allTodos.rows)
+  }
+  catch (err){
+      console.error(err.message);
+  }
 });
 
 // Get Supply
