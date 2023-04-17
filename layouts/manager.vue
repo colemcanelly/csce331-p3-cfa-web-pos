@@ -27,6 +27,7 @@
         <v-spacer></v-spacer>
         <v-btn to="/managerMenu">Menu</v-btn>
         <v-btn to="/managerInventory">Inventory</v-btn>
+        <v-btn to="/salesReport">Sales Report</v-btn>
       </v-app-bar>
       <v-main>
         <router-view />
@@ -51,6 +52,11 @@
           icon: 'mdi-chart-bubble',
           title: 'Manager Inventory',
           to: '/managerInventory'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Sales Report',
+          to: '/salesReport'
         }
       ]
     })
