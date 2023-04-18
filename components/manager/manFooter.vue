@@ -14,18 +14,23 @@
     data: function () {
       return {
         items: [
+        {
+            icon: 'mdi-home',
+            label: 'Home',
+            to: '/'
+          },
           {
-            icon: 'mdi-map-marker',
-            label: 'Menu List',
+            icon: 'mdi-silverware  ',
+            label: 'Menu',
             to: '/managerMenu'
           },
           {
-            icon: 'mdi-silverware-fork-knife',
+            icon: 'mdi-list-box-outline',
             label: 'Inventory',
             to: '/managerInventory'
           },
           {
-            icon: 'mdi-shopping',
+            icon: 'mdi-currency-usd',
             label: 'Sales Report',
             to: '/salesReport'
           },

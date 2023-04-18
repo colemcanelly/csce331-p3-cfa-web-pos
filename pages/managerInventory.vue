@@ -10,7 +10,7 @@
 <script>
 import Table from '~/components/manager/Table.vue'
 export default {
-name: 'IndexPage',
+name: 'managerInventoryPage',
 layout: 'manager',
 components: {
   Table
