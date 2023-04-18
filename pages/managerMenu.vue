@@ -9,6 +9,7 @@
           <v-combobox v-model="category" :items="categories" label="Category" />
         </div>
         <v-data-table
+          dense
           :headers="headers"
           :items="tableData"
         />

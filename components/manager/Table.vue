@@ -1,24 +1,19 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    :sort-by="[{ key: 'calories', order: 'asc' }]"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>My CRUD</v-toolbar-title>
-        <v-divider vertical inset class="mx-4"></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ props }">
+  <v-card>
+    <v-card-title class="primary--text">
+      {{ title }}
+      <v-divider v-if="!mobile" class="mx-4" inset vertical></v-divider>
+      <v-spacer v-else></v-spacer>
+      <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
-              dark
-              class="mb-2"
-              v-bind="props"
+              v-bind="attrs"
+              v-on="on"
+              outlined
             >
               New Item
+              <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
           <v-card>
@@ -26,58 +21,35 @@
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
             <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
+              <!-- FORM cole todo sprint 3 -->
+              <v-form ref="form" @submit.prevent="sumbit">
+                <v-container>
+                  <v-row>
+                    <v-col 
+                      v-for="(field, index) in headers"
+                      v-if="field.text != 'Actions'"
+                      :key="index"
+                      cols="12" sm="6" md="4"
+                    >
+                      <v-text-field v-model="edited_item[field.value]" :label="field.text" required></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+              <!-- END FORM -->
             </v-card-text>
-
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                color="blue-darken-1"
-                variant="text"
+                color="blue darken-1"
+                text
                 @click="close"
               >
                 Cancel
               </v-btn>
               <v-btn
-                color="blue-darken-1"
-                variant="text"
+                color="blue darken-1"
+                text
                 @click="save"
               >
                 Save
@@ -85,85 +57,82 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+      <v-spacer v-show="!mobile"></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+    <v-data-table
+      :headers="headers.concat({text: 'Actions', value: 'actions', sortable: false})"
+      :items="table_data"
+      :search="search"
+      sort-by="calories"
+    >
+      <template v-slot:top>
+        <!-- Delete Item -->
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon
-        size="small"
-        class="me-2"
-        @click="editItem(item.raw)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        size="small"
-        @click="deleteItem(item.raw)"
-      >
-        mdi-delete
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
-  </v-data-table>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="getTable">Reset</v-btn>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
+// Need `headers`, query, and other info passed in
   export default {
+    props: {
+      headers: Array,
+      title: String,
+      table: String,
+    },
     data: () => ({
+      search: '',
+      windowWidth: null,
       dialog: false,
       dialogDelete: false,
-      headers: [
-        {
-          title: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          key: 'name',
-        },
-        { title: 'Calories', key: 'calories' },
-        { title: 'Fat (g)', key: 'fat' },
-        { title: 'Carbs (g)', key: 'carbs' },
-        { title: 'Protein (g)', key: 'protein' },
-        { title: 'Actions', key: 'actions', sortable: false },
-      ],
-      desserts: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+      table_data: [],
+      edited_index: -1,
+      default_item: Object.freeze({
+        name: null,
+        calories: null,
+        fat: null,
+        carbs: null,
+        protein: null,
+      }),
+      edited_item: {
+        name: null,
+        calories: null,
+        fat: null,
+        carbs: null,
+        protein: null,
       },
     }),
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.edited_index === -1 ? 'New Item' : 'Edit Item'
       },
+      mobile() { return this.windowWidth <= 600; }
     },
 
     watch: {
@@ -175,127 +144,81 @@
       },
     },
 
+    created: function () {
+      // this.initialize()
+    },
+
     mounted: function () {
-      this.initialize()
+      this.$nextTick(() => {
+        window.addEventListener('resize', this.onResize);
+      });
+      this.getTable();
+      this.onResize();
+    },
+
+    beforeDestroy: function () {
+      window.removeEventListener('resize', this.onResize)
     },
 
     methods: {
-      initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ]
+      async getTable () {
+        try {
+          const response = await this.$axios.get(`/${this.table}`);
+          this.table_data = response.data;
+        } catch (err) {
+          console.log("ERROR");
+          console.log(err);
+        }
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.edited_index = this.table_data.indexOf(item)
+        this.edited_item = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.edited_index = this.table_data.indexOf(item)
+        this.edited_item = Object.assign({}, item)
         this.dialogDelete = true
       },
 
       deleteItemConfirm () {
-        this.desserts.splice(this.editedIndex, 1)
+        // Delete an item               NEED AXIOS HERE
+        this.table_data.splice(this.edited_index, 1)
         this.closeDelete()
       },
 
       close () {
         this.dialog = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
+          this.edited_item = Object.assign({}, this.default_item)
+          this.edited_index = -1
         })
       },
 
       closeDelete () {
         this.dialogDelete = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
+          this.edited_item = Object.assign({}, this.default_item)
+          this.edited_index = -1
         })
       },
 
       save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        if (this.edited_index > -1) {
+          // Editing Current item       NEED AXIOS HERE
+          Object.assign(this.table_data[this.edited_index], this.edited_item)
         } else {
-          this.desserts.push(this.editedItem)
+          // Creating new item          NEED AXIOS HERE
+          this.table_data.push(this.edited_item)
         }
         this.close()
       },
+
+      onResize() {
+        this.windowWidth = window.innerWidth;
+      }
     },
   }
 </script>
