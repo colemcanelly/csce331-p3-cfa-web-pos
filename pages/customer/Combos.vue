@@ -21,6 +21,7 @@
 
 <script>
 import {currentOrder} from '~/static/temp-data'
+// import {totalPrice} from '~/static/temp-data'
 
 export default {
     name: "CombosPage",
@@ -28,6 +29,7 @@ export default {
     data() {
         return {
             currentOrder,
+            // totalPrice: totalPrice,
             tableData: [{}],
             
         };
@@ -48,8 +50,11 @@ export default {
         addItemToOrder(item) {
             console.log(item);
 
+            // this.totalPrice = parseFloat(localStorage.getItem('totalPrice'));
+            // this.totalPrice += parseFloat(item.food_price);
             this.$set(this.currentOrder, this.currentOrder.length, item);
             localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+            // localStorage.setItem('totalPrice', this.totalPrice);
 
         },
     },
