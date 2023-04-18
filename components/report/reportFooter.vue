@@ -20,19 +20,24 @@
             to: '/'
           },
           {
-            icon: 'mdi-silverware  ',
-            label: 'Menu',
-            to: '/managerMenu'
+            icon: 'mdi-chart-bar  ',
+            label: 'XZ Report',
+            to: '/report/xzReport'
           },
           {
             icon: 'mdi-list-box-outline',
-            label: 'Inventory',
-            to: '/managerInventory'
+            label: 'Excess Report',
+            to: '/report/excessReport'
           },
           {
             icon: 'mdi-currency-usd',
-            label: 'Reports',
-            to: 'report/salesReport'
+            label: 'Sales Report',
+            to: '/report/salesReport'
+          },
+          {
+            icon: 'mdi-package-variant-closed-plus ',
+            label: 'Restock Report',
+            to: '/report/restockReport'
           },
         ],
       };

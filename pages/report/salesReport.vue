@@ -11,12 +11,12 @@
 import Report from '~/components/report/Report.vue'
 export default {
 name: 'salesReportPage',
-layout: 'manager',
+layout: 'report',
 components: {
   Report
 },
 data: () => ({
-  title: "Inventory",
+  title: "Sales Report",
   table: 'supply',
   headers: [
     { text: 'Ingredient', value: 'ingredient', sortable: false },
