@@ -1,12 +1,12 @@
 <template>
   <v-app dark>
-    <Header />
+    <Header></Header>
     <v-main class="overflow-hidden">
       <v-container>
         <Nuxt />
       </v-container>
     </v-main>
-    <Footer />
+    <Footer></Footer>
   </v-app>
 </template>
 
