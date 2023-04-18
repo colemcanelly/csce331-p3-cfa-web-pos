@@ -177,136 +177,136 @@ app.post("/sales-report", async (req, res) => {
     }
 });
 
-  app.post('/order', async (req, res) => {
+app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
     let order_total = 0;
     for (const menuItem of currentOrder) {
-      order_total += parseFloat(menuItem.food_price);
+        order_total += parseFloat(menuItem.food_price);
     }
     console.log("Order Total = ", order_total);
     try {
-      const client = await pool.connect();
-      const order_id_query = "SELECT nextval('orders_order_id_seq')";
-      const order_id_result = await client.query(order_id_query);
-      const order_id = order_id_result.rows[0].nextval;
-      console.log("Completed order_id_query", order_id);
-      const order_query = `INSERT INTO orders VALUES (${order_id}, '${order_date}', '${order_time}', ${order_total}, '${customer_fname}', ${order_creator})`;
-      await client.query(order_query);
-      console.log("Completed order_query", order_query);
-  
-      // Insert each item in the currentOrder list into the order_items table
-      for (const item of currentOrder) {
-        const item_name = item.menu_item;
-        const food_price = item.food_price;
-        const order_item_query = `INSERT INTO order_items VALUES (${order_id}, '${item_name}', 1, ${food_price})`;
-        await pool.query(order_item_query);
-        console.log("Completed order_item_query", order_item_query);
-      }
-      // Add any additional queries here
-  
-      await client.release();
-      res.send("Order submitted successfully");
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error submitting order");
-    }
-  });
+        const client = await pool.connect();
+        const order_id_query = "SELECT nextval('orders_order_id_seq')";
+        const order_id_result = await client.query(order_id_query);
+        const order_id = order_id_result.rows[0].nextval;
+        console.log("Completed order_id_query", order_id);
+        const order_query = `INSERT INTO orders VALUES (${order_id}, '${order_date}', '${order_time}', ${order_total}, '${customer_fname}', ${order_creator})`;
+        await client.query(order_query);
+        console.log("Completed order_query", order_query);
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Insert each item in the currentOrder list into the order_items table
+        for (const item of currentOrder) {
+            const item_name = item.menu_item;
+            const food_price = item.food_price;
+            const order_item_query = `INSERT INTO order_items VALUES (${order_id}, '${item_name}', 1, ${food_price})`;
+            await pool.query(order_item_query);
+            console.log("Completed order_item_query", order_item_query);
+        }
+        // Add any additional queries here
+
+        await client.release();
+        res.send("Order submitted successfully");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error submitting order");
+    }
+});
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // MANAGER INVENTORY AND MENU QUERIES
 app.delete("/menu", async (req, res) => {
     try {
-      const { menu_item, food_price, combo, menu_cat } = req.body;
-      const delete_menu_item = await pool.query(`DELETE FROM menu WHERE menu_item = '${menu_item}';`);
-      res.json(`Menu item successfully deleted`);
+        const { menu_item, food_price, combo, menu_cat } = req.body;
+        const delete_menu_item = await pool.query(`DELETE FROM menu WHERE menu_item = '${menu_item}';`);
+        res.json(`Menu item successfully deleted`);
     } catch (err) {
-      console.error('Error deleting menu item:', err);
-      res.status(500).send('Error deleting menu item');
+        console.error('Error deleting menu item:', err);
+        res.status(500).send('Error deleting menu item');
     }
-  });
-  
-  app.delete("/supply", async (req, res) => {
-      try {
-          const { ingredient, threshold, restock_quantity } = req.body;
-          const delete_ingredient = await pool.query(`DELETE FROM supply WHERE ingredient = '${ingredient}';`);
-          // console.log(`Deleting ${ingredient}`);
-          res.json(`Supply item successfully deleted`);
-      } catch (err) {
-          console.error('Error deleting supply item:', err);
-          res.status(500).send('Error deleting supply item');
-      }
-  });
-  
-  // Creating new menu/inventory items
-  app.post("/menu", async(req,res) => {
+});
+
+app.delete("/supply", async (req, res) => {
     try {
-      const { menu_item, food_price, combo, menu_cat } = req.body;
-      const q = `INSERT INTO menu (menu_item, menu_cat, combo, food_price)
+        const { ingredient, threshold, restock_quantity } = req.body;
+        const delete_ingredient = await pool.query(`DELETE FROM supply WHERE ingredient = '${ingredient}';`);
+        // console.log(`Deleting ${ingredient}`);
+        res.json(`Supply item successfully deleted`);
+    } catch (err) {
+        console.error('Error deleting supply item:', err);
+        res.status(500).send('Error deleting supply item');
+    }
+});
+
+// Creating new menu/inventory items
+app.post("/menu", async (req, res) => {
+    try {
+        const { menu_item, food_price, combo, menu_cat } = req.body;
+        const q = `INSERT INTO menu (menu_item, menu_cat, combo, food_price)
       VALUES ('${menu_item}', '${menu_cat}', ${combo}, ${food_price});`;
-      // console.log(q);
-      const newItem = await pool.query(q);
-      res.json(newItem.rows[0]);
-  }
-  catch (err){
-      console.error('Error posting new menu item:', err);
-      res.status(500).send('Error posting new menu item');
-  }
-  });
-  
-  app.post("/supply", async (req, res) => {
-      try {
-          const { ingredient, threshold, restock_quantity } = req.body;
-          const q = `INSERT INTO supply VALUES ('${ingredient}', ${threshold}, ${restock_quantity});`;
-          // console.log(q);
-          const newItem = await pool.query(q); 
-          res.json(newItem.rows[0]);
-      }
-      catch (err) {
-          console.error('Error posting new supply item:', err);
-          res.status(500).send('Error posting new supply item');
-      }
-  });
-  
-  // Updating existing items
-  app.put("/menu/", async (req,res) => {
-      try{
-          const { menu_item, food_price, combo, menu_cat } = req.body;
-          const q = `
+        // console.log(q);
+        const newItem = await pool.query(q);
+        res.json(newItem.rows[0]);
+    }
+    catch (err) {
+        console.error('Error posting new menu item:', err);
+        res.status(500).send('Error posting new menu item');
+    }
+});
+
+app.post("/supply", async (req, res) => {
+    try {
+        const { ingredient, threshold, restock_quantity } = req.body;
+        const q = `INSERT INTO supply VALUES ('${ingredient}', ${threshold}, ${restock_quantity});`;
+        // console.log(q);
+        const newItem = await pool.query(q);
+        res.json(newItem.rows[0]);
+    }
+    catch (err) {
+        console.error('Error posting new supply item:', err);
+        res.status(500).send('Error posting new supply item');
+    }
+});
+
+// Updating existing items
+app.put("/menu/", async (req, res) => {
+    try {
+        const { menu_item, food_price, combo, menu_cat } = req.body;
+        const q = `
           UPDATE menu
           SET menu_cat = '${menu_cat}', food_price = ${food_price}, combo = ${combo}
           WHERE menu_item = '${menu_item}'`;
-          console.log(q);
-          const updateMenu = await pool.query(q);
-  
-          res.json("Menu was updated!")
-      }
-      catch (err){
-          console.error('Error updating menu item:', err.message);
-          res.status(500).send('Error updating menu item');
-      }
-  });
-  
-  app.put("/supply/", async (req,res) => {
-      try{
-          const { ingredient, threshold, restock_quantity } = req.body;
-          const q = `
+        console.log(q);
+        const updateMenu = await pool.query(q);
+
+        res.json("Menu was updated!")
+    }
+    catch (err) {
+        console.error('Error updating menu item:', err.message);
+        res.status(500).send('Error updating menu item');
+    }
+});
+
+app.put("/supply/", async (req, res) => {
+    try {
+        const { ingredient, threshold, restock_quantity } = req.body;
+        const q = `
           UPDATE supply
           SET threshold = '${threshold}', restock_quantity = ${restock_quantity}
           WHERE ingredient = '${ingredient}'`;
-          console.log(q);
-          const updateSupply = await pool.query(q);
-          res.json("Supply was updated!")
-      }
-      catch (err){
-          console.error('Error updating supply item:', err.message);
-          res.status(500).send('Error updating supply item');
-      }
-  });
-  // ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        console.log(q);
+        const updateSupply = await pool.query(q);
+        res.json("Supply was updated!")
+    }
+    catch (err) {
+        console.error('Error updating supply item:', err.message);
+        res.status(500).send('Error updating supply item');
+    }
+});
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  
-  export default {
+
+export default {
     path: '/api',
     handler: app
-  }
+}
