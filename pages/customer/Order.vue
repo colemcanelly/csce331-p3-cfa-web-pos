@@ -36,7 +36,7 @@ export default {
     data() {
         return {
             currentOrder,
-            totalPrice: 0,
+            // totalPrice: 0,
             i: 0,
         }
     },
@@ -48,19 +48,7 @@ export default {
             }
             console.log(this.currentOrder)
             localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
-        },
-        async submitOrder() {
-            // console.log(this.currentOrder);
-            // try {
-            //     // no chance this works whatsoever but it is a start!
-            //     await this.$axios.post('/menu', this.currentOrder);                                                                                                                                                     
-            // } catch (err) {
-            //     console.log("ERROR");
-            //     console.log(err);
-            // }
-            // this.currentOrder.length = 0;
-            // localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
-            console.log(this.totalPrice);
+            this.totalPrice = this.computedTotalPrice;
         },
         async submitOrder() {
           console.log(this.currentOrder);
@@ -88,7 +76,7 @@ export default {
           else{
             console.log("CurrentOrder.length == 0");
           }
-        }
+        },
     },
     mounted() {
         const storedOrder = localStorage.getItem('currentOrder');
@@ -96,10 +84,27 @@ export default {
             this.currentOrder = JSON.parse(storedOrder);
         }
         
-        for (this.i; this.i < this.currentOrder.length; this.i++) {
-            this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
+        // for (this.i; this.i < this.currentOrder.length; this.i++) {
+        //     this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
+        // }
+        // this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
+    },
+    computed: {
+        totalPrice() {
+            i = 0;
+            to_return = 0;
+            for (i; i < this.currentOrder.length; i++) {
+                to_return += parseFloat(this.currentOrder[i].food_price);
+            }
+            to_return = parseFloat(to_return).toFixed(2);
+            return to_return;
         }
-        this.totalPrice = this.totalPrice.toFixed(2);
-    }
+    },
+    // watch: {
+    //     currentOrder() {
+    //         this.computedTotalPrice;
+    //         console.log(this.totalPrice);
+    //     }
+    // }
 }
 </script>
