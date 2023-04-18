@@ -17,26 +17,26 @@
         {
             icon: 'mdi-home',
             label: 'Home',
-            to: '/'
+            to: '/managerMenu'
+          },
+          {
+            icon: 'mdi-currency-usd',
+            label: 'Sales',
+            to: '/report/salesReport'
           },
           {
             icon: 'mdi-chart-bar  ',
-            label: 'XZ Report',
+            label: 'XZ',
             to: '/report/xzReport'
           },
           {
             icon: 'mdi-list-box-outline',
-            label: 'Excess Report',
+            label: 'Excess',
             to: '/report/excessReport'
           },
           {
-            icon: 'mdi-currency-usd',
-            label: 'Sales Report',
-            to: '/report/salesReport'
-          },
-          {
             icon: 'mdi-package-variant-closed-plus ',
-            label: 'Restock Report',
+            label: 'Restock',
             to: '/report/restockReport'
           },
         ],

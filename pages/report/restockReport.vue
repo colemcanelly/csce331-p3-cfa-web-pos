@@ -2,7 +2,7 @@
     <v-row class="overflow-scroll">
         <v-col>
             <!-- <span>This is a test page.</span> -->
-            <Table :table="table" :title="title" :headers="headers"></Table>
+            <Report :table="table" :title="title" :headers="headers"></Report>
         </v-col>
     </v-row>
   </template>
@@ -10,14 +10,14 @@
   <script>
   import Report from '~/components/report/Report.vue'
   export default {
-  name: 'excessReportPage',
+  name: 'restockReportPage',
   layout: 'report',
   components: {
     Report
   },
   data: () => ({
-    title: "Excess Report",
-    table: 'supply',
+    title: "Restock Report",
+    table: 'restock-report',
     headers: [
       { text: 'Ingredient', value: 'ingredient', sortable: false },
       { text: 'Threshold', value: 'threshold' },
