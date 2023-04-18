@@ -3,15 +3,15 @@ SELECT entry_date, ingredient, qty_eod FROM daily_inventory WHERE entry_date = (
 
 -- TODO: Get Restock Report
 SELECT
-today.ingredient AS ingredient,
-today.qty_curr AS quantity,
-supply.threshold AS threshold
+    today.ingredient AS ingredient,
+    today.qty_curr AS quantity,
+    supply.threshold AS threshold
 FROM (
-SELECT DISTINCT ON (ingredient)
-ingredient,
-qty_eod AS qty_curr
-FROM daily_inventory
-ORDER  BY ingredient, entry_date DESC) AS today
+    SELECT DISTINCT ON (ingredient)
+        ingredient,
+        qty_eod AS qty_curr
+    FROM daily_inventory
+    ORDER  BY ingredient, entry_date DESC) AS today
 INNER JOIN supply ON today.ingredient = supply.ingredient AND supply.threshold >= today.qty_curr;
 
 -- TODO: Get Exess Report 
