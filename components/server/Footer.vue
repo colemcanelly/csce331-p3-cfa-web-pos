@@ -1,6 +1,6 @@
 <!-- SERVER FOOTER -->
 <template>
-  <v-card :elevation="8" class="cfa-red-lighten-4">
+  <v-card app :elevation="8" class="cfa-red-lighten-4">
     <v-btn class="ma-3">Submit</v-btn>
     <h2 class="ma-3 float-right blue-grey--text text--darken-3">${{ total }}</h2>
   </v-card>

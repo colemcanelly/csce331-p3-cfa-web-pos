@@ -3,15 +3,15 @@ SELECT entry_date, ingredient, qty_eod FROM daily_inventory WHERE entry_date = (
 
 -- TODO: Get Restock Report
 SELECT
-today.ingredient AS ingredient,
-today.qty_curr AS quantity,
-supply.threshold AS threshold
+    today.ingredient AS ingredient,
+    today.qty_curr AS quantity,
+    supply.threshold AS threshold
 FROM (
-SELECT DISTINCT ON (ingredient)
-ingredient,
-qty_eod AS qty_curr
-FROM daily_inventory
-ORDER  BY ingredient, entry_date DESC) AS today
+    SELECT DISTINCT ON (ingredient)
+        ingredient,
+        qty_eod AS qty_curr
+    FROM daily_inventory
+    ORDER  BY ingredient, entry_date DESC) AS today
 INNER JOIN supply ON today.ingredient = supply.ingredient AND supply.threshold >= today.qty_curr;
 
 -- TODO: Get Exess Report 
@@ -56,7 +56,13 @@ GROUP BY
 
 -- New Order
 -- CHANGE THE INPUTS
-"INSERT INTO orders VALUES ((SELECT nextval('orders_order_id_seq')), %d, '%s', '%s', %f, '%s', %d);", order_num, date.toString(), time.toString(), order_total, customer_name, kiosk_id)
+String order_query = String.format("INSERT INTO orders VALUES ((SELECT nextval('orders_order_id_seq')), %d, '%s', '%s', %f, '%s', %d);", order_num, date.toString(), time.toString(), order_total, customer_name, kiosk_id);
+String query_order_id = "SELECT max(order_id) FROM orders;";
+String order_item_query = String.format("INSERT INTO order_items VALUES (%d, '%s', %d, %f);", order_id, item_name, 1, food_price);
+String order_item_query = String.format("INSERT INTO order_items VALUES (%d, '%s', %d, %f);", order_id, item_name, 1, food_price);
+
+
+
 
 
     public boolean newOrder(ArrayList<String> ordered_items, String customer_name, int kiosk_id, int order_num)
