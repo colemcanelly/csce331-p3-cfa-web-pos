@@ -15,8 +15,8 @@
       return {
         items: [
         {
-            icon: 'mdi-home',
-            label: 'Home',
+            icon: 'mdi-keyboard-backspace',
+            label: 'Back',
             to: '/managerMenu'
           },
           {

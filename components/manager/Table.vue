@@ -103,7 +103,11 @@
     props: {
       headers: Array,
       title: String,
-      table: String,
+      table: String
+      // table: {
+      //   type: String,
+      //   validator(value) { return ['menu', 'supply'].includes(value); }
+      // }
     },
     data: () => ({
       search: '',
@@ -163,57 +167,92 @@
     methods: {
       async getTable () {
         try {
+          // console.log("Getting table");
           const response = await this.$axios.get(`/${this.table}`);
           this.table_data = response.data;
         } catch (err) {
-          console.log("ERROR");
+          console.log("ERROR getTable()");
+          console.log(err);
+        }
+      },
+
+      async deleteDBItem ( item ) {
+        try {
+          console.log(item);
+          const response = await this.$axios.delete(`/${this.table}`, { data: item });
+          console.log(response);
+        } catch (err) { 
+          console.log("ERROR deleteDBItem()");
+          console.log(err);
+        }
+      },
+
+      async newDBItem ( item ) {
+        try {
+          const response = await this.$axios.post(`/${this.table}`, item);
+          console.log(response);
+        } catch (err) { 
+          console.log("ERROR newDBItem()");
+          console.log(err);
+        }
+      },
+      
+      async updateDBItem ( item ) {
+        try {
+          const response = await this.$axios.put(`/${this.table}`, item);
+          console.log(response);
+        } catch (err) { 
+          console.log("ERROR updateDBItem()");
           console.log(err);
         }
       },
 
       editItem (item) {
-        this.edited_index = this.table_data.indexOf(item)
-        this.edited_item = Object.assign({}, item)
-        this.dialog = true
+        this.edited_index = this.table_data.indexOf(item);
+        this.edited_item = Object.assign({}, item);
+        this.dialog = true;
       },
 
       deleteItem (item) {
-        this.edited_index = this.table_data.indexOf(item)
-        this.edited_item = Object.assign({}, item)
-        this.dialogDelete = true
+        this.edited_index = this.table_data.indexOf(item);
+        this.edited_item = Object.assign({}, item);
+        this.dialogDelete = true;
       },
 
       deleteItemConfirm () {
         // Delete an item               NEED AXIOS HERE
+        this.deleteDBItem(this.table_data[this.edited_index]);
         this.table_data.splice(this.edited_index, 1)
-        this.closeDelete()
+        this.closeDelete();
       },
 
       close () {
-        this.dialog = false
+        this.dialog = false;
         this.$nextTick(() => {
-          this.edited_item = Object.assign({}, this.default_item)
-          this.edited_index = -1
+          this.edited_item = Object.assign({}, this.default_item);
+          this.edited_index = -1;
         })
       },
 
       closeDelete () {
-        this.dialogDelete = false
+        this.dialogDelete = false;
         this.$nextTick(() => {
-          this.edited_item = Object.assign({}, this.default_item)
-          this.edited_index = -1
+          this.edited_item = Object.assign({}, this.default_item);
+          this.edited_index = -1;
         })
       },
 
       save () {
         if (this.edited_index > -1) {
           // Editing Current item       NEED AXIOS HERE
-          Object.assign(this.table_data[this.edited_index], this.edited_item)
+          this.updateDBItem(this.edited_item);
+          Object.assign(this.table_data[this.edited_index], this.edited_item);
         } else {
           // Creating new item          NEED AXIOS HERE
-          this.table_data.push(this.edited_item)
+          this.newDBItem(this.edited_item);
+          this.table_data.push(this.edited_item);
         }
-        this.close()
+        this.close();
       },
 
       onResize() {
