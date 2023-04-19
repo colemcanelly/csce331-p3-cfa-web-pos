@@ -58,11 +58,9 @@ app.get("/orders", async (req, res) => {
 // Get Excess Report
 /*
 MUST Pass in a json file like this 
-
 {
   "date": "2023-4-12"
 }
-
 */
 app.post("/excess-report", async (req, res) => {
     console.log("Hello");
@@ -132,7 +130,6 @@ app.get('/restock-report', async (req, res) => {
 // Get Sales Report
 /*
 MUST Pass in a json file like this 
-
 {
   {
   "start_date": "2023-04-01",
