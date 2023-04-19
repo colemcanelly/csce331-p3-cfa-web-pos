@@ -162,9 +162,6 @@
         table: String,
       },
       data: () => ({
-        return {
-            : '',
-        },
         search: '',
         windowWidth: null,
         dialog: false,
