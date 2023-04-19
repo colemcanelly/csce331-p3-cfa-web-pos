@@ -95,6 +95,7 @@ export default {
             }
             console.log(this.currentOrder)
         },
+        
         async submitOrder() {
           console.log(this.currentOrder);
           if (this.currentOrder.length > 0) {

@@ -141,6 +141,23 @@ MUST Pass in a json file like this
   "end_time": "22:30:00"
   }
 }
+
+RES looks like
+{
+    "Total": {
+        "total_revenue": 100455.6299999986
+    },
+    "Chocolate Chunk Cookie_1 Pc.": {
+        "total_revenue": 259.3800000000003
+    },
+    "ChickFil-A Nuggets Grilled Combo 12Pc": {
+        "total_revenue": 1946.700000000001
+    },
+    "ChickFil-A Chicken Sandwich Combo": {
+        "total_revenue": 1624.4000000000005
+    },
+  }
+
 */
 app.post("/sales-report", async (req, res) => {
     try {
