@@ -1,31 +1,61 @@
 <template>
-    <div>
-        <h1>Breakfast</h1>
-        <div class="grid-wrap">
-            <div 
-            class="product-item"
-            v-for="item in breakfast"
-            :key="item.id"
-            >
-                <img :src="item.imageName" />
-                <h3 class="product-name"> {{ item.name }}</h3>
-                <p class="product-price"> {{ item.price }}</p>
-                <button>Add to Order</button>
-            </div>
-        </div>
-    </div>
-</template>
+    <v-app>
+    <v-container>
+        <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Breakfast</v-card-title ></v-card></v-col></v-row>
+        
+            <v-row>
+                <v-col cols="6" v-for="menuItem in breakfastMenuItems" :key="menuItem.id">
+                    <v-card >
+                        <v-card-title class="text-center">{{ menuItem.menu_item }}</v-card-title>
+                        <v-img :src="menuItem.img"></v-img>
+                        <v-card-text class="text-center">{{  menuItem.food_price }}</v-card-text>
+                        <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="addItemToOrder(menuItem)">Add to Order</v-btn>
+                    </v-card>
+                </v-col>
+            </v-row>
+        
+    
+    </v-container>
+    </v-app>
+    </template>
 
 <script>
-import { breakfast } from '~/static/temp-data';
+import {currentOrder} from '~/static/temp-data'
 
 export default {
+    
     name: "BreakfastPage",
     layout: 'customer',
     data() {
         return {
-            breakfast,
-        }
-    }
-}
+            currentOrder,
+            tableData: [{}],
+            
+        };
+    },
+    mounted: function() {
+      this.getMenu();
+    },
+    methods: {
+        async getMenu () {
+            try {
+                const response = await this.$axios.get('/menu');
+                this.tableData = response.data;
+            } catch (err) {
+                console.log("ERROR");
+                console.log(err);
+            }
+        },
+        addItemToOrder(item) {
+            console.log(item);
+
+            this.$set(this.currentOrder, this.currentOrder.length, item);
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+
+        },
+    },
+    computed: {
+        breakfastMenuItems() { return this.tableData.filter( (menuItem) => menuItem.menu_cat === "breakfast" ); },
+    },
+};
 </script>
