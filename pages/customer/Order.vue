@@ -36,7 +36,7 @@ export default {
     data() {
         return {
             currentOrder,
-            // totalPrice: 0,
+            totalPrice: 0,
             i: 0,
         }
     },
@@ -84,22 +84,22 @@ export default {
             this.currentOrder = JSON.parse(storedOrder);
         }
         
-        // for (this.i; this.i < this.currentOrder.length; this.i++) {
-        //     this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
-        // }
-        // this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
-    },
-    computed: {
-        totalPrice() {
-            i = 0;
-            to_return = 0;
-            for (i; i < this.currentOrder.length; i++) {
-                to_return += parseFloat(this.currentOrder[i].food_price);
-            }
-            to_return = parseFloat(to_return).toFixed(2);
-            return to_return;
+        for (this.i; this.i < this.currentOrder.length; this.i++) {
+            this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
         }
+        this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
     },
+    // computed: {
+    //     totalPrice() {
+    //         i = 0;
+    //         to_return = 0;
+    //         for (i; i < this.currentOrder.length; i++) {
+    //             to_return += parseFloat(this.currentOrder[i].food_price);
+    //         }
+    //         to_return = parseFloat(to_return).toFixed(2);
+    //         return to_return;
+    //     }
+    // },
     // watch: {
     //     currentOrder() {
     //         this.computedTotalPrice;
