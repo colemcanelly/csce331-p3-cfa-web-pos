@@ -154,7 +154,7 @@ app.post("/sales-report", async (req, res) => {
             " WHERE orders.order_date BETWEEN $1 AND $2 " +
             "AND orders.order_time BETWEEN $3 AND $4 " +
             "GROUP BY ROLLUP(menu.menu_item);";
-
+        console.log("Query = ", sales_report_by_item);
         const { rows } = await pool.query(sales_report_by_item, [
             start_date,
             end_date,

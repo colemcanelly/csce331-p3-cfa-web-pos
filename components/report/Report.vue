@@ -162,6 +162,9 @@
         table: String,
       },
       data: () => ({
+        return {
+            : '',
+        },
         search: '',
         windowWidth: null,
         dialog: false,
@@ -212,7 +215,7 @@
         this.$nextTick(() => {
           window.addEventListener('resize', this.onResize);
         });
-        this.getTable();
+        this.getSalesTable();
         this.onResize();
       },
   
@@ -221,11 +224,20 @@
       },
   
       methods: {
-        async getTable () {
-          try {
-            const response = await this.$axios.get(`/${this.table}`);
-            this.table_data = response.data;
-          } catch (err) {
+        async getSalesTable () {
+            const orderData = {
+                start_date: this.startDate,
+                end_date: this.endDate,
+                start_time: this.startTime,
+                end_time:this.endTime
+            };
+            try {
+              const response = await this.$axios.post('/sales-report', orderData);
+              console.log(response);
+              //this.tableData = response.data
+              //this.tableData = response.data;
+            }
+         catch (err) {
             console.log("ERROR");
             console.log(err);
           }
