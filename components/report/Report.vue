@@ -161,36 +161,48 @@
         title: String,
         table: String,
       },
-      data: () => ({
-        return {
-            : '',
-        },
-        search: '',
-        windowWidth: null,
-        dialog: false,
-        dialogDelete: false,
-        table_data: [],
-        edited_index: -1,
-        default_item: Object.freeze({
-          name: null,
-          calories: null,
-          fat: null,
-          carbs: null,
-          protein: null,
-          date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      data() {
+  return {
+    startDate: null,
+    endDate: null,
+    startTime: null,
+    endTime: null,
+    search: '',
+    windowWidth: null,
+    dialog: false,
+    dialogDelete: false,
+    table_data: [],
+    edited_index: -1,
+    default_item: Object.freeze({
+      name: null,
+      calories: null,
+      fat: null,
+      carbs: null,
+      protein: null,
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       menu: false,
       modal: false,
       menu2: false,
-        }),
-        edited_item: {
-          name: null,
-          calories: null,
-          fat: null,
-          carbs: null,
-          protein: null,
-        },
-      }),
+    }),
+    edited_item: {
+      name: null,
+      calories: null,
+      fat: null,
+      carbs: null,
+      protein: null,
+    },
+  }
+},
   
+      watch:
+      {
+        endDate: function(newValue, oldValue) {
+          if(oldValue) {
+            console.log("old date " + oldValue);
+          }
+          console.log("new date =", newValue);
+        }
+      },
       computed: {
         formTitle () {
           return this.edited_index === -1 ? 'New Item' : 'Edit Item'
@@ -231,6 +243,7 @@
                 start_time: this.startTime,
                 end_time:this.endTime
             };
+            console.log(orderData);
             try {
               const response = await this.$axios.post('/sales-report', orderData);
               console.log(response);

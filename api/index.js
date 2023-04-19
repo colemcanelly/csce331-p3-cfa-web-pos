@@ -161,6 +161,7 @@ RES looks like
 */
 app.post("/sales-report", async (req, res) => {
     try {
+        console.log("HELLO");
         const { start_date, end_date, start_time, end_time } = req.body;
 
         const sales_report_by_item =
@@ -186,7 +187,7 @@ app.post("/sales-report", async (req, res) => {
                 total_revenue: row.total_revenue,
             };
         }
-
+        console.log(salesReportTable);
         res.json(salesReportTable);
     } catch (err) {
         console.error(err.message);
