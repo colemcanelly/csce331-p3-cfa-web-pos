@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <Header />
+    <Header></Header>
     <v-main>
       <v-container>
         <Nuxt />
@@ -17,7 +17,6 @@
 
 <script>
 import Header from '~/components/Header.vue';
-console.log("Using layouts/default.vue");
 export default {
     name: "DefaultLayout",
     data() {

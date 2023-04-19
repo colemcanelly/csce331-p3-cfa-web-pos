@@ -1,46 +1,66 @@
 <template>
-    <div>
-        <h1>Combos</h1>
-        <div class="grid-wrap">
-            <div 
-            class="product-item"
-            v-for="combo in combos"
-            :key="combo.id"
-            >
-                <!-- <img :src="product.imageName" /> -->
-                <h3 class="product-name"> {{ combo.name }}</h3>
-                <p class="product-price"> {{ combo.price }}</p>
-                <button @click="addItemToOrder()">Add to Order</button>
-            </div>
-        </div>
-    </div>
+<v-app>
+<v-container>
+    <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Combos</v-card-title ></v-card></v-col></v-row>
+    
+    <v-row>
+        <v-col cols="6" v-for="menuItem in comboMenuItems" :key="menuItem.id">
+            <v-card >
+                <v-card-title class="text-center">{{ menuItem.menu_item }}</v-card-title>
+                <v-img :src="menuItem.img"></v-img>
+                <v-card-text class="text-center">{{  menuItem.food_price }}</v-card-text>
+                <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="addItemToOrder(menuItem)">Add to Order</v-btn>
+            </v-card>
+        </v-col>
+    </v-row>
+    
+
+</v-container>
+</v-app>
 </template>
 
 <script>
-import { combos } from '~/static/temp-data';
-import { cartItems } from '~/static/temp-data';
-// import basilBottle from '../assets/basil-bottle.webp';
+import {currentOrder} from '~/static/temp-data'
+// import {totalPrice} from '~/static/temp-data'
 
 export default {
     name: "CombosPage",
     layout: 'customer',
     data() {
         return {
-            combos,
-            cartItems,
-        }
+            currentOrder,
+            // totalPrice: totalPrice,
+            tableData: [{}],
+            
+        };
+    },
+    mounted: function() {
+      this.getMenu();
     },
     methods: {
-        addItemToOrder() {
-            const newItem = {
-                id: '456',
-                name: 'New Item',
-                price: '$10.00',
-                imageName: basilBottle,
-            };
-            console.log("about to push a cartItem");
-            this.$set(this.cartItems, this.cartItems.length, newItem);
-        }
-    }
-}
+        async getMenu () {
+            try {
+                const response = await this.$axios.get('/menu');
+                this.tableData = response.data;
+            } catch (err) {
+                console.log("ERROR");
+                console.log(err);
+            }
+        },
+        addItemToOrder(item) {
+            console.log(item);
+
+            // this.totalPrice = parseFloat(localStorage.getItem('totalPrice'));
+            // this.totalPrice += parseFloat(item.food_price);
+            this.$set(this.currentOrder, this.currentOrder.length, item);
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+            // localStorage.setItem('totalPrice', this.totalPrice);
+
+        },
+    },
+    computed: {
+        comboMenuItems() { return this.tableData.filter( (menuItem) => menuItem.menu_cat === "main" ); },
+    },
+};
 </script>
+

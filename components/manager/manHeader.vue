@@ -9,16 +9,6 @@
             </v-col>
         </v-row>
         <v-divider></v-divider>
-        <v-row no-gutters>
-            <v-col>
-                <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">Name</v-card>
-            </v-col>
-            <v-divider vertical></v-divider>
-            <v-col>
-                <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">Location</v-card>
-            </v-col>
-        </v-row>
-        <v-divider></v-divider>
     </v-container>
 </template>
 
