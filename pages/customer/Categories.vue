@@ -8,7 +8,7 @@
                         <div><img src="/combos.png" class="image"></div>
                 </v-col>
                 <v-col cols="5">
-                        <div><v-card-title class="text-center">Combos</v-card-title></div>
+                        <div><v-card-title class="text-center" style="vertical-align: center">Combos</v-card-title></div>
                 </v-col>
             </v-row>
         </v-card>
@@ -20,7 +20,7 @@
                         <div><img src="/breakfast.png" class="image"></div>
                 </v-col>
                 <v-col cols="5">
-                        <div><v-card-title class="text-center align-center">Breakfast</v-card-title></div>
+                        <div><v-card-title class="text-center align-center" style="vertical-align: center">Breakfast</v-card-title></div>
                 </v-col>
             </v-row>
         </v-card>
