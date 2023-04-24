@@ -40,7 +40,7 @@ export default {
 
   // Configure the axios module
   axios: {
-    baseURL: 'http://localhost:3000/api'
+    baseURL: '/api/'
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
