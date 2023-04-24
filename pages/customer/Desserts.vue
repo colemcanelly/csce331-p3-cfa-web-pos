@@ -7,7 +7,7 @@
             <v-col cols="6" v-for="menuItem in dessertMenuItems" :key="menuItem.id" class="d-flex justify-center">
                 <v-card class="mx-auto d-flex flex-column align-self-center" style="height: 100%">
                     <v-card-title class="text-center keep-words text-h5">{{ menuItem.menu_item }}</v-card-title>
-                    <v-img :src="'/' + menuItem.img" contain></v-img>
+                    <v-img :src="menuItem.img" contain></v-img>
                     <v-card-text class="text-center" style="flex-grow: 1">${{  menuItem.food_price }}</v-card-text>
                     <v-btn class="mt-auto mb-2 ml-2 mr-2" elevation="2" @click="addItemToOrder(menuItem)">Add to Order</v-btn>
                 </v-card>
