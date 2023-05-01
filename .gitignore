@@ -1,6 +1,9 @@
 # VS Code Configuration
 .vscode
 
+# exclude .env files
+*.env
+
 # Nuxt.js dev/build outputs
 .output
 .nuxt

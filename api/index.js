@@ -1,5 +1,3 @@
-// api/index.js
-
 const express = require('express')
 
 const app = express()
@@ -7,9 +5,59 @@ const pool = require("./db");
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.get('/test', function (req, res) {
-    res.send('Test successful')
+const { Translate } = require('@google-cloud/translate').v2;
+require('dotenv').config();
+
+let translate;
+
+//Configuration for the client
+try {
+    // Your credentials
+    console.log(process.env.CREDENTIALS);
+    const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
+    translate = new Translate({
+      credentials: CREDENTIALS,
+      projectId: CREDENTIALS.project_id
+    });
+} catch (error) {
+    console.log(`Error at translate instantiation --> ${error}`);
+}
+
+// Detect language
+app.post('/translate/detect', async (req, res) => {
+    console.log("TRANSLATING LANGUAGE");
+    const text = req.body.text;
+    const detectedLanguage = await detectLanguage(text);
+    res.json({ detectedLanguage });
 });
+
+// Translate text
+app.post('/translate', async (req, res) => {
+    const text = req.body.text;
+    const targetLanguage = req.body.targetLanguage;
+    const translatedText = await translateText(text, targetLanguage);
+    res.json({ translatedText });
+});
+
+const detectLanguage = async (text) => {
+    try {
+        let response = await translate.detect(text);
+        return response[0].language;
+    } catch (error) {
+        console.log(`Error at detectLanguage --> ${error}`);
+        return 0;
+    }
+}
+
+const translateText = async (text, targetLanguage) => {
+    try {
+        let [response] = await translate.translate(text, targetLanguage);
+        return response;
+    } catch (error) {
+        console.log(`Error at translateText --> ${error}`);
+        return 0;
+    }
+};
 
 // Get Menu
 app.get("/menu", async (req, res) => {
@@ -138,27 +186,9 @@ MUST Pass in a json file like this
   "end_time": "22:30:00"
   }
 }
-
-RES looks like
-{
-    "Total": {
-        "total_revenue": 100455.6299999986
-    },
-    "Chocolate Chunk Cookie_1 Pc.": {
-        "total_revenue": 259.3800000000003
-    },
-    "ChickFil-A Nuggets Grilled Combo 12Pc": {
-        "total_revenue": 1946.700000000001
-    },
-    "ChickFil-A Chicken Sandwich Combo": {
-        "total_revenue": 1624.4000000000005
-    },
-  }
-
 */
 app.post("/sales-report", async (req, res) => {
     try {
-        console.log("HELLO");
         const { start_date, end_date, start_time, end_time } = req.body;
 
         const sales_report_by_item =
@@ -184,7 +214,7 @@ app.post("/sales-report", async (req, res) => {
                 total_revenue: row.total_revenue,
             };
         }
-        console.log(salesReportTable);
+
         res.json(salesReportTable);
     } catch (err) {
         console.error(err.message);
