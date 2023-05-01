@@ -197,67 +197,61 @@
 
     }),
 
-    computed: {
-      formTitle () {
-        return this.edited_index === -1 ? 'New Item' : 'Edit Item'
-      },
-      mobile() { return this.windowWidth <= 600; }
+  computed: {
+    formTitle() {
+      return this.edited_index === -1 ? 'New Item' : 'Edit Item'
     },
+    mobile() { return this.windowWidth <= 600; }
+  },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
-    },
+  watch: {
+  },
 
-    created: function () {
-      // this.initialize()
-    },
+  created: function () {
+    // this.initialize()
+  },
 
-    mounted: function () {
-      this.$nextTick(() => {
-        window.addEventListener('resize', this.onResize);
-      });
-      this.getSalesTable();
-      this.onResize();
-    },
+  mounted: function () {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    });
+    this.getSalesTable();
+    this.onResize();
+  },
 
-    beforeDestroy: function () {
-      window.removeEventListener('resize', this.onResize)
-    },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.onResize)
+  },
 
-    methods: {
-      async getSalesTable () {
-          const orderData = {
-              start_date: this.startDate,
-              end_date: this.endDate,
-              start_time: this.startTime,
-              end_time:this.endTime
-          };
-          try {
-            const response = await this.$axios.post('/sales-report', orderData);
-            console.log(response);
-            //this.tableData = response.data
-            //this.tableData = response.data;
-          }
-       catch (err) {
-          console.log("ERROR");
-          console.log(err);
-        }
-      },
-
-      generate (item) {
-        this.edited_index = this.table_data.indexOf(item)
-        this.edited_item = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      onResize() {
-        this.windowWidth = window.innerWidth;
+  methods: {
+    async getSalesTable() {
+      const orderData = {
+        start_date: this.startDate,
+        end_date: this.endDate,
+        start_time: this.startTime,
+        end_time: this.endTime
+      };
+      try {
+        const response = await this.$axios.post('/sales-report', orderData);
+        console.log(response);
+        //this.tableData = response.data
+        //this.tableData = response.data;
+      }
+      catch (err) {
+        console.log("ERROR");
+        console.log(err);
       }
     },
-  }
+
+    generate(item) {
+      this.edited_index = this.table_data.indexOf(item)
+      this.edited_item = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    }
+  },
+}
 </script>

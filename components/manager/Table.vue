@@ -103,11 +103,11 @@
     props: {
       headers: Array,
       title: String,
-      table: String
-      // table: {
-      //   type: String,
-      //   validator(value) { return ['menu', 'supply'].includes(value); }
-      // }
+      // table: String
+      table: {
+        type: String,
+        validator(value) { return ['menu', 'supply'].includes(value); }
+      }
     },
     data: () => ({
       search: '',
