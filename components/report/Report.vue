@@ -154,101 +154,93 @@
 
 <script>
 // Need `headers`, query, and other info passed in
-  export default {
-      
-    props: {
-      headers: Array,
-      title: String,
-      table: String,
-    },
-    data: () => ({
-      search: '',
-      windowWidth: null,
-      dialog: false,
-      dialogDelete: false,
-      table_data: [],
-      edited_index: -1,
-      default_item: Object.freeze({
-        name: null,
-        calories: null,
-        fat: null,
-        carbs: null,
-        protein: null,
-        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-    menu: false,
-    modal: false,
-    menu2: false,
-      }),
-      edited_item: {
-        name: null,
-        calories: null,
-        fat: null,
-        carbs: null,
-        protein: null,
-      },
+export default {
+
+  props: {
+    headers: Array,
+    title: String,
+    table: String,
+  },
+  data: () => ({
+    search: '',
+    windowWidth: null,
+    table_data: [],
+    edited_index: -1,
+    default_item: Object.freeze({
+      name: null,
+      calories: null,
+      fat: null,
+      carbs: null,
+      protein: null,
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      menu: false,
+      modal: false,
+      menu2: false,
     }),
-
-    computed: {
-      formTitle () {
-        return this.edited_index === -1 ? 'New Item' : 'Edit Item'
-      },
-      mobile() { return this.windowWidth <= 600; }
+    edited_item: {
+      name: null,
+      calories: null,
+      fat: null,
+      carbs: null,
+      protein: null,
     },
+  }),
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
+  computed: {
+    formTitle() {
+      return this.edited_index === -1 ? 'New Item' : 'Edit Item'
     },
+    mobile() { return this.windowWidth <= 600; }
+  },
 
-    created: function () {
-      // this.initialize()
-    },
+  watch: {
+  },
 
-    mounted: function () {
-      this.$nextTick(() => {
-        window.addEventListener('resize', this.onResize);
-      });
-      this.getSalesTable();
-      this.onResize();
-    },
+  created: function () {
+    // this.initialize()
+  },
 
-    beforeDestroy: function () {
-      window.removeEventListener('resize', this.onResize)
-    },
+  mounted: function () {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    });
+    this.getSalesTable();
+    this.onResize();
+  },
 
-    methods: {
-      async getSalesTable () {
-          const orderData = {
-              start_date: this.startDate,
-              end_date: this.endDate,
-              start_time: this.startTime,
-              end_time:this.endTime
-          };
-          try {
-            const response = await this.$axios.post('/sales-report', orderData);
-            console.log(response);
-            //this.tableData = response.data
-            //this.tableData = response.data;
-          }
-       catch (err) {
-          console.log("ERROR");
-          console.log(err);
-        }
-      },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.onResize)
+  },
 
-      generate (item) {
-        this.edited_index = this.table_data.indexOf(item)
-        this.edited_item = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      onResize() {
-        this.windowWidth = window.innerWidth;
+  methods: {
+    async getSalesTable() {
+      const orderData = {
+        start_date: this.startDate,
+        end_date: this.endDate,
+        start_time: this.startTime,
+        end_time: this.endTime
+      };
+      try {
+        const response = await this.$axios.post('/sales-report', orderData);
+        console.log(response);
+        //this.tableData = response.data
+        //this.tableData = response.data;
+      }
+      catch (err) {
+        console.log("ERROR");
+        console.log(err);
       }
     },
-  }
+
+    generate(item) {
+      this.edited_index = this.table_data.indexOf(item)
+      this.edited_item = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    }
+  },
+}
 </script>

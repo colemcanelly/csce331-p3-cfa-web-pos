@@ -5,6 +5,69 @@ const pool = require("./db");
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+
+// Login/Logout Dep's
+const cookieParser = require('cookie-parser');
+const sessions = require('express-session');
+
+// Session Middleware
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(sessions({
+    secret: "thisismysecretkeycoleryanwestonloganjkfla134",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false
+}));
+
+// Cookie Parser Middleware
+app.use(cookieParser());
+
+// A variable to save a session
+var session;
+
+// LOGIN
+// Get USER
+app.post("/login", async (req, res) => {
+    try {
+        const { auth } = req.body;
+        // Query the username and password
+        const q = `
+        SELECT user_id, permissions, fname, lname FROM users
+        WHERE user_email = '${auth.username}' AND user_pw = '${auth.password}';`;
+        const result = await pool.query(q);
+
+        // Get result
+        const user = result.rows.at(0);
+
+        // Create a session
+        session = req.session;
+
+        // SERVER SIDE: Store userID and permission level
+        session.userid = user.user_id;
+        session.permissions = user.permissions;
+
+        // CLIENT SIDE: Store first and last name
+        res.cookie('fname', user.fname);
+        res.cookie('lname', user.lname);
+
+        // Send the URL to redirect the user to
+        let url = (session.permissions == 0) ? '/customer/categories' : (session.permissions == 1) ? '/server' : '/managerMenu';
+        res.send(url);
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(401).send('Invalid username or password');
+    }
+});
+
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+
+
+
 const { Translate } = require('@google-cloud/translate').v2;
 require('dotenv').config();
 
@@ -314,7 +377,7 @@ app.post("/supply", async (req, res) => {
 });
 
 // Updating existing items
-app.put("/menu/", async (req, res) => {
+app.put("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
         const q = `
@@ -332,7 +395,7 @@ app.put("/menu/", async (req, res) => {
     }
 });
 
-app.put("/supply/", async (req, res) => {
+app.put("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
         const q = `
@@ -350,6 +413,7 @@ app.put("/supply/", async (req, res) => {
 });
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default {
     path: '/api',

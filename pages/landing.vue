@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col class="text-center">
-        <img
+        <!-- <img
           src="/cfa-logo.svg"
           alt="Vuetify.js"
           class="mb-5 justify-center"
@@ -15,15 +15,20 @@
               <em>&mdash;Chick-Fil-A Cow</em>
             </small>
           </footer>
-        </blockquote>
+        </blockquote> -->
+        <Login></Login>
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
+import Login from '~/components/Login.vue'
 export default {
   name: 'LandingPage',
+  components: {
+    Login
+  },
 
   data: function() {
     return {
