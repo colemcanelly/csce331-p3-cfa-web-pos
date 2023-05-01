@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^7.2.1",
+    "@googlemaps/js-api-loader": "^1.15.1",
     "@nuxtjs/axios": "^5.13.6",
     "core-js": "^3.25.3",
     "dotenv": "^16.0.3",

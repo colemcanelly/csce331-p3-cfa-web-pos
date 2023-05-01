@@ -16,8 +16,10 @@
         <v-col cols = "12">
             <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
         </v-col>
-        <v-col cols = "12">
-            <v-btn class = "mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
+    </v-row>
+    <v-row>
+        <v-col justify>
+            <v-btn justify mb-2 ml-2 mr-2 x-large elevation="2" @click="submitOrder">Submit Order</v-btn>
         </v-col>
     </v-row>
     
@@ -69,6 +71,10 @@ export default {
             } catch (err) {
               console.log("ERROR");
               console.log(err);
+            }
+            var index = 0
+            for (index;index < this.currentOrder.length;index++) {
+                this.currentOrder.splice(index,1);
             }
             this.currentOrder.length = 0;
             localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
