@@ -4,7 +4,7 @@
       <v-col cols="8">
         <!-- <v-btn @click="translatePage('fr')">Translate to French</v-btn> -->
         <v-card>
-          <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="center">
+          <v-tabs v-model="tab" show-arrows color="deep-purple-accent-4" align-tabs="center">
             <v-tab :value="0">Main</v-tab>
             <v-tab :value="1">breakfast</v-tab>
             <v-tab :value="2">Drinks</v-tab>
@@ -32,7 +32,7 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card class="overflow-y-auto">
+        <v-card class="overflow-y-auto orders">
           <p>Order</p>
             <v-data-table
             :headers="headers.concat({text: 'Actions', value: 'actions', sortable: false})"
@@ -42,21 +42,36 @@
             hi
             sort-by="calories"
             >
+              <template v-slot:top>
+                <!-- Delete Item -->
+                <v-dialog v-model="dialogDelete" max-width="500px">
+                  <v-card>
+                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                      <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                      <v-spacer></v-spacer>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon small @click="removeItemFromOrder(item)">mdi-delete</v-icon>
+              </template>
+              <template v-slot:no-data>
+                <v-btn color="primary">Add Menu Items</v-btn>
+            </template>
           </v-data-table>
-
-          <v-btn class = "mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
-                              <!-- <v-col cols="12" v-for="item in currentOrder" :key="item.id">
-                                  <v-card >
-                                    <v-card-title class="text-center" style="font-size: 14px">{{ item.menu_item }}</v-card-title>
-                                      <v-card-text class="text-center">{{  item.food_price }}</v-card-text>
-                                      <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="removeItemFromOrder(item)">Remove From Order</v-btn>
-                                  </v-card>
-                              </v-col>
-                              <v-col cols = "12">
-                                  <v-btn class = "mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
-                              </v-col> -->
-    
+                              
+          <!-- <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="removeItemFromOrder(item)">Remove From Order</v-btn> -->
         </v-card>
+
+        <div class="text-center">
+          <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
+          <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
+        </div>
+        
       </v-col>
 
     </v-row>
@@ -65,44 +80,34 @@
 
 <style>
 .overflow-y-auto {
-  max-height: 50vh;
+  max-height: 62vh;
+  min-height: 62vh;
 }
 
 .menu-button {
   min-height: 100px;
 }
 
-
-.menu-item-wrapper {
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* sets the rows to be automatically sized based on content */
-  align-items: center; /* centers the items vertically */
-  gap: 10px; /* adds a gap between the rows */
+.orders {
+  margin-bottom: 20px;
 }
 
-.menu-item-wrapper v-card-title {
-  font-size: 1.2rem; /* increases the font size of the title */
-  font-weight: bold; /* sets the font weight to bold */
-}
-
-.menu-item-wrapper v-card-text {
-  font-size: 1rem; /* sets the font size of the price */
-}
-
-.menu-item-wrapper v-img {
-  max-width: 100%; /* ensures that the image does not exceed the width of the container */
-}
 </style>
 
 <script>
+import Header from '@/components/server/Header.vue'
 // import {currentOrder} from '~/static/temp-data'
 
 export default {
   layout: 'server',
+  components: {
+    Header
+  },
   data() {
     return {
       tab: 1,
       windowTab: 1,
+      totalPrice: 2,
       currentOrder: [],
       tableData: [],
       headers: [
@@ -114,6 +119,10 @@ export default {
   },
   mounted: function() {
       this.getMenu();
+      for (this.i; this.i < this.currentOrder.length; this.i++) {
+              this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
+          }
+          this.totalPrice = parseFloat(this.totalPrice).toFixed(2); 
     },
     methods: {
 
@@ -147,6 +156,8 @@ export default {
                 this.currentOrder.splice(index,1);
             }
             console.log(this.currentOrder)
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+            this.totalPrice = this.computedTotalPrice;
         },
         
         async submitOrder() {
@@ -169,13 +180,17 @@ export default {
               console.log("ERROR");
               console.log(err);
             }
+            var index = 0
+            for (index;index < this.currentOrder.length;index++) {
+                this.currentOrder.splice(index,1);
+            }
             this.currentOrder.length = 0;
-            //localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
           }
           else{
             console.log("CurrentOrder.length == 0");
           }
-        }
+        },
     },
     computed: {
       currentCategory() {

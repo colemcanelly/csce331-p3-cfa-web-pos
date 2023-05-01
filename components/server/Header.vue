@@ -5,7 +5,18 @@
       <v-icon>mdi-chevron-left</v-icon>
       Back
     </v-card>
-    <v-spacer />
+    <v-spacer></v-spacer>
+    <!-- <span>Total Price: {{ totalPrice }}</span> -->
+    <div id="google_translate_element"></div>
+
+          <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+          }
+          </script>
+
+          <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <v-spacer></v-spacer>
     <h2 class="blue-grey--text text--darken-3">{{ kiosk_num }}</h2>
   </v-app-bar>
 </template>
@@ -13,10 +24,17 @@
 <script>
 
 export default {
+  name: 'Header',
   data: function () {
     return {
       kiosk_num: '#'
     };
+  },
+  props: {
+    totalPrice: {
+      type: Number,
+      required: true
+    }
   },
   methods: {
     back() {
