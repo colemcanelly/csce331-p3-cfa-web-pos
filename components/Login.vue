@@ -29,7 +29,7 @@
                     <v-col cols="12">
                       <v-text-field v-model="loginPassword" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
-                        label="Password" hint="At least 8 characters" counter
+                        label="Password" hint="At least 6 characters" counter
                         @click:append="show1 = !show1">
                         <template v-slot:prepend>
                           <v-icon>mdi-lock</v-icon>
@@ -38,6 +38,13 @@
                     </v-col>
                     <v-col class="d-flex pb-1" cols="12" sm="3" xsm="12" align-end>
                       <v-btn x-large block :disabled="!valid" color="primary" @click="validate"> Login </v-btn>
+                    </v-col>
+                    <v-col>
+                      <v-row align="center">
+                        <v-divider class="mx-3" color="grey"></v-divider>
+                        <span>OR</span>
+                        <v-divider class="mx-3" color="grey"></v-divider>
+                      </v-row>
                     </v-col>
                     <v-col class="d-flex pt-1" cols="12" sm="3" xsm="12" align-end>
                       <v-btn x-large outlined block color="primary">
@@ -71,7 +78,7 @@
                     <v-col cols="12">
                       <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1"
-                        label="Password" hint="At least 8 characters" counter
+                        label="Password" hint="At least 6 characters" counter
                         @click:append="show1 = !show1"></v-text-field>
                     </v-col>
                     <v-col cols="12">
@@ -118,7 +125,23 @@ export default {
         console.log(err);
       }
     },
-
+    async register () {
+      try {
+        // console.log(`Logging in as ${this.loginEmail}, with pw = ${this.loginPassword}`);
+        const response = await this.$axios.post(`/register`, {
+          auth: {
+            fname: this.firstName,
+            lname: this.lastName,
+            email: this.email,
+            password: this.lastName
+          }
+        });
+        this.$router.push(response.data);
+      } catch (err) {
+        console.log("Email in use");
+        console.log(err);
+      }
+    },
     validate() {
       if (this.$refs.loginForm.validate()) this.login();     // Submit to login API
       else this.register();
@@ -158,7 +181,7 @@ export default {
     show1: false,
     rules: {
       required: value => !!value || "Required.",
-      min: v => (v && v.length >= 6) || "Min 8 characters"
+      min: v => (v && v.length >= 6) || "Min 6 characters"
     }
   })
 }
