@@ -4,59 +4,79 @@
       {{ title }}
       <v-divider v-if="!mobile" class="mx-4" inset vertical></v-divider>
       <v-spacer v-else></v-spacer>
-      <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
+      <v-dialog v-model="dialog"
+      persistent
+      hide-overlay
+      transition="dialog-bottom-transition">
+  <template v-slot:activator="{ on, attrs }">
+    <v-btn
+      color="primary"
+      v-bind="attrs"
+      v-on="on"
+      outlined
+      @click="getIngredients"
+    >
+      New Item
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+  </template>
+  <v-card>
+        <v-toolbar
+          dark
+          color="primary"
+        >
+          <v-btn
+            icon
+            dark
+            @click="close"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Menu Item</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
             <v-btn
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
-              outlined
+              dark
+              text
+              @click="save"
             >
-              New Item
-              <v-icon>mdi-plus</v-icon>
+              Save
             </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
-            <v-card-text>
-              <!-- FORM cole todo sprint 3 -->
-              <v-form ref="form" @submit.prevent="sumbit">
-                <v-container>
-                  <v-row>
-                    <v-col 
-                      v-for="(field, index) in headers"
-                      v-if="field.text != 'Actions'"
-                      :key="index"
-                      cols="12" sm="6" md="4"
-                    >
-                      <v-text-field v-model="edited_item[field.value]" :label="field.text" required></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-              <!-- END FORM -->
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+          </v-toolbar-items>
+        </v-toolbar>
+  <v-form ref="form" @submit.prevent="submit">
+        <v-container>
+          <v-row>
+            <v-col 
+              v-for="(field, index) in headers"
+              v-if="field.text != 'Actions'"
+              :key="index"
+              cols="12" sm="6" md="4"
+            >
+              <v-text-field v-model="edited_item[field.value]" :label="field.text" required ></v-text-field>
+          <!-- {{ console.log(index) }} -->
+            </v-col>
+          </v-row>
+          <v-row>
+          <v-col cols="12">
+            <v-card>
+              <v-card-title>
+                Ingredients
+              </v-card-title>
+            <v-data-table
+              :headers="ingredientHeaders"
+              :items = "ingredients"
+              :search="search"
+            >
+          </v-data-table>
+        </v-card>
+          </v-col>
+        </v-row>
+        </v-container>
+  </v-form>
+</v-card>
+
+</v-dialog>
       <v-spacer v-show="!mobile"></v-spacer>
       <v-text-field
         v-model="search"
@@ -87,7 +107,7 @@
         </v-dialog>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+        <v-icon small class="mr-2" @click="editItem(item); getIngredients()">mdi-pencil</v-icon>
         <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
       </template>
       <template v-slot:no-data>
@@ -100,16 +120,17 @@
 <script>
 // Need `headers`, query, and other info passed in
   export default {
-    props: {
-      headers: Array,
-      title: String,
-      // table: String
-      table: {
-        type: String,
-        validator(value) { return ['menu', 'supply'].includes(value); }
-      }
-    },
     data: () => ({
+      title: "Menu",
+      headers: [
+        { text: 'Item Name', value: 'menu_item', sortable: false },
+          { text: 'Price ($)', value: 'food_price' },
+          { text: 'Combo (T/F)', value: 'combo' },
+          { text: 'Category', value: 'menu_cat' },
+      ],
+      ingredientHeaders:[
+        { text: 'Ingredient', value: 'ingredient' },
+      ],
       search: '',
       windowWidth: null,
       dialog: false,
@@ -130,6 +151,8 @@
         carbs: null,
         protein: null,
       },
+      items: ['Apple', 'Banana', 'Cherry', 'Durian', 'Eggplant'],
+      ingredients:[]
     }),
 
     computed: {
@@ -158,6 +181,7 @@
       });
       this.getTable();
       this.onResize();
+      this.getIngredients();
     },
 
     beforeDestroy: function () {
@@ -165,11 +189,31 @@
     },
 
     methods: {
+    submit() {
+      // HANDLE FORM SUBMISSION HERE
+    },
+    save() {
+      // HANDLE SAVE ACTION HERE
+    },
+    close() {
+      // HANDLE CANCEL ACTION HERE
+    },
+    openIngredientDialog() { // NEW METHOD
+      this.ingredientDialog = true;
+    },
+    // printItemName() {
+    //   console.log(this.edited_item[menu_item]);
+    // },
+    logFieldText(fieldText) {
+    console.log(fieldText);
+  },
+  
       async getTable () {
         try {
           // console.log("Getting table");
-          const response = await this.$axios.get(`/${this.table}`);
+          const response = await this.$axios.get(`/menu`);
           this.table_data = response.data;
+          // console.log(this.table_data);
         } catch (err) {
           console.log("ERROR getTable()");
           console.log(err);
@@ -179,7 +223,7 @@
       async deleteDBItem ( item ) {
         try {
           console.log(item);
-          const response = await this.$axios.delete(`/${this.table}`, { data: item });
+          const response = await this.$axios.delete(`/menu`, { data: item });
           console.log(response);
         } catch (err) { 
           console.log("ERROR deleteDBItem()");
@@ -189,7 +233,7 @@
 
       async newDBItem ( item ) {
         try {
-          const response = await this.$axios.post(`/${this.table}`, item);
+          const response = await this.$axios.post(`/menu`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR newDBItem()");
@@ -199,13 +243,31 @@
       
       async updateDBItem ( item ) {
         try {
-          const response = await this.$axios.put(`/${this.table}`, item);
+          const response = await this.$axios.put(`/menu`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR updateDBItem()");
           console.log(err);
         }
       },
+
+      async getIngredients() {
+      try {
+        // console.log(this.edited_item.menu_item);
+        const menuItem = {
+          menu_item: this.edited_item.menu_item
+        };
+        // console.log("Menu Item", menuItem);
+        const response = await this.$axios.post("/itemRecipe",menuItem);
+        // console.log(response);
+        this.ingredients = response.data;
+        console.log(this.ingredients[2])
+      } catch (err) {
+        console.log(this.edited_item.menu_item);
+        console.log("ERROR getIngredients()");
+        console.log(err);
+      }
+    },
 
       editItem (item) {
         this.edited_index = this.table_data.indexOf(item);
@@ -247,6 +309,7 @@
           // Editing Current item       NEED AXIOS HERE
           this.updateDBItem(this.edited_item);
           Object.assign(this.table_data[this.edited_index], this.edited_item);
+          console.log("Edited Item= ", this.edited_item.menu_item)
         } else {
           // Creating new item          NEED AXIOS HERE
           this.newDBItem(this.edited_item);
