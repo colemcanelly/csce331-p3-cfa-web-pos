@@ -186,6 +186,15 @@
         carbs: null,
         protein: null,
       },
+      desserts:'',
+      startDate:'',
+      menuStart:'',
+      endDate:'',
+      menuEnd:'',
+      startTime:'',
+      endTime:'',
+      
+
     }),
 
     computed: {
