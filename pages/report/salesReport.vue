@@ -20,8 +20,8 @@ data: () => ({
   title: "Sales Report",
   table: 'salesReport',
   headers: [
-    { text: 'Menu Item', value: 'menu_item' },
-    { text: 'Total Sales', value: 'total_revenue' },
+    { text: 'Menu Item', value: 'name' },
+    { text: 'Total Sales', value: 'revenue' },
   ],
 })
 }

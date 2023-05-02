@@ -148,13 +148,26 @@
         hide-details
       ></v-text-field>
       </v-col>
+      <v-col cols="12" sm="8" md="4">
+        <v-card>
+          <v-card-title class="text-center" v-if="total">
+            total = {{ total.total_revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+          </v-card-title>
+        </v-card>
+      </v-col>
+      
+
 </v-row>
     </v-card-title>
     <v-data-table
       :headers="headers"
       :items="table_data"
       :search="search"
-    ></v-data-table>
+    >
+    <template v-slot:item.revenue="{ item }">
+    {{ item.revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+  </template>
+  </v-data-table>
   </v-card>
 </template>
 
@@ -173,7 +186,7 @@ export default {
       endDate: new Date().toISOString().substr(0, 10),
       startTime: new Date().toLocaleTimeString('en-US', {hour12: false}),
       endTime: new Date().toLocaleTimeString('en-US', {hour12: false}),
-
+      total: 0.00,
       menuStart: false,
       menuEnd: false,
       search: '',
@@ -227,8 +240,14 @@ export default {
         console.log("Submitting query")
         console.log(orderData)
         const response = await this.$axios.post('/sales-report', orderData);
-        console.log(response.data);
-        this.table_data = response;
+        this.total = response.data.Total; // store the value of Total in a variable
+        delete response.data.Total; // remove Total from the response data
+        this.table_data = Object.entries(response.data).map(([name, data]) => ({
+          name,
+          revenue: data.total_revenue
+        }));
+        console.log("Table Data")
+        console.log(this.table_data);
 
       }
       catch (err) {
