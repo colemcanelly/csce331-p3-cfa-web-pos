@@ -13,7 +13,6 @@
           <v-tabs-slider color="primary"></v-tabs-slider>
           <v-tab v-for="(tab, index) in tabs" :key="index">
             {{tab.name}}
-            <!-- <v-btn block outlied text background-color="primary"> {{ tab.name }}</v-btn> -->
             <!-- <v-icon large>{{ tab.icon }}</v-icon>
             <div class="caption py-1">{{ tab.name }}</div> -->
           </v-tab>
@@ -47,12 +46,7 @@
                       </v-row>
                     </v-col>
                     <v-col class="d-flex pt-1" cols="12" sm="3" xsm="12" align-end>
-                      <v-btn x-large outlined block color="primary">
-                        <v-icon right>mdi-google</v-icon>
-                        <v-spacer></v-spacer>
-                        <span class="pa-2 align-self-center">Google</span>
-                        <v-spacer></v-spacer>
-                      </v-btn>
+                      <OAuthBtn></OAuthBtn>
                     </v-col>
                   </v-row>
                 </v-form>
@@ -103,7 +97,11 @@
 
 
 <script>
+import OAuthBtn from '~/components/OAuthButton.vue'
 export default {
+  components: {
+    OAuthBtn
+  },
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Password must match";
