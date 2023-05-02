@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import Report from '~/components/report/SalesReport.vue'
 export default {
 name: 'salesReportPage',
 layout: 'report',

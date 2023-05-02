@@ -86,11 +86,11 @@ export default {
       startDate: new Date().toISOString().substr(0, 10),
       menuStart: false,
       search: '',
-    windowWidth: null,
-    table_data: [],
-    start_date: null ,
-    edited_index: -1,
-    default_item: Object.freeze({
+      windowWidth: null,
+      table_data: [],
+      start_date: null ,
+      edited_index: -1,
+      default_item: Object.freeze({
       name: null,
       calories: null,
       fat: null,
