@@ -105,7 +105,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="closeEditDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="saveNewIngredient">
+          <v-btn color="blue darken-1" text @click="saveIngredient">
             {{ editMode ? 'Save' : 'Add' }}
           </v-btn>
         </v-card-actions>
@@ -340,11 +340,7 @@
       async newDBIng ( item ) {
         try {
           console.log("NewDB: ",item);
-          const response = await this.$axios.post(`/itemRecipe`, item, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+          const response = await this.$axios.post(`/itemRecipe`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR newDBIng()");
@@ -410,6 +406,14 @@
       this.selectedIngredient = this.allIngredients.includes(newValue) ? newValue : null;
     },
 
+    saveIngredient() {
+      if (this.editMode) {
+        this.saveEditedIngredient();
+      } else {
+        this.saveNewIngredient();
+      }
+    },
+
     editIngredients(item) {
       this.editMode = true;
       this.editedIngredient = Object.assign({}, item);
@@ -440,11 +444,12 @@
           this.table_data.push(this.edited_item);
         }
         try {
-                   const currIngredient = {
+          const currIngredient = {
             menu_item: this.edited_item.menu_item,
             ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
             portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
           };
+          console.log(typeof currIngredient);
           console.log(currIngredient.menu_item," ", currIngredient.ingredient," ",currIngredient.portion_count);
           this.newDBIng(currIngredient);
           this.ingredients.push(currIngredient); // add new ingredient to ingredients array
@@ -455,8 +460,30 @@
       },
     saveEditedIngredient() {
       console.log("saveEditedIngredient called");
-      // implementation for saving an edited ingredient
-
+      // this.editDialog = true;
+      this.editMode = true;
+        if (this.edited_index > -1) {
+          // Editing Current item       NEED AXIOS HERE
+          this.updateDBItem(this.edited_item);
+          Object.assign(this.table_data[this.edited_index], this.edited_item);
+          console.log("Edited Item= ", this.edited_item.menu_item);
+        } else {
+          // Creating new item          NEED AXIOS HERE
+          this.newDBItem(this.edited_item);
+        }
+        try {
+          const currIngredient = {
+            menu_item: this.edited_item.menu_item,
+            ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
+            portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
+          };
+          console.log("Edited:", currIngredient.portion_count);
+          this.updateDBIng(currIngredient)
+          Object.assign(this.ingredients[this.edited_ing_index], this.editedIngredient);
+          this.closeIngDelete();
+        } catch (error) {
+          console.error(error);
+        }
     },
     closeEditDialog() {
       this.editDialog = false;
@@ -538,8 +565,6 @@
           // Editing Current item       NEED AXIOS HERE
           this.updateDBItem(this.edited_item);
           Object.assign(this.table_data[this.edited_index], this.edited_item);
-          this.updateDBIng(this.edited_item)
-          console.log("Edited Item= ", this.edited_item.menu_item)
         } else {
           // Creating new item          NEED AXIOS HERE
           this.newDBItem(this.edited_item);
