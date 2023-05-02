@@ -326,6 +326,66 @@ app.post("/sales-report", async (req, res) => {
     }
 });
 
+
+// Get X Report
+app.post("/x-report", async (req, res) => {
+    try {
+        // const { end_date, sales } = req.body;
+
+        // Query 1: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const { rows: rows1 } = await pool.query(end_date_query);
+        const end_date_result = rows1[0].end_date;
+
+        // Query 2: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const { rows: rows2 } = await pool.query(sales_query);
+        const sales_result = rows2[0].sales;
+
+        // Return results
+        res.json({
+            end_date: end_date_result,
+            sales: sales_result,
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+});
+
+
+// Get Z Report
+// app.post("/z-report", async (req, res) => {
+//     try {
+//         const { start_date, end_date, start_time, end_time, sales } = req.body;
+
+//         const start_date_query = 'SELECT $1 AS start_date';
+//         const end_date_query = 'SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
+//         const start_time_query = 'SELECT $1 AS start_time';
+//         const end_time_query = 'SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
+//         const sales_query = 'SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
+        
+//         const start_date_result = await pool.query(start_date_query, [start_date]);
+//         const end_date_result = await pool.query(end_date_query, [end_date]);
+//         const start_time_result = await pool.query(start_time_query, [start_time]);
+//         const end_time_result = await pool.query(end_time_query, [end_time]);
+//         const sales_result = await pool.query(sales_query, [sales]);
+        
+//         const { rows: [{ start_date }] } = start_date_result;
+//         const { rows: [{ end_date }] } = end_date_result;
+//         const { rows: [{ start_time }] } = start_time_result;
+//         const { rows: [{ end_time }] } = end_time_result;
+//         const { rows: [{ sales }] } = sales_result;
+        
+//         console.log(start_date, end_date, start_time, end_time, sales);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.send("Server Error");
+//     }
+// });
+
+
+
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
