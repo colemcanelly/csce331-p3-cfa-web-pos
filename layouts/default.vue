@@ -9,6 +9,7 @@
     <v-footer
       :absolute="!fixed"
       app
+      color="primary"
     >
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
@@ -16,7 +17,7 @@
 </template>
 
 <script>
-import Header from '~/components/Header.vue';
+import Header from '~/components/manager/manHeader.vue';
 export default {
     name: "DefaultLayout",
     data() {

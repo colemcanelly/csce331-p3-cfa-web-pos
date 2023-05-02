@@ -41,7 +41,7 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Landing',
-          to: '/landing'
+          to: '/login'
         },
         {
           icon: 'mdi-silverware-fork-knife',

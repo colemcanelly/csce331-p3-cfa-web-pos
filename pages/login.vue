@@ -1,20 +1,16 @@
-<template id="app">
-  <v-app>
+<template>
+  <!-- <v-app> -->
     <v-dialog
       v-model="dialog"
       persistent
       max-width="600px"
       min-width="360px"
-      overlay-color="white"
-      overlay-opacity="100"
     >
       <div>
         <v-tabs v-model="tab" icons-and-text color="primary" background-color="" grow>
           <v-tabs-slider color="primary"></v-tabs-slider>
           <v-tab v-for="(tab, index) in tabs" :key="index">
             {{tab.name}}
-            <!-- <v-icon large>{{ tab.icon }}</v-icon>
-            <div class="caption py-1">{{ tab.name }}</div> -->
           </v-tab>
           <v-tab-item>
             <v-card class="px-4">
@@ -92,13 +88,14 @@
         </v-tabs>
       </div>
     </v-dialog>
-  </v-app>
+  <!-- </v-app> -->
 </template>
 
 
 <script>
 import OAuthBtn from '~/components/OAuthButton.vue'
 export default {
+  name: 'login',
   components: {
     OAuthBtn
   },
