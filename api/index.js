@@ -392,6 +392,14 @@ app.post("/sales-report", async (req, res) => {
     }
 });
 
+
+/**
+ * A Vuetify button component.
+ *
+ * @component
+ * @example
+ * <v-btn>Click Me</v-btn>
+ */
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;

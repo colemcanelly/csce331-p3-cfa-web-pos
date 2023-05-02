@@ -18,7 +18,7 @@
                 <v-row>
                   <v-col v-for="menuItem in currentMenuItems" :key="menuItem.id" cols="4" md="4">
                     <v-card class="menu-button" elevation="2" @click="addItemToOrder(menuItem)" style="padding: 0px;">
-                        <v-card-title class="text-center keep-words" style="font-size: 14px; padding: 0px;">{{ menuItem.menu_item }}</v-card-title>
+                        <v-card-title class="text-sm-center wrap-word keep-words " style="font-size: 14px; padding: 0px;">{{ menuItem.menu_item }}</v-card-title>
                         <!-- <v-img max-height="100" max-width="150" :src="menuItem.img"></v-img> -->
                         <v-card-text class="text-center" style="padding: 0px;">{{  menuItem.food_price }}</v-card-text>
                       
@@ -80,6 +80,11 @@
 .overflow-y-auto {
   max-height: 62vh;
   min-height: 62vh;
+}
+
+.wrap-word {
+  word-wrap: break-word;
+  word-break: keep-all;
 }
 
 .menu-button {
