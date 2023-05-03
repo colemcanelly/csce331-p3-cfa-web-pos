@@ -11,11 +11,35 @@
         <v-divider></v-divider>
         <v-row no-gutters>
             <v-col>
-                <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">Name</v-card>
+                <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">{{ name }}</v-card>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col>
-                <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">Location</v-card>
+                <div id="google_translate_element"></div>
+                <style>
+                #google_translate_element select.goog-te-combo {
+                border: 1px solid #808080;
+                border-radius: 4px;
+                padding: 4px;
+                }
+                body > .skiptranslate {
+                display: none;
+                } 
+                .goog-te-banner-frame.skiptranslate {
+                    display: none !important;
+                }
+                body {
+                    top: 0px !important;
+                }
+                </style>
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                    }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+                <!-- <v-card flat class="mx-1 rounded-0 cfa-red-lighten-4">{{ location }}</v-card> -->
             </v-col>
         </v-row>
         <v-divider></v-divider>
@@ -24,11 +48,16 @@
 
 <script>
 export default {
-    data: function() {
-        return {
-            title: "Chick-Fil-A",
-            image: "/cfa-logo.svg"
-        }; 
-    }
+    computed: {
+        name() {
+            return this.$cookies.get('fname');
+        }
+
+    },
+    data: () => ({
+        title: "Chick-Fil-A",
+        image: "/cfa-logo.svg",
+        location: "Location"
+    })
 }
 </script>

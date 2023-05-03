@@ -17,7 +17,7 @@ export default {
   name:"ServerLayout",
   components: {
     Header,
-    Footer
+    // Footer
   }
 }
 </script>

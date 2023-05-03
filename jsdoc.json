@@ -1,0 +1,23 @@
+{
+    "source": {
+        "include": ["./api", "./pages", "./layouts", "./components"],
+        "exclude": ["node_modules", "dist"]
+      },
+    "plugins": ["plugins/markdown"],
+    "opts": {
+      "destination": "docs"
+    },
+    "templates": {
+      "cleverLinks": false,
+      "monospaceLinks": false,
+      "default": {
+        "outputSourceFiles": true
+      },
+      "path": "ink-docstrap",
+      "theme": "cerulean",
+      "navType": "vertical",
+      "linenums": true,
+      "collapseSymbols": false,
+      "inverseNav": true
+    }
+  }

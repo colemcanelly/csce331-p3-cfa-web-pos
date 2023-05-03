@@ -1,15 +1,81 @@
-// api/index.js
-
 const express = require('express')
+const cookieParser = require('cookie-parser');      // Login/Logout Dep's
+const sessions = require('express-session');
 
 const app = express()
 const pool = require("./db");
+
+const oneDay = 1000 * 60 * 60 * 24;
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser());            // Cookie Parser Middleware
+app.use(sessions({                  // Session Middleware
+    secret: "thisismysecretkeycoleryanwestonloganckfla5223",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false
+}));
 
-app.get('/test', function (req, res) {
-    res.send('Test successful')
+var session;                        // A variable to save a session
+
+
+require('./users')(app, session);   // User login/logout & register
+
+
+const { Translate } = require('@google-cloud/translate').v2;
+require('dotenv').config();
+
+let translate;
+
+//Configuration for the client
+try {
+    // Your credentials
+    console.log(process.env.CREDENTIALS);
+    const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
+    translate = new Translate({
+        credentials: CREDENTIALS,
+        projectId: CREDENTIALS.project_id
+    });
+} catch (error) {
+    console.log(`Error at translate instantiation --> ${error}`);
+}
+
+// Detect language
+app.post('/translate/detect', async (req, res) => {
+    console.log("TRANSLATING LANGUAGE");
+    const text = req.body.text;
+    const detectedLanguage = await detectLanguage(text);
+    res.json({ detectedLanguage });
 });
+
+// Translate text
+app.post('/translate', async (req, res) => {
+    const text = req.body.text;
+    const targetLanguage = req.body.targetLanguage;
+    const translatedText = await translateText(text, targetLanguage);
+    res.json({ translatedText });
+});
+
+const detectLanguage = async (text) => {
+    try {
+        let response = await translate.detect(text);
+        return response[0].language;
+    } catch (error) {
+        console.log(`Error at detectLanguage --> ${error}`);
+        return 0;
+    }
+}
+
+const translateText = async (text, targetLanguage) => {
+    try {
+        let [response] = await translate.translate(text, targetLanguage);
+        return response;
+    } catch (error) {
+        console.log(`Error at translateText --> ${error}`);
+        return 0;
+    }
+};
 
 // Get Menu
 app.get("/menu", async (req, res) => {
@@ -33,6 +99,16 @@ app.get("/supply", async (req, res) => {
     }
 });
 
+app.post("/supplyIngredient", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT ingredient FROM supply");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+
 // Get Recipes
 app.get("/recipes", async (req, res) => {
     try {
@@ -41,6 +117,72 @@ app.get("/recipes", async (req, res) => {
     }
     catch (err) {
         console.error(err.message);
+    }
+});
+
+//Get all ingredients
+app.post("/ingredients", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT ingredient,portion_count FROM recipes");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.post("/itemIngredients", async (req, res) => {
+    try {
+        const { menu_item } = req.body;
+        const allTodos = await pool.query("SELECT ingredient,portion_count FROM recipes WHERE menu_item = '" + menu_item + "';");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+//updates an menu item's recipe
+app.put("/itemRecipe", async (req, res) => {
+    try {
+      const { menu_item, ingredient, portion_count } = req.body;
+      await pool.query(
+        "UPDATE recipes SET portion_count = $1 WHERE menu_item = $2 AND ingredient = $3",
+        [portion_count, menu_item, ingredient]
+      );
+      res.send("Recipe updated successfully");
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  });
+//inserts a new ingredient 
+  app.post("/itemRecipe", async (req, res) => {
+    try {
+        console.log("here");
+        const { menu_item, ingredient, portion_count } = req.body;
+        const q = `INSERT INTO recipes (menu_item, ingredient, portion_count)
+      VALUES ('${menu_item}', '${ingredient}', ${portion_count});`;
+        console.log("This: ",q);
+        const newItem = await pool.query(q);
+        res.json(newItem.rows[0]);
+    }
+    catch (err) {
+        console.error('Error posting new menu item:', err);
+        res.status(500).send('Error posting new menu item');
+    }
+});
+  
+app.delete("/itemRecipe", async (req, res) => {
+    try {
+        console.log("reached delete");
+        const { menu_item, ingredient} = req.body;
+        const delete_recipe_item = await pool.query(`
+        DELETE FROM recipes 
+        WHERE menu_item = $1 AND ingredient = $2;`, [menu_item, ingredient]);
+        res.json(`Menu item successfully deleted`);
+    } catch (err) {
+        console.error('Error deleting menu item:', err);
+        res.status(500).send('Error deleting menu item');
     }
 });
 
@@ -174,6 +316,108 @@ app.post("/sales-report", async (req, res) => {
     }
 });
 
+
+// Get X Report
+/**
+ * Retrieves all the necessary items to compute an X report
+ * @author Logan Kettle
+ * @param req - unused, the queries are completely independent
+ * @param res - the ending date and time of the previous z report as well as
+ * the sales in dollars since the last z report closed
+ * @return {void}
+ */
+app.get('/x-report', async (req, res) => {
+    try {
+        
+        // Query 1: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_date_response = await pool.query(end_date_query);
+
+        // Query 2: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
+
+        // Query 3: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const sales_response = await pool.query(sales_query);
+
+        // Return results
+        res.json({
+            end_date: end_date_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+
+});
+
+
+// Get Z Report
+/**
+ * Retrieves all necessary items to compute a Z report and inserts the range of orders
+ * covered since last z report, inserting an entry in to the z_reports table
+ * @author Logan Kettle
+ * @param req - unused, same as above
+ * @param res- the start and end date and time of the report to be computed as well
+ * as all the sales received during that period
+ * @return {void}
+ */
+app.get('/z-report', async (req, res) => {
+    try {
+
+        // Query 5: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const sales_response = await pool.query(sales_query);
+        
+        //
+        await pool.query("INSERT INTO z_reports(report_id, sales, start_order_id, end_order_id) VALUES ( (SELECT (MAX(report_id) + 1) FROM z_reports), (SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))), (SELECT (end_order_id + 1) FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports)), (SELECT MAX(order_id) FROM orders) )");
+
+        // Query 1: get start_date
+        const start_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_date_response = await pool.query(start_date_query);
+
+        // Query 2: get start_time
+        const start_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_time_response = await pool.query(start_time_query);
+
+        // Query 3: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_date_response = await pool.query(end_date_query);
+
+        // Query 4: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
+        
+        
+
+        // Return results
+        res.json({
+            start_date: start_date_response.rows[0],
+            end_date: end_date_response.rows[0],
+            start_time: start_time_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+
+});
+
+
+
+
+/**
+ * A Vuetify button component.
+ *
+ * @component
+ * @example
+ * <v-btn>Click Me</v-btn>
+ */
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
@@ -240,7 +484,7 @@ app.post("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
         const q = `INSERT INTO menu (menu_item, menu_cat, combo, food_price)
-      VALUES ('${menu_item}', '${menu_cat}', ${combo}, ${food_price});`;
+      VALUES ('${menu_item}', '${menu_cat}', '${combo}', ${food_price});`;
         // console.log(q);
         const newItem = await pool.query(q);
         res.json(newItem.rows[0]);
@@ -266,7 +510,7 @@ app.post("/supply", async (req, res) => {
 });
 
 // Updating existing items
-app.put("/menu/", async (req, res) => {
+app.put("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
         const q = `
@@ -284,7 +528,7 @@ app.put("/menu/", async (req, res) => {
     }
 });
 
-app.put("/supply/", async (req, res) => {
+app.put("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
         const q = `
@@ -302,6 +546,7 @@ app.put("/supply/", async (req, res) => {
 });
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default {
     path: '/api',

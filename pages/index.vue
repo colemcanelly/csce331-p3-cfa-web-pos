@@ -11,6 +11,18 @@
         </v-card-title>
         <v-card-text>
           <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
+          
+          <div id="google_translate_element"></div>
+          <div id="google_translate_element"></div>
+
+          <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+          }
+          </script>
+
+          <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
           <p>
             For more information on Vuetify, check out the <a
               href="https://vuetifyjs.com"
@@ -20,6 +32,7 @@
               documentation
             </a>.
           </p>
+    
           <p>
             If you have questions, please join the official <a
               href="https://chat.vuetifyjs.com/"
@@ -81,6 +94,8 @@
     </v-col>
   </v-row>
 </template>
+
+
 
 <script>
 export default {

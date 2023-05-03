@@ -38,11 +38,6 @@ export default {
   plugins: [
   ],
 
-  // Configure the axios module
-  axios: {
-    baseURL: '/api/'
-  },
-
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -52,10 +47,37 @@ export default {
     '@nuxtjs/vuetify',
     '@nuxtjs/axios'
   ],
-
+  
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    'cookie-universal-nuxt',
+    '@nuxtjs/auth-next'
   ],
+  
+  // Configure the axios module
+  axios: {
+    baseURL: '/api/'
+  },
+
+  // Auth module
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: false,
+      callback: '/auth/googlelogin',
+      home: '/login'
+    },
+    strategies: {
+      google: {
+        clientId: '511540623278-r0vkbv8mojsd1veqq1kqfc2jodihmmv6.apps.googleusercontent.com',
+        codeChallengeMethod: '',
+        responseType: 'token id_token',
+      },
+    }
+  },
+  router: {
+    middleware: ['auth']
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -91,5 +113,9 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    // For some reason Google OAuth needs this to work
+    transpile: [
+      'defu'
+    ]  
   }
 }
