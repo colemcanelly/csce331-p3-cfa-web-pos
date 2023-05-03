@@ -35,10 +35,16 @@ export default {
             
         };
     },
+    /**
+     * retrieves the menu upon every refresh
+     */
     mounted: function() {
       this.getMenu();
     },
     methods: {
+        /**
+         * axios call to retrieve menu and store in tableData
+        */
         async getMenu () {
             try {
                 const response = await this.$axios.get('/menu');
@@ -48,6 +54,11 @@ export default {
                 console.log(err);
             }
         },
+        /**
+         * updates the currentOrder array to include the passed in item
+         * @param item - a menu item object with accessible attributes
+         * (like price, name, image url)
+         */
         addItemToOrder(item) {
             console.log(item);
 
@@ -56,6 +67,10 @@ export default {
 
         },
     },
+    /**
+     * filters menu items by menu_cat attribute (in this case, breakfast) each time function
+     * is called within the v-for loop included in the html
+     */
     computed: {
         breakfastMenuItems() { return this.tableData.filter( (menuItem) => menuItem.menu_cat === "breakfast" ); },
     },
