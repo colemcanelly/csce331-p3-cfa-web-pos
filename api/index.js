@@ -23,60 +23,6 @@ var session;                        // A variable to save a session
 require('./users')(app, session);   // User login/logout & register
 
 
-const { Translate } = require('@google-cloud/translate').v2;
-require('dotenv').config();
-
-let translate;
-
-//Configuration for the client
-try {
-    // Your credentials
-    console.log(process.env.CREDENTIALS);
-    const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
-    translate = new Translate({
-        credentials: CREDENTIALS,
-        projectId: CREDENTIALS.project_id
-    });
-} catch (error) {
-    console.log(`Error at translate instantiation --> ${error}`);
-}
-
-// Detect language
-app.post('/translate/detect', async (req, res) => {
-    console.log("TRANSLATING LANGUAGE");
-    const text = req.body.text;
-    const detectedLanguage = await detectLanguage(text);
-    res.json({ detectedLanguage });
-});
-
-// Translate text
-app.post('/translate', async (req, res) => {
-    const text = req.body.text;
-    const targetLanguage = req.body.targetLanguage;
-    const translatedText = await translateText(text, targetLanguage);
-    res.json({ translatedText });
-});
-
-const detectLanguage = async (text) => {
-    try {
-        let response = await translate.detect(text);
-        return response[0].language;
-    } catch (error) {
-        console.log(`Error at detectLanguage --> ${error}`);
-        return 0;
-    }
-}
-
-const translateText = async (text, targetLanguage) => {
-    try {
-        let [response] = await translate.translate(text, targetLanguage);
-        return response;
-    } catch (error) {
-        console.log(`Error at translateText --> ${error}`);
-        return 0;
-    }
-};
-
 // Get Menu
 app.get("/menu", async (req, res) => {
     try {
