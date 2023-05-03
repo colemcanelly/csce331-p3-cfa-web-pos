@@ -60,6 +60,10 @@ app.post("/login", async (req, res) => {
     }
 });
 
+app.get('/auth/googlelogin', (req, res) => {
+    console.log("Running /auth/googlelogin");
+    req.session.user = { user: req.user };
+});
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -106,7 +110,6 @@ app.post("/register", async (req, res) => {
         res.status(401).send('Account already exists');
     }
 });
-
 
 
 const { Translate } = require('@google-cloud/translate').v2;

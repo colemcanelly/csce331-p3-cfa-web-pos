@@ -11,6 +11,8 @@
   "dependencies": {
     "@google-cloud/translate": "^7.2.1",
     "@googlemaps/js-api-loader": "^1.15.1",
+    "@nuxtjs/auth": "^4.9.1",
+    "@nuxtjs/auth-next": "^5.0.0-1667386184.dfbbb54",
     "@nuxtjs/axios": "^5.13.6",
     "cookie-parser": "^1.4.6",
     "cookie-universal-nuxt": "^2.2.2",
