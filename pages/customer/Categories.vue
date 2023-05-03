@@ -49,18 +49,6 @@
             </v-row>
         </v-card>
     </NuxtLink>
-    <NuxtLink to="./Seasonal" class="link">
-        <v-card class="center">
-            <v-row>
-                <v-col cols="7">
-                        <div><img src="/seasonal.png" class="image"></div>
-                </v-col>
-                <v-col cols="5" align-self-center>
-                        <div><v-card-title class="text-center">Seasonal</v-card-title></div>
-                </v-col>
-            </v-row>
-        </v-card>
-    </NuxtLink>
 </v-container>
 </v-app>
 </template>
