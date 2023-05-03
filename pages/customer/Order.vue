@@ -51,7 +51,6 @@ export default {
             console.log(this.currentOrder)
             localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
             this.totalPrice = this.computedTotalPrice;
-            location.reload();
         },
         async submitOrder() {
           console.log(this.currentOrder);
@@ -83,7 +82,6 @@ export default {
           else{
             console.log("CurrentOrder.length == 0");
           }
-          location.reload();
         },
     },
     mounted() {
