@@ -185,6 +185,16 @@ app.get("/supply", async (req, res) => {
     }
 });
 
+app.post("/supply", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT ingredient FROM supply");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+
 // Get Recipes
 app.get("/recipes", async (req, res) => {
     try {
@@ -193,6 +203,72 @@ app.get("/recipes", async (req, res) => {
     }
     catch (err) {
         console.error(err.message);
+    }
+});
+
+//Get all ingredients
+app.post("/ingredients", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT ingredient,portion_count FROM recipes");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.post("/itemIngredients", async (req, res) => {
+    try {
+        const { menu_item } = req.body;
+        const allTodos = await pool.query("SELECT ingredient,portion_count FROM recipes WHERE menu_item = '" + menu_item + "';");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+//updates an menu item's recipe
+app.put("/itemRecipe", async (req, res) => {
+    try {
+      const { menu_item, ingredient, portion_count } = req.body;
+      await pool.query(
+        "UPDATE recipes SET portion_count = $1 WHERE menu_item = $2 AND ingredient = $3",
+        [portion_count, menu_item, ingredient]
+      );
+      res.send("Recipe updated successfully");
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  });
+//inserts a new ingredient 
+  app.post("/itemRecipe", async (req, res) => {
+    try {
+        console.log("here");
+        const { menu_item, ingredient, portion_count } = req.body;
+        const q = `INSERT INTO recipes (menu_item, ingredient, portion_count)
+      VALUES ('${menu_item}', '${ingredient}', ${portion_count});`;
+        console.log("This: ",q);
+        const newItem = await pool.query(q);
+        res.json(newItem.rows[0]);
+    }
+    catch (err) {
+        console.error('Error posting new menu item:', err);
+        res.status(500).send('Error posting new menu item');
+    }
+});
+  
+app.delete("/itemRecipe", async (req, res) => {
+    try {
+        console.log("reached delete");
+        const { menu_item, ingredient} = req.body;
+        const delete_recipe_item = await pool.query(`
+        DELETE FROM recipes 
+        WHERE menu_item = $1 AND ingredient = $2;`, [menu_item, ingredient]);
+        res.json(`Menu item successfully deleted`);
+    } catch (err) {
+        console.error('Error deleting menu item:', err);
+        res.status(500).send('Error deleting menu item');
     }
 });
 
@@ -403,6 +479,92 @@ app.get('/z-report', async (req, res) => {
 
 
 
+
+// Get X Report
+app.get('/x-report', async (req, res) => {
+    try {
+        
+        // Query 1: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_date_response = await pool.query(end_date_query);
+
+        // Query 2: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
+
+        // Query 3: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const sales_response = await pool.query(sales_query);
+
+        // Return results
+        res.json({
+            end_date: end_date_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+
+});
+
+
+// Get Z Report
+app.get('/z-report', async (req, res) => {
+    try {
+
+        // Query 5: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const sales_response = await pool.query(sales_query);
+        
+        //
+        await pool.query("INSERT INTO z_reports(report_id, sales, start_order_id, end_order_id) VALUES ( (SELECT (MAX(report_id) + 1) FROM z_reports), (SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))), (SELECT (end_order_id + 1) FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports)), (SELECT MAX(order_id) FROM orders) )");
+
+        // Query 1: get start_date
+        const start_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_date_response = await pool.query(start_date_query);
+
+        // Query 2: get start_time
+        const start_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_time_response = await pool.query(start_time_query);
+
+        // Query 3: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_date_response = await pool.query(end_date_query);
+
+        // Query 4: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
+        
+        
+
+        // Return results
+        res.json({
+            start_date: start_date_response.rows[0],
+            end_date: end_date_response.rows[0],
+            start_time: start_time_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+
+});
+
+
+
+
+
+/**
+ * A Vuetify button component.
+ *
+ * @component
+ * @example
+ * <v-btn>Click Me</v-btn>
+ */
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
@@ -469,7 +631,7 @@ app.post("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
         const q = `INSERT INTO menu (menu_item, menu_cat, combo, food_price)
-      VALUES ('${menu_item}', '${menu_cat}', ${combo}, ${food_price});`;
+      VALUES ('${menu_item}', '${menu_cat}', '${combo}', ${food_price});`;
         // console.log(q);
         const newItem = await pool.query(q);
         res.json(newItem.rows[0]);
