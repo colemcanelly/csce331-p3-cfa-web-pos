@@ -88,7 +88,7 @@
           <!-- <template v-if="!editMode"> -->
           <v-autocomplete
             v-model="editedIngredient[ingredientHeaders[0].value]"
-            :items="allIngredients"
+            :items="supplyIngredients"
             item-text="ingredient"
             label="Ingredient"
             clearable
@@ -206,6 +206,7 @@
         },
       ingredients:[],
       allIngredients:[],
+      supplyIngredients:[],
       items: [
           'Programming',
           'Design',
@@ -292,7 +293,17 @@
     logFieldText(fieldText) {
     console.log(fieldText);
   },
-  
+      async getSupply () {
+              try {
+                // console.log("Getting table");
+                const response = await this.$axios.post(`/supply`);
+                this.supplyIngredients = response.data;
+                // console.log(this.table_data);
+              } catch (err) {
+                console.log("ERROR getTable()");
+                console.log(err);
+              }
+            },
       async getTable () {
         try {
           // console.log("Getting table");
@@ -400,10 +411,11 @@
     async getIngredientsAndAllIngredients() {
       await this.getIngredients();
       await this.getAllIngredients();
+      await this.getSupply();
     },
     onIngredientChange(newValue) {
       // set selectedIngredient to null if newValue is not in allIngredients
-      this.selectedIngredient = this.allIngredients.includes(newValue) ? newValue : null;
+      this.selectedIngredient = this.supplyIngredients.includes(newValue) ? newValue : null;
     },
 
     saveIngredient() {

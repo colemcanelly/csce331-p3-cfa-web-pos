@@ -185,6 +185,16 @@ app.get("/supply", async (req, res) => {
     }
 });
 
+app.post("/supply", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT ingredient FROM supply");
+        res.json(allTodos.rows)
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+});
+
 // Get Recipes
 app.get("/recipes", async (req, res) => {
     try {
