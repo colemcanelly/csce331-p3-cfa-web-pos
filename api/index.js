@@ -87,7 +87,17 @@ app.post("/itemIngredients", async (req, res) => {
         console.error(err.message);
     }
 });
+
+
 //updates an menu item's recipe
+/**
+ * updates a menu item's recipe
+ * @author Ryan Paul
+ * @param req - takes in the menu item to be updated, the ingredient to be added, 
+ * and what portion it will take part in that item
+ * @param res - confirmation that the menu item was updated
+ * @return {void}
+ */
 app.put("/itemRecipe", async (req, res) => {
     try {
       const { menu_item, ingredient, portion_count } = req.body;
@@ -101,7 +111,8 @@ app.put("/itemRecipe", async (req, res) => {
       res.status(500).send("Server error");
     }
   });
-//inserts a new ingredient 
+
+
   app.post("/itemRecipe", async (req, res) => {
     try {
         console.log("here");
@@ -133,6 +144,12 @@ app.delete("/itemRecipe", async (req, res) => {
 });
 
 // Get Orders
+/**
+ * returns the entire history of all recorded orders in the database
+ * @author Cole McAnelly
+ * @param {Array} res - a json with all orders and their attributes stored
+ * @return {json}
+ */ 
 app.get("/orders", async (req, res) => {
     try {
         const allTodos = await pool.query("SELECT * FROM orders");
@@ -150,6 +167,14 @@ MUST Pass in a json file like this
   "date": "2023-4-12"
 }
 */
+
+/**
+ * Retrieves all items that  are in excess 
+ * @author Ryan Paul
+ * @param req - contains a date parameter to use in query
+ * @param res - all necessary information to produce excess report
+ * @return {void}
+ */ 
 app.post("/excess-report", async (req, res) => {
     console.log("Hello");
     try {
@@ -186,6 +211,12 @@ app.post("/excess-report", async (req, res) => {
 });
 
 // Get Restock Report
+/**
+ * Retrieves all items that need to be restocked
+ * @author Weston Cadena
+ * @param {json} res - returns a json of all items over the restock threshold
+ * @return {void}
+ */ 
 app.get('/restock-report', async (req, res) => {
     try {
         const restock_report = `
@@ -227,6 +258,13 @@ MUST Pass in a json file like this
   }
 }
 */
+/**
+ * Retrieves all necessary information to produce a slaes report
+ * @author Ryan Paul
+ * @param req - given the start date and time and end date and time
+ * @param res - returns the revenue produced during time range
+ * @return {void}
+ */ 
 app.post("/sales-report", async (req, res) => {
     try {
         const { start_date, end_date, start_time, end_time } = req.body;
@@ -358,12 +396,12 @@ app.get('/z-report', async (req, res) => {
 
 
 /**
- * A Vuetify button component.
- *
- * @component
- * @example
- * <v-btn>Click Me</v-btn>
- */
+ *  Loops through a list of ordered items and inserts them into the orders table in the database
+ * @author Cole McAnelly
+ * @param req - passes in all the attributes of the orders
+ * @param res - confirmation that order was submitted
+ * @return {void}
+ */ 
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
@@ -402,6 +440,14 @@ app.post('/order', async (req, res) => {
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // MANAGER INVENTORY AND MENU QUERIES
+
+/**
+ * Deletes a menu_item from the menu table in database
+ * @author Ryan Paul
+ * @param req - All specifications for the menu item to be deleted
+ * @param res - Confirmation that menu item was deleted
+ * @return {void}
+ */ 
 app.delete("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -413,6 +459,13 @@ app.delete("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Removes a particular ingredient from the database 
+ * @author Ryan Paul
+ * @param req - specifications for ingredient to remove
+ * @param res - confirmation that ingredient was removed
+ * @return {void}
+ */ 
 app.delete("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
@@ -426,6 +479,13 @@ app.delete("/supply", async (req, res) => {
 });
 
 // Creating new menu/inventory items
+/**
+ * Inserts new menu item by adding to database
+ * @author Weston Cadena
+ * @paramreq - passes in specfications of the new menu item
+ * @param {json} res - returns json of the item that was inserted into the database
+ * @return {void}
+ */ 
 app.post("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -441,6 +501,13 @@ app.post("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Inserts new menu or inventory item into their respective tables
+ * @author Weston Cadena
+ * @param req - passes in specfications of the new ingredient
+ * @param {json} res - returns the ingredient that was inserted into the databse as json
+ * @return {void}
+ */ 
 app.post("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
@@ -456,6 +523,13 @@ app.post("/supply", async (req, res) => {
 });
 
 // Updating existing items
+/**
+ * Updates menu item within database table
+ * @author Ryan Paul
+ * @param req - passes in updated specfications of the menu item
+ * @param  res - confirmation that menu item was updated
+ * @return {void}
+ */ 
 app.put("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -474,6 +548,13 @@ app.put("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Updates ingredient within supplydatabase table
+ * @author Ryan Paul
+ * @param req - passes in updated specfications of the ingredient
+ * @param  res - confirmation that supply ingredient was updated
+ * @return {void}
+ */ 
 app.put("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
