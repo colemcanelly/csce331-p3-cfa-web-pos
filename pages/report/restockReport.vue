@@ -27,7 +27,6 @@
   
   <script>
   import Header from '@/components/server/Header.vue'
-  import Report from '~/components/report/Report.vue'
   export default {
   name: 'restockReportPage',
   layout: 'report',
