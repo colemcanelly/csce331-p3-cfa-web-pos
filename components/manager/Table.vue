@@ -293,10 +293,20 @@
     logFieldText(fieldText) {
     console.log(fieldText);
   },
+  /**
+
+ * Generates a query for getting the ingredients from the supply
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       async getSupply () {
               try {
                 // console.log("Getting table");
-                const response = await this.$axios.post(`/supply`);
+                const response = await this.$axios.post(`/supplyIngredient`);
                 this.supplyIngredients = response.data;
                 // console.log(this.table_data);
               } catch (err) {
@@ -304,6 +314,16 @@
                 console.log(err);
               }
             },
+/**
+
+ * Generates a query for getting the menu item, price, combo, and cateogry from the menu
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       async getTable () {
         try {
           // console.log("Getting table");
@@ -315,7 +335,17 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for deleting the menu item, price, combo, and cateogry from the menu
+
+
+ * @author Ryan Paul 
+  * @param item - the whole menu item consisting of the menu items
+
+ * @return {void}
+
+ */
       async deleteDBItem ( item ) {
         try {
           console.log(item);
@@ -326,7 +356,16 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for deleting the menu item, ingredient, and portion quantity from the recipes
+
+
+ * @author Ryan Paul 
+* @param item - the whole ingredient item consisting of the ingredient items
+ * @return {void}
+
+ */
       async deleteDBIng ( item ) {
         try {
           console.log(item);
@@ -337,7 +376,16 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for making a new menu item in the menu
+
+
+ * @author Ryan Paul 
+* @param item - the whole menu item consisting of the menu items
+ * @return {void}
+
+ */
       async newDBItem ( item ) {
         try {
           const response = await this.$axios.post(`/menu`, item);
@@ -347,7 +395,16 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for making the ingredients for a menu item in the recipes
+
+
+ * @author Ryan Paul 
+* @param item - the whole ingredient item consisting of the ingredient items
+ * @return {void}
+
+ */
       async newDBIng ( item ) {
         try {
           console.log("NewDB: ",item);
@@ -358,7 +415,17 @@
           console.log(err);
         }
       },
-      
+/**
+
+ * Generates a query for updating the menu item in the menu
+
+
+ * @author Ryan Paul 
+* @param item - the whole menu item consisting of the menu items
+
+ * @return {void}
+
+ */      
       async updateDBItem ( item ) {
         try {
           const response = await this.$axios.put(`/menu`, item);
@@ -368,7 +435,17 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for updating the ingredient item in the recipe
+
+
+ * @author Ryan Paul 
+* @param item - the whole ingredient item consisting of the ingredient items
+
+ * @return {void}
+
+ */    
       async updateDBIng ( item ) {
         try {
           const response = await this.$axios.put(`/itemRecipe`, item);
@@ -378,7 +455,16 @@
           console.log(err);
         }
       },
+/**
 
+ * Generates a query for getting the ingredient item in the recipe
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       async getIngredients() {
       try {
         // console.log(this.edited_item.menu_item);
@@ -395,7 +481,16 @@
         console.log(err);
       }
     },
+/**
 
+ * Generates a query for getting all the ingredient based on the specific menu item
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     async getAllIngredients(){
       try {
         // console.log("Menu Item", menuItem);
