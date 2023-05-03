@@ -1,4 +1,4 @@
-module.exports = (app, session) => {
+module.exports = (app, pool, session) => {
     // LOGIN
     // Get USER
     app.post("/login", async (req, res) => {

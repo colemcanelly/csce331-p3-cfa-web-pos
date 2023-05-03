@@ -369,7 +369,7 @@
       async deleteDBIng ( item ) {
         try {
           console.log(item);
-          const response = await this.$axios.delete(`/itemRecipe`, { data: item });
+          const response = await this.$axios.delete(`/recipes`, { data: item });
           console.log("deleted;",response);
         } catch (err) { 
           console.log("ERROR deleteDBItem()");
@@ -408,7 +408,7 @@
       async newDBIng ( item ) {
         try {
           console.log("NewDB: ",item);
-          const response = await this.$axios.post(`/itemRecipe`, item);
+          const response = await this.$axios.post(`/recipes`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR newDBIng()");
@@ -448,7 +448,7 @@
  */    
       async updateDBIng ( item ) {
         try {
-          const response = await this.$axios.put(`/itemRecipe`, item);
+          const response = await this.$axios.put(`/recipes`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR updateDBIng()");
