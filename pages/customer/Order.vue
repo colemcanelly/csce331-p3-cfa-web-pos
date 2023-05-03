@@ -116,22 +116,5 @@
            }
            this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
        },
-       // computed: {
-       //     totalPrice() {
-       //         i = 0;
-       //         to_return = 0;
-       //         for (i; i < this.currentOrder.length; i++) {
-       //             to_return += parseFloat(this.currentOrder[i].food_price);
-       //         }
-       //         to_return = parseFloat(to_return).toFixed(2);
-       //         return to_return;
-       //     }
-       // },
-       // watch: {
-       //     currentOrder() {
-       //         this.computedTotalPrice;
-       //         console.log(this.totalPrice);
-       //     }
-       // }
     }
     </script>

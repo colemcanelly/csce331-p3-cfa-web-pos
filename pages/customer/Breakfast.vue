@@ -2,8 +2,9 @@
     <v-app>
     <v-container>
         <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Breakfast</v-card-title ></v-card></v-col></v-row>
- 
- 
+        
+
+
         <v-row>
             <v-col cols="6" v-for="menuItem in breakfastMenuItems" :key="menuItem.id" class="d-flex justify-center">
                 <v-card class="mx-auto d-flex flex-column align-self-center" style="height: 100%">
@@ -14,26 +15,24 @@
                 </v-card>
             </v-col>
         </v-row>
-       
-   
+        
+    
     </v-container>
     </v-app>
     </template>
- 
- 
- <script>
- import {currentOrder} from '~/static/temp-data'
- 
- 
- export default {
-   
+
+<script>
+import {currentOrder} from '~/static/temp-data'
+
+export default {
+    
     name: "BreakfastPage",
     layout: 'customer',
     data() {
         return {
             currentOrder,
             tableData: [{}],
-           
+            
         };
     },
     /**
@@ -62,13 +61,25 @@
          */
         addItemToOrder(item) {
             console.log(item);
- 
- 
+
             this.$set(this.currentOrder, this.currentOrder.length, item);
             localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
- 
- 
+
         },
     },
- }
- 
+    /**
+     * filters menu items by menu_cat attribute (in this case, breakfast) each time function
+     * is called within the v-for loop included in the html
+     */
+    computed: {
+        breakfastMenuItems() { return this.tableData.filter( (menuItem) => menuItem.menu_cat === "breakfast" ); },
+    },
+};
+</script>
+
+<style scoped>
+.keep-words {
+    word-break: keep-all;
+}
+
+</style scoped>
