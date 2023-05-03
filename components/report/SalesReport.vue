@@ -7,7 +7,7 @@
       <v-btn
             color="primary"  
             outlined
-            @click="generate"
+            @click="generate(startDate,endDate,startTime,endTime)"
           >
             Generate
             <v-icon>mdi-check-bold</v-icon>
@@ -115,21 +115,27 @@
         cols="6"
         sm="2"
       >
-        <v-text-field
+    
+      <v-text-field
           v-model="startTime"
+          type="time"
           label="Start Time"
           clearable
         ></v-text-field>
+        
       </v-col>
       <v-col
         cols="6"
         sm="2"
       >
+      
         <v-text-field
-          v-model="endTime"
-          label="End Time"
-          clearable
-        ></v-text-field>
+            v-model="endTime"
+            type="time"
+            label="End Time"
+            clearable
+          ></v-text-field> 
+      
       </v-col>
       <v-col
       cols="12"
@@ -142,13 +148,26 @@
         hide-details
       ></v-text-field>
       </v-col>
+      <v-col cols="12" sm="8" md="4">
+        <v-card>
+          <v-card-title class="text-center" v-if="total">
+            total = {{ total.total_revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+          </v-card-title>
+        </v-card>
+      </v-col>
+      
+
 </v-row>
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="table_data"
       :search="search"
-    ></v-data-table>
+    >
+    <template v-slot:item.revenue="{ item }">
+    {{ item.revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+  </template>
+  </v-data-table>
   </v-card>
 </template>
 
@@ -161,30 +180,27 @@ export default {
     title: String,
     table: String,
   },
-  data: () => ({
-    search: '',
-    windowWidth: null,
-    table_data: [],
-    edited_index: -1,
-    default_item: Object.freeze({
-      name: null,
-      calories: null,
-      fat: null,
-      carbs: null,
-      protein: null,
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      menu: false,
-      modal: false,
-      menu2: false,
-    }),
+  data() {
+    return {
+      startDate: new Date().toISOString().substr(0, 10),
+      endDate: new Date().toISOString().substr(0, 10),
+      startTime: new Date().toLocaleTimeString('en-US', {hour12: false}),
+      endTime: new Date().toLocaleTimeString('en-US', {hour12: false}),
+      total: 0.00,
+      menuStart: false,
+      menuEnd: false,
+      search: '',
+      windowWidth: null,
+      table_data: [],
+      start_date: null ,
+      edited_index: -1,
+
     edited_item: {
-      name: null,
-      calories: null,
       fat: null,
-      carbs: null,
-      protein: null,
     },
-  }),
+    }
+    
+  },
 
   computed: {
     formTitle() {
@@ -204,7 +220,7 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
-    this.getSalesTable();
+    // this.getSalesTable();
     this.onResize();
   },
 
@@ -221,10 +237,18 @@ export default {
         end_time: this.endTime
       };
       try {
+        console.log("Submitting query")
+        console.log(orderData)
         const response = await this.$axios.post('/sales-report', orderData);
-        console.log(response);
-        //this.tableData = response.data
-        //this.tableData = response.data;
+        this.total = response.data.Total; // store the value of Total in a variable
+        delete response.data.Total; // remove Total from the response data
+        this.table_data = Object.entries(response.data).map(([name, data]) => ({
+          name,
+          revenue: data.total_revenue
+        }));
+        console.log("Table Data")
+        console.log(this.table_data);
+
       }
       catch (err) {
         console.log("ERROR");
@@ -232,10 +256,14 @@ export default {
       }
     },
 
-    generate(item) {
-      this.edited_index = this.table_data.indexOf(item)
-      this.edited_item = Object.assign({}, item)
-      this.dialog = true
+    async generate(startDate,endDate,startTime,endTime) {
+      console.log(startDate);
+      console.log(endDate);
+      console.log(startTime);
+      console.log(endTime);
+
+      await this.getSalesTable(startDate,endDate,startTime,endTime);
+      
     },
 
     onResize() {

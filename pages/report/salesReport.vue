@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Report from '~/components/report/Report.vue'
+import Report from '~/components/report/SalesReport.vue'
 export default {
 name: 'salesReportPage',
 layout: 'report',
@@ -20,8 +20,8 @@ data: () => ({
   title: "Sales Report",
   table: 'salesReport',
   headers: [
-    { text: 'Menu Item', value: 'menu_item' },
-    { text: 'Total Sales', value: 'total_revenue' },
+    { text: 'Menu Item', value: 'name' },
+    { text: 'Total Sales', value: 'revenue' },
   ],
 })
 }
