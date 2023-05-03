@@ -78,6 +78,10 @@ data() {
   }
 },
 methods: {
+  /** 
+   * Gets all necessary items to compute an x report
+   * @return {void}
+   */
     async getXReport() {
       try {
         const response = await this.$axios.get('/x-report');
@@ -95,6 +99,9 @@ methods: {
                 console.log(err);
       }
     },
+    /**
+   * retrieves all items necessary to produce a z report
+   */
     async getZReport() {
       try {
         const response = await this.$axios.get('/z-report');
@@ -114,6 +121,9 @@ methods: {
       }
     },
   },
+   /**
+   * most likely not needed
+   */
   mounted() {
     this.report_type = this.report_type;
     this.start_date = this.start_date;
@@ -122,6 +132,9 @@ methods: {
     this.start_time = this.start_time;
     this.end_time = this.end_time;
   },
+   /**
+   * returns all necessary items that will be display in a formatted manner
+   */
   computed: {
         reportType() { return this.report_type; },
         endDate() { return this.end_date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); },
@@ -150,50 +163,3 @@ methods: {
 
 </script>
 
-
-<!-- <script>
-  export default {
-  name: 'xzReportPage',
-  layout: 'report',
-  components: {
-    Report
-  },
-  data: () => ({
-    title: "XZ Report",
-    table: 'supply',
-    tableData: [],
-    start_date: new Date().toISOString(),
-    end_date: new Date().toISOString(),
-    sales: 0.0,
-    headers: [
-      { text: 'Report Type', value: 'report_type' },
-      { text: 'End Date', value: 'end_date' },
-      { text: 'Sales', value: 'sales' },
-    ],
-  }),
-  methods: {
-    async getXReport() {
-      try {
-        const { data: {end_date, sales } } = await this.$axios.get('/x-report');
-        this.tableData = response.data;
-        console.log(this.tableData);
-      }
-      catch (err) {
-                console.log("ERROR");
-                console.log(err);
-      }
-    },
-    async getZReport() {
-      try {
-        const response = await this.$axios.get('/z-report');
-        this.tableData = response.data;
-        console.log(this.tableData);
-      }
-      catch (err) {
-                console.log("ERROR");
-                console.log(err);
-      }
-    },
-  },
-  }
-  </script> -->
