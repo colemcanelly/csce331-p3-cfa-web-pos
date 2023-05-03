@@ -196,6 +196,13 @@ export default {
         },
     },
     computed: {
+      /**
+ * @module MyComponent
+ * @component
+ *
+ * @description
+ * A description of the component.
+ */
       currentCategory() {
         console.log(this.tab);
         switch (this.tab) {

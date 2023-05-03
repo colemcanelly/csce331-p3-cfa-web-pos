@@ -336,15 +336,10 @@
         }
       },
 /**
-
- * Generates a query for deleting the menu item, price, combo, and cateogry from the menu
-
-
- * @author Ryan Paul 
-  * @param item - the whole menu item consisting of the menu items
-
- * @return {void}
-
+ * This function adds two numbers.
+ * @param {number} a - The first number.
+ * @param {number} b - The second number.
+ * @returns {number} - The sum of the two numbers.
  */
       async deleteDBItem ( item ) {
         try {
