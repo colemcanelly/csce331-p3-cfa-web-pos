@@ -328,61 +328,78 @@ app.post("/sales-report", async (req, res) => {
 
 
 // Get X Report
-app.post("/x-report", async (req, res) => {
+app.get('/x-report', async (req, res) => {
     try {
-        // const { end_date, sales } = req.body;
-
+        
         // Query 1: get end_date
         const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
-        const { rows: rows1 } = await pool.query(end_date_query);
-        const end_date_result = rows1[0].end_date;
+        const end_date_response = await pool.query(end_date_query);
 
-        // Query 2: get sales
+        // Query 2: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
+
+        // Query 3: get sales
         const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
-        const { rows: rows2 } = await pool.query(sales_query);
-        const sales_result = rows2[0].sales;
+        const sales_response = await pool.query(sales_query);
 
         // Return results
         res.json({
-            end_date: end_date_result,
-            sales: sales_result,
+            end_date: end_date_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
         });
     } catch (err) {
         console.error(err.message);
         res.send("Server Error");
     }
+
 });
 
 
 // Get Z Report
-// app.post("/z-report", async (req, res) => {
-//     try {
-//         const { start_date, end_date, start_time, end_time, sales } = req.body;
+app.get('/z-report', async (req, res) => {
+    try {
 
-//         const start_date_query = 'SELECT $1 AS start_date';
-//         const end_date_query = 'SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
-//         const start_time_query = 'SELECT $1 AS start_time';
-//         const end_time_query = 'SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
-//         const sales_query = 'SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))';
+        // Query 5: get sales
+        const sales_query = "SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const sales_response = await pool.query(sales_query);
         
-//         const start_date_result = await pool.query(start_date_query, [start_date]);
-//         const end_date_result = await pool.query(end_date_query, [end_date]);
-//         const start_time_result = await pool.query(start_time_query, [start_time]);
-//         const end_time_result = await pool.query(end_time_query, [end_time]);
-//         const sales_result = await pool.query(sales_query, [sales]);
+        //
+        await pool.query("INSERT INTO z_reports(report_id, sales, start_order_id, end_order_id) VALUES ( (SELECT (MAX(report_id) + 1) FROM z_reports), (SELECT SUM(order_total) FROM orders WHERE order_id > (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))), (SELECT (end_order_id + 1) FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports)), (SELECT MAX(order_id) FROM orders) )");
+
+        // Query 1: get start_date
+        const start_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_date_response = await pool.query(start_date_query);
+
+        // Query 2: get start_time
+        const start_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT start_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const start_time_response = await pool.query(start_time_query);
+
+        // Query 3: get end_date
+        const end_date_query = "SELECT order_date FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_date_response = await pool.query(end_date_query);
+
+        // Query 4: get end_time
+        const end_time_query = "SELECT order_time FROM orders WHERE order_id = (SELECT end_order_id FROM z_reports WHERE report_id = (SELECT MAX(report_id) FROM z_reports))";
+        const end_time_response = await pool.query(end_time_query);
         
-//         const { rows: [{ start_date }] } = start_date_result;
-//         const { rows: [{ end_date }] } = end_date_result;
-//         const { rows: [{ start_time }] } = start_time_result;
-//         const { rows: [{ end_time }] } = end_time_result;
-//         const { rows: [{ sales }] } = sales_result;
         
-//         console.log(start_date, end_date, start_time, end_time, sales);
-//     } catch (err) {
-//         console.error(err.message);
-//         res.send("Server Error");
-//     }
-// });
+
+        // Return results
+        res.json({
+            start_date: start_date_response.rows[0],
+            end_date: end_date_response.rows[0],
+            start_time: start_time_response.rows[0],
+            end_time: end_time_response.rows[0],
+            sales: sales_response.rows[0],
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.send("Server Error");
+    }
+
+});
 
 
 
