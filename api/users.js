@@ -1,6 +1,13 @@
 module.exports = (app, pool, session) => {
     // LOGIN
-    // Get USER
+    /**
+     * Login Button
+     * Checks the database for user data before sending that data as a response to the client
+     * @author Cole McAnelly
+     * @param req - Request for the server
+     * @param res - Respose from the server
+     * @return {void}
+     */
     app.post("/login", async (req, res) => {
         try {
             const { auth } = req.body;
@@ -34,6 +41,14 @@ module.exports = (app, pool, session) => {
         }
     });
 
+
+    /**
+     * Login with Google callback
+     * @author Cole McAnelly
+     * @param req - Request for the server
+     * @param res - Respose from the server
+     * @return {void}
+     */
     app.get('/auth/googlelogin', (req, res) => {
         console.log("Running /auth/googlelogin");
         req.session.user = { user: req.user };
@@ -45,7 +60,14 @@ module.exports = (app, pool, session) => {
     });
 
     // Register
-    // POST user
+    /**
+     * Register Button
+     * Creates a new entry in the user database with all the provided user data.
+     * @author Cole McAnelly
+     * @param req - Request for the server
+     * @param res - Respose from the server
+     * @return {void}
+     */
     app.post("/register", async (req, res) => {
         try {
             const { auth } = req.body;
