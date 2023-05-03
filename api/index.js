@@ -141,7 +141,17 @@ app.post("/itemIngredients", async (req, res) => {
         console.error(err.message);
     }
 });
+
+
 //updates an menu item's recipe
+/**
+ * updates a menu item's recipe
+ * @author Ryan Paul
+ * @param req - takes in the menu item to be updated, the ingredient to be added, 
+ * and what portion it will take part in that item
+ * @param res - confirmation that the menu item was updated
+ * @return {void}
+ */
 app.put("/itemRecipe", async (req, res) => {
     try {
       const { menu_item, ingredient, portion_count } = req.body;
@@ -155,7 +165,8 @@ app.put("/itemRecipe", async (req, res) => {
       res.status(500).send("Server error");
     }
   });
-//inserts a new ingredient 
+
+
   app.post("/itemRecipe", async (req, res) => {
     try {
         console.log("here");
@@ -187,6 +198,12 @@ app.delete("/itemRecipe", async (req, res) => {
 });
 
 // Get Orders
+/**
+ * returns the entire history of all recorded orders in the database
+ * @author Cole McAnelly
+ * @param {Array} res - a json with all orders and their attributes stored
+ * @return {json}
+ */ 
 app.get("/orders", async (req, res) => {
     try {
         const allTodos = await pool.query("SELECT * FROM orders");
@@ -204,6 +221,14 @@ MUST Pass in a json file like this
   "date": "2023-4-12"
 }
 */
+
+/**
+ * Retrieves all items that  are in excess 
+ * @author Ryan Paul
+ * @param req - contains a date parameter to use in query
+ * @param res - all necessary information to produce excess report
+ * @return {void}
+ */ 
 app.post("/excess-report", async (req, res) => {
     console.log("Hello");
     try {
@@ -240,6 +265,12 @@ app.post("/excess-report", async (req, res) => {
 });
 
 // Get Restock Report
+/**
+ * Retrieves all items that need to be restocked
+ * @author Weston Cadena
+ * @param {json} res - returns a json of all items over the restock threshold
+ * @return {void}
+ */ 
 app.get('/restock-report', async (req, res) => {
     try {
         const restock_report = `
@@ -281,6 +312,13 @@ MUST Pass in a json file like this
   }
 }
 */
+/**
+ * Retrieves all necessary information to produce a slaes report
+ * @author Ryan Paul
+ * @param req - given the start date and time and end date and time
+ * @param res - returns the revenue produced during time range
+ * @return {void}
+ */ 
 app.post("/sales-report", async (req, res) => {
     try {
         const { start_date, end_date, start_time, end_time } = req.body;
@@ -412,12 +450,12 @@ app.get('/z-report', async (req, res) => {
 
 
 /**
- * A Vuetify button component.
- *
- * @component
- * @example
- * <v-btn>Click Me</v-btn>
- */
+ *  Loops through a list of ordered items and inserts them into the orders table in the database
+ * @author Cole McAnelly
+ * @param req - passes in all the attributes of the orders
+ * @param res - confirmation that 
+ * @return {void}
+ */ 
 app.post('/order', async (req, res) => {
     console.log("HI");
     const { currentOrder, order_date, order_time, customer_fname, order_creator } = req.body;
