@@ -1,8 +1,8 @@
 {
     "source": {
-      "include": ["./api, ./pages, ./layouts, ./components"],
-      "exclude": ["node_modules", "dist"]
-    },
+        "include": ["./api", "./pages", "./layouts", "./components"],
+        "exclude": ["node_modules", "dist"]
+      },
     "plugins": ["plugins/markdown"],
     "opts": {
       "destination": "docs"
