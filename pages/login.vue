@@ -128,7 +128,7 @@ export default {
             fname: this.firstName,
             lname: this.lastName,
             email: this.email,
-            password: this.lastName
+            password: this.password
           }
         });
         this.$router.push(response.data);
