@@ -453,7 +453,7 @@ app.get('/z-report', async (req, res) => {
  *  Loops through a list of ordered items and inserts them into the orders table in the database
  * @author Cole McAnelly
  * @param req - passes in all the attributes of the orders
- * @param res - confirmation that 
+ * @param res - confirmation that order was submitted
  * @return {void}
  */ 
 app.post('/order', async (req, res) => {
@@ -494,6 +494,14 @@ app.post('/order', async (req, res) => {
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // MANAGER INVENTORY AND MENU QUERIES
+
+/**
+ * Deletes a menu_item from the menu table in database
+ * @author Ryan Paul
+ * @param req - All specifications for the menu item to be deleted
+ * @param res - Confirmation that menu item was deleted
+ * @return {void}
+ */ 
 app.delete("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -505,6 +513,13 @@ app.delete("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Removes a particular ingredient from the database 
+ * @author Ryan Paul
+ * @param req - specifications for ingredient to remove
+ * @param res - confirmation that ingredient was removed
+ * @return {void}
+ */ 
 app.delete("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
@@ -518,6 +533,13 @@ app.delete("/supply", async (req, res) => {
 });
 
 // Creating new menu/inventory items
+/**
+ * Inserts new menu item by adding to database
+ * @author Weston Cadena
+ * @paramreq - passes in specfications of the new menu item
+ * @param {json} res - returns json of the item that was inserted into the database
+ * @return {void}
+ */ 
 app.post("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -533,6 +555,13 @@ app.post("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Inserts new menu or inventory item into their respective tables
+ * @author Weston Cadena
+ * @param req - passes in specfications of the new ingredient
+ * @param {json} res - returns the ingredient that was inserted into the databse as json
+ * @return {void}
+ */ 
 app.post("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
@@ -548,6 +577,13 @@ app.post("/supply", async (req, res) => {
 });
 
 // Updating existing items
+/**
+ * Updates menu item within database table
+ * @author Ryan Paul
+ * @param req - passes in updated specfications of the menu item
+ * @param  res - confirmation that menu item was updated
+ * @return {void}
+ */ 
 app.put("/menu", async (req, res) => {
     try {
         const { menu_item, food_price, combo, menu_cat } = req.body;
@@ -566,6 +602,13 @@ app.put("/menu", async (req, res) => {
     }
 });
 
+/**
+ * Updates ingredient within supplydatabase table
+ * @author Ryan Paul
+ * @param req - passes in updated specfications of the ingredient
+ * @param  res - confirmation that supply ingredient was updated
+ * @return {void}
+ */ 
 app.put("/supply", async (req, res) => {
     try {
         const { ingredient, threshold, restock_quantity } = req.body;
