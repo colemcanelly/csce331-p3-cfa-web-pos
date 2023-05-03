@@ -19,10 +19,18 @@ app.use(sessions({                  // Session Middleware
 
 var session;                        // A variable to save a session
 
+/**
 
 require('./users')(app, session);   // User login/logout & register
 
 
+ * Get function to grab the values from the menu table 
+
+ * @author Ryan Paul 
+* @param res - returns query
+ * @return {void}
+
+ */
 // Get Menu
 app.get("/menu", async (req, res) => {
     try {
@@ -33,7 +41,16 @@ app.get("/menu", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Get function to grab the values from the supply table 
+
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 // Get Supply
 app.get("/supply", async (req, res) => {
     try {
@@ -44,7 +61,16 @@ app.get("/supply", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Post function to grab the ingredients from the supply table 
+
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 app.post("/supplyIngredient", async (req, res) => {
     try {
         const allTodos = await pool.query("SELECT ingredient FROM supply");
@@ -54,7 +80,16 @@ app.post("/supplyIngredient", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Get function to grab everything from the recipe table 
+
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 // Get Recipes
 app.get("/recipes", async (req, res) => {
     try {
@@ -65,7 +100,16 @@ app.get("/recipes", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Post function to grab ingredient and portion quantity from the recipe table 
+
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 //Get all ingredients
 app.post("/ingredients", async (req, res) => {
     try {
@@ -76,7 +120,16 @@ app.post("/ingredients", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Post function to grab everything from the recipe table when we set a specific menu item
+
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 app.post("/itemIngredients", async (req, res) => {
     try {
         const { menu_item } = req.body;
@@ -87,8 +140,16 @@ app.post("/itemIngredients", async (req, res) => {
         console.error(err.message);
     }
 });
+/**
 
+ * Put function that updates the ingredients for a menu item
 
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 //updates an menu item's recipe
 /**
  * updates a menu item's recipe
@@ -111,8 +172,16 @@ app.put("/itemRecipe", async (req, res) => {
       res.status(500).send("Server error");
     }
   });
+  /**
 
+ * Post function that adds a new ingredient to a menu item
+ * @author Ryan Paul 
+* @param res - returns query
 
+ * @return {void}
+
+ */
+//inserts a new ingredient 
   app.post("/itemRecipe", async (req, res) => {
     try {
         console.log("here");
@@ -128,7 +197,15 @@ app.put("/itemRecipe", async (req, res) => {
         res.status(500).send('Error posting new menu item');
     }
 });
-  
+  /**
+
+ * Delete function that deletes the ingredient from a menu item
+ * @author Ryan Paul 
+* @param res - returns query
+
+ * @return {void}
+
+ */
 app.delete("/itemRecipe", async (req, res) => {
     try {
         console.log("reached delete");

@@ -503,16 +503,46 @@
         console.log(err);
       }
     },
+    /**
+
+ * Function that combines getting the ingredients in recipe and supply
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     async getIngredientsAndAllIngredients() {
       await this.getIngredients();
       await this.getAllIngredients();
       await this.getSupply();
     },
+    /**
+
+ * Function that changes the ingredient based on which one is selected when adding an ingredient
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
+
     onIngredientChange(newValue) {
       // set selectedIngredient to null if newValue is not in allIngredients
       this.selectedIngredient = this.supplyIngredients.includes(newValue) ? newValue : null;
     },
+    /**
 
+ * Function that saves the ingredient after editing it 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     saveIngredient() {
       if (this.editMode) {
         this.saveEditedIngredient();
@@ -520,7 +550,16 @@
         this.saveNewIngredient();
       }
     },
+    /**
 
+ * Function that allows for the edited changes for an ingredient to be saved
+
+
+ * @author Ryan Paul 
+  * @param - ingredient items of current menu item
+ * @return {void}
+
+ */
     editIngredients(item) {
       this.editMode = true;
       this.editedIngredient = Object.assign({}, item);
@@ -529,6 +568,16 @@
       console.log(this.edited_ing_index);
       this.editDialog = true;
     },
+        /**
+
+ * Function that allows to add a new ingredient to the menu items
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     addNewIngredient() {
       this.editMode = false;
       this.editedIngredient = {
@@ -537,6 +586,16 @@
       };
       this.editDialog = true;
     },
+            /**
+
+ * Function that allows to add a save a new ingredient once the add button is clicked
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     saveNewIngredient() {
         this.editDialog = false;
         if (this.edited_index > -1) {
@@ -565,6 +624,16 @@
           console.error(error);
         }
       },
+       /**
+
+ * Function that allows to save an edit on a new ingredient once the save button is clicked
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     saveEditedIngredient() {
       console.log("saveEditedIngredient called");
       // this.editDialog = true;
@@ -592,6 +661,16 @@
           console.error(error);
         }
     },
+     /**
+
+ * Function that allows the dialog to close when clicking close
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     closeEditDialog() {
       this.editDialog = false;
       this.$nextTick(() => {
@@ -607,6 +686,16 @@
     //   // Remove the item from the ingredients array
     //   this.ingredients.splice(index, 1);
     // },
+         /**
+
+ * Function that allows the edited Item to be stored
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       editItem (item) {
         this.edited_index = this.table_data.indexOf(item);
         console.log(this.edited_index);
@@ -614,26 +703,63 @@
         console.log(this.edited_item);
         this.dialog = true;
       },
+         /**
 
+ * Function that allows an Item to be deleted
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteItem (item) {
         this.edited_index = this.table_data.indexOf(item);
         this.edited_item = Object.assign({}, item);
         this.dialogDelete = true;
       },
 
+               /**
+
+ * Function that allows an ingredient to be deleted
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteIng (item) {
         this.edited_ing_index = this.ingredients.indexOf(item);
         this.editedIngredient = Object.assign({}, item);
         this.dialogIngDelete = true;
       },
+         /**
 
+ * Function that warns the user before a delete and actualy runs the delete query for menu items
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteItemConfirm () {
         // Delete an item               NEED AXIOS HERE
         this.deleteDBItem(this.table_data[this.edited_index]);
         this.table_data.splice(this.edited_index, 1)
         this.closeDelete();
       },
+         /**
 
+ * Function that warns the user before a delete and actualy runs the delete query for ingredients
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteIngConfirm(){
         const deleteIngr = {
           menu_item: this.edited_item.menu_item,
@@ -643,7 +769,16 @@
         this.ingredients.splice(this.edited_ing_index, 1)
         this.closeIngDelete();
       },
+         /**
 
+ * Function that closes the dialog 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       close () {
         this.dialog = false;
         this.$nextTick(() => {
@@ -651,7 +786,16 @@
           this.edited_index = -1;
         })
       },
+         /**
 
+ * Function that closes the dialog for delete button for menu 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       closeDelete () {
         this.dialogDelete = false;
         this.$nextTick(() => {
@@ -659,6 +803,16 @@
           this.edited_index = -1;
         })
       },
+               /**
+
+ * Function that closes the dialog for delete button for ingredients
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       closeIngDelete () {
         this.dialogIngDelete = false;
         this.$nextTick(() => {
@@ -666,7 +820,16 @@
           this.edited_ing_index = -1;
         })
       },
+         /**
 
+ * Function that saves everything that is written in the edit/new item
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       save () {
         if (this.edited_index > -1) {
           // Editing Current item       NEED AXIOS HERE
@@ -679,6 +842,15 @@
         }
         this.close();
       },
+               /**
+
+ * Function that allows for resize and adjsts page width
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
 
       onResize() {
         this.windowWidth = window.innerWidth;
