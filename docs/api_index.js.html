@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: api/db.js</title>
+    <title>JSDoc: Source: api/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: api/db.js</h1>
+    <h1 class="page-title">Source: api/index.js</h1>
 
     
 
@@ -26,24 +26,31 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Pool = require("pg").Pool;
-
-/**
- * @overview This file provides functionality for accessing the database
- * @author Weston Cadena
+            <pre class="prettyprint source linenums"><code>/**
+ * @overview This file joins all other js files so out vue components only need one include
+ * @author Cole McAnelly
  * @param {number} a - The first number.
  * @param {number} b - The second number.
  * @returns {number} - The sum of the two numbers.
  */
-const pool = new Pool({
-    user: "csce315331_delta_master",
-    password: "airplane",
-    database: "csce315331_delta",
-    host: "csce-315-db.engr.tamu.edu",
-    port: 5432
-})
 
-module.exports = pool;</code></pre>
+const app = require("./app");
+const pool = require("./db");
+
+// A variable to save a session
+var session;
+
+require("./users")(app, pool, session); // User login/logout &amp; register
+require("./reports")(app, pool);        // Routing for Reports
+require("./crud/menu")(app, pool);      // Menu:    Create, Read, Update, &amp; Delete
+require("./crud/supply")(app, pool);    // Supply:  Create, Read, Update, &amp; Delete
+require("./crud/recipes")(app, pool);   // Recipes: Create, Read, Update, &amp; Delete
+require("./crud/orders")(app, pool);    // Orders:  Create &amp; Read
+
+export default {
+    path: "/api",
+    handler: app,
+};</code></pre>
         </article>
     </section>
 

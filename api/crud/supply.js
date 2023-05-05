@@ -1,3 +1,8 @@
+/**
+ * This is a description of what file1.js does.
+ *
+ * @overview This file provides functionality for handling user authentication.
+ */
 /* CRUD Operations for Supply */
 module.exports = (app, pool) => {
 

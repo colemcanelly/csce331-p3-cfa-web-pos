@@ -22,6 +22,10 @@
     
     
     <script>
+
+    /**
+     * @module Combos
+     */
     import {currentOrder} from '~/static/temp-data'
     // import {totalPrice} from '~/static/temp-data'
     

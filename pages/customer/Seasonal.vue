@@ -22,6 +22,10 @@
     <script>
     import {currentOrder} from '~/static/temp-data'
     // import {totalPrice} from '~/static/temp-data'
+
+    /**
+     * @module Seasonal
+     */
    
     export default {
         name: "SeasonalPage",

@@ -22,6 +22,9 @@
     </template>
 
 <script>
+/**
+ * @module Breakfeast
+ */
 import {currentOrder} from '~/static/temp-data'
 
 export default {

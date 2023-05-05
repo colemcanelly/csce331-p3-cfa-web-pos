@@ -1,3 +1,11 @@
+/**
+ * @overview This file joins all other js files so out vue components only need one include
+ * @author Cole McAnelly
+ * @param {number} a - The first number.
+ * @param {number} b - The second number.
+ * @returns {number} - The sum of the two numbers.
+ */
+
 const app = require("./app");
 const pool = require("./db");
 

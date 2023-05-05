@@ -13,7 +13,9 @@
   </template>
     <script>
    export default {
-  
+    /**
+   * @module Nearby
+   */
   
      name: "NearbyPage",
      layout: 'customer',
@@ -28,8 +30,8 @@
          ],
        };
      },
-     /**
-    * creates the Map object by calling on the Google API
+    /**
+    * @function creates the Map object by calling on the Google API
     * and initializing it, looping through the listed
     * coordinates of Chick-Fil-A locations to place markers on it,
     * and finally appending it to the actual page

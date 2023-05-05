@@ -1,6 +1,6 @@
 {
     "source": {
-      "include": ["./api", "./pages", "./layouts", "./docs/components"],
+      "include": ["./api", "./pages", "./layouts", "./docs/components", "./pages/report", "./pages/customer"],
       "includePattern": "\\.(vue|js)$",
       "exclude": ["node_modules"]
     },

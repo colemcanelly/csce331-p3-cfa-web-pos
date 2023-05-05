@@ -1,6 +1,7 @@
 /* CRUD Operations for Orders */
 module.exports = (app, pool) => {
     /**
+     * @overview This file contains utility functions for accessing menu.
      * Creates new Order
      * Loops through a list of ordered items and inserts them into the orders table in the database
      * @author Cole McAnelly

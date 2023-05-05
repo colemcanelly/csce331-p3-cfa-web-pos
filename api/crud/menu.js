@@ -3,6 +3,7 @@ module.exports = (app, pool) => {
 
     // Creating new menu/inventory items
     /**
+     * @overview This file contains utility functions for accessing menu.
      * Creates new menu item by adding to database
      * @author Weston Cadena
      * @paramreq - passes in specfications of the new menu item

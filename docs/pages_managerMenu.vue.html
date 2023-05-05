@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: api/db.js</title>
+    <title>JSDoc: Source: pages/managerMenu.vue</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: api/db.js</h1>
+    <h1 class="page-title">Source: pages/managerMenu.vue</h1>
 
     
 
@@ -26,24 +26,54 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Pool = require("pg").Pool;
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;v-row class="overflow-scroll">
+      &lt;v-col>
+          &lt;!-- &lt;span>This is a test page.&lt;/span> -->
+          &lt;Table :table="table" :title="title" :headers="headers">&lt;/Table>
+      &lt;/v-col>
+  &lt;/v-row>
+&lt;/template>
+
+&lt;script>
+import Table from '~/components/manager/Table.vue'
 
 /**
- * @overview This file provides functionality for accessing the database
- * @author Weston Cadena
- * @param {number} a - The first number.
- * @param {number} b - The second number.
- * @returns {number} - The sum of the two numbers.
+ * @module ManagerMenuPage
+ * @description The manager menu page component.
  */
-const pool = new Pool({
-    user: "csce315331_delta_master",
-    password: "airplane",
-    database: "csce315331_delta",
-    host: "csce-315-db.engr.tamu.edu",
-    port: 5432
-})
+export default {
+  name: 'ManagerMenuPage',
+  layout: 'manager',
+  components: {
+    Table,
+  },
+  data: () => ({
+    /**
+     * The title of the page.
+     * @type {string}
+     */
+    title: 'Menu',
 
-module.exports = pool;</code></pre>
+    /**
+     * The name of the table.
+     * @type {string}
+     */
+    table: 'menu',
+
+    /**
+     * The headers of the table.
+     * @type {Array}
+     */
+    headers: [
+      { text: 'Item Name', value: 'menu_item', sortable: false },
+      { text: 'Price ($)', value: 'food_price' },
+      { text: 'Combo (T/F)', value: 'combo' },
+      { text: 'Category', value: 'menu_cat' },
+    ],
+  }),
+}
+&lt;/script></code></pre>
         </article>
     </section>
 

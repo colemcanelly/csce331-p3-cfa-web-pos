@@ -52,6 +52,7 @@ module.exports = (app, pool) => {
 
     //updates an menu item's recipe
     /**
+     * @overview This file contains utility functions for accessing menu.
      * Update a menu item's recipe
      * @author Ryan Paul
      * @param req - takes in the menu item to be updated, the ingredient to be added,

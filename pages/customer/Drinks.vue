@@ -41,6 +41,10 @@
       this.getMenu();
     },
     methods: {
+
+        /**
+     * @module Drinks
+     */
         /**
          * axios call to retrieve menu and store in tableData
         */
