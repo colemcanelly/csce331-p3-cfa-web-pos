@@ -123,6 +123,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <div v-if="errorMessage">
+          <v-snackbar v-model="snackbar">
+          <span v-if="errorMessage">{{ errorMessage }}</span>
+          <v-btn color="error" text @click="snackbar = false">
+            Close
+          </v-btn>
+        </v-snackbar>
+        </div>
   </v-container>
 </template>
         </v-card>
@@ -179,7 +187,7 @@
     data: () => ({
       title: "Menu",
       headers: [
-        { text: 'Item Name', value: 'menu_item', sortable: false },
+        { text: 'Item Name', value: 'menu_item', },
           { text: 'Price ($)', value: 'food_price' },
           { text: 'Combo (T/F)', value: 'combo' },
           { text: 'Category', value: 'menu_cat' },
@@ -225,6 +233,8 @@
       ingredientQuantity:'',
       // showIng: false,
       newIngredients:[],
+      errorMessage:'',
+      snackbar:false
 
 
     }),
@@ -591,34 +601,40 @@
  * @return {void}
 
  */
-    saveNewIngredient() {
-        this.editDialog = false;
-        if (this.edited_index > -1) {
-          // Editing Current item       NEED AXIOS HERE
-          this.updateDBItem(this.edited_item);
-          Object.assign(this.table_data[this.edited_index], this.edited_item);
-          this.updateDBIng(this.edited_item)
-          console.log("Edited Item= ", this.edited_item.menu_item)
+ saveNewIngredient() {
+      this.editDialog = false;
+      if (this.edited_index > -1) {
+        // Editing Current item       NEED AXIOS HERE
+        this.updateDBItem(this.edited_item);
+        Object.assign(this.table_data[this.edited_index], this.edited_item);
+        this.updateDBIng(this.edited_item)
+        console.log("Edited Item= ", this.edited_item.menu_item)
+      } else {
+        // Creating new item          NEED AXIOS HERE
+        this.newDBItem(this.edited_item);
+        this.table_data.push(this.edited_item);
+      }
+      try {
+        const currIngredient = {
+          menu_item: this.edited_item.menu_item,
+          ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
+          portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
+        };
+        console.log(typeof currIngredient);
+        console.log(currIngredient.menu_item," ", currIngredient.ingredient," ",currIngredient.portion_count);
+        if (currIngredient.portion_count <= 0 || isNaN(currIngredient.portion_count)) {
+          throw new Error("Quantity must be a positive number");
         } else {
-          // Creating new item          NEED AXIOS HERE
-          this.newDBItem(this.edited_item);
-          this.table_data.push(this.edited_item);
-        }
-        try {
-          const currIngredient = {
-            menu_item: this.edited_item.menu_item,
-            ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
-            portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
-          };
-          console.log(typeof currIngredient);
-          console.log(currIngredient.menu_item," ", currIngredient.ingredient," ",currIngredient.portion_count);
           this.newDBIng(currIngredient);
           this.ingredients.push(currIngredient); // add new ingredient to ingredients array
           this.closeIngDelete();
-        } catch (error) {
-          console.error(error);
         }
-      },
+      } catch (error) {
+        console.error(error);
+        this.errorMessage = error.message; // set the error message
+        this.snackbar = true; // show the snackbar
+      }
+    },
        /**
 
  * Function that allows to save an edit on a new ingredient once the save button is clicked
@@ -630,6 +646,7 @@
 
  */
     saveEditedIngredient() {
+      this.editDialog = false;
       console.log("saveEditedIngredient called");
       // this.editDialog = true;
       this.editMode = true;
@@ -649,11 +666,18 @@
             portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
           };
           console.log("Edited:", currIngredient.portion_count);
-          this.updateDBIng(currIngredient)
-          Object.assign(this.ingredients[this.edited_ing_index], this.editedIngredient);
-          this.closeIngDelete();
+          if (currIngredient.portion_count <= 0 || isNaN(currIngredient.portion_count)) {
+            throw new Error("Quantity must be a positive number");
+          }
+          else{
+            this.updateDBIng(currIngredient)
+            Object.assign(this.ingredients[this.edited_ing_index], this.editedIngredient);
+            this.closeIngDelete();
+          }
         } catch (error) {
           console.error(error);
+          this.errorMessage = error.message; // set the error message
+          this.snackbar = true; // show the snackbar
         }
     },
      /**
