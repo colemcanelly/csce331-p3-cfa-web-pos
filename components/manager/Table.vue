@@ -49,12 +49,33 @@
           <v-row>
             <v-col 
               v-for="(field, index) in headers"
-              v-if="field.text != 'Actions'"
+              v-if="field.text !== 'Actions'"
               :key="index"
               cols="12" sm="6" md="4"
             >
-              <v-text-field v-model="edited_item[field.value]" :label="field.text" required ></v-text-field>
-          <!-- {{ console.log(index) }} -->
+              <template v-if="field.value == 'menu_cat'">
+                <v-autocomplete
+                  v-model="edited_item[field.value]"
+                  :label="field.text"
+                  :items="categories"
+                  required
+                ></v-autocomplete>
+              </template>
+              <!-- <template v-else-if="field.value == 'combo'">
+                <v-autocomplete
+                v-model="edited_item[field.value]"
+                  :label="field.text"
+                  :items="combos"
+                  required
+                ></v-autocomplete>
+              </template> -->
+              <template v-else>
+                <v-text-field
+                  v-model="edited_item[field.value]"
+                  :label="field.text"
+                  required
+                ></v-text-field>
+              </template>
             </v-col>
           </v-row>
           <v-row>
@@ -178,6 +199,14 @@
         <v-btn color="primary" @click="getTable">Reset</v-btn>
       </template>
     </v-data-table>
+    <div v-if="errorMessage">
+            <v-snackbar v-model="snackbar">
+            <span v-if="errorMessage">{{ errorMessage }}</span>
+            <v-btn color="error" text @click="snackbar = false">
+              Close
+            </v-btn>
+          </v-snackbar>
+          </div>
   </v-card>
 </template>
 
@@ -195,6 +224,18 @@
       ingredientHeaders:[
         { text: 'Ingredient', value: 'ingredient' },
         { text: 'Quantity', value: 'portion_count' },
+      ],
+      categories:[
+          'main',
+          'breakfast',
+          'dessert',
+          'drink',
+          'condiment',
+          'seasonal',
+      ],
+      combos:[
+        'true',
+        'false'
       ],
       search: '',
       windowWidth: null,
@@ -614,6 +655,7 @@
         this.newDBItem(this.edited_item);
         this.table_data.push(this.edited_item);
       }
+      console.log("Combo",this.edited_item.combo)
       try {
         const currIngredient = {
           menu_item: this.edited_item.menu_item,
@@ -850,14 +892,25 @@
 
  */
       save () {
-        if (this.edited_index > -1) {
-          // Editing Current item       NEED AXIOS HERE
-          this.updateDBItem(this.edited_item);
-          Object.assign(this.table_data[this.edited_index], this.edited_item);
-        } else {
-          // Creating new item          NEED AXIOS HERE
-          this.newDBItem(this.edited_item);
-          this.table_data.push(this.edited_item);
+        try {
+          if (this.edited_item.food_price <= 0 || isNaN(this.edited_item.food_price)) {
+            throw new Error("Price must be a positive number");
+          }
+          else{
+            if (this.edited_index > -1) {
+              // Editing Current item       NEED AXIOS HERE
+              this.updateDBItem(this.edited_item);
+              Object.assign(this.table_data[this.edited_index], this.edited_item);
+            } else {
+              // Creating new item          NEED AXIOS HERE
+              this.newDBItem(this.edited_item);
+              this.table_data.push(this.edited_item);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+          this.errorMessage = error.message; // set the error message
+          this.snackbar = true; // show the snackbar
         }
         this.close();
       },
