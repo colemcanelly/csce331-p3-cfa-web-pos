@@ -26,8 +26,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$auth);
-    console.log(this.$auth.loggedIn);
     console.log(
       this.$auth.loggedIn ? "You are Logged In!" : "You are NOT logged in"
     );

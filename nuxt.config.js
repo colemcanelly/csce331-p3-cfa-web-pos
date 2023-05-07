@@ -64,12 +64,12 @@ export default {
     redirect: {
       login: '/login',
       logout: false,
-      callback: '/auth/googlelogin',
+      callback: '/api/googlelogin',
       home: '/login'
     },
     strategies: {
       google: {
-        clientId: '511540623278-r0vkbv8mojsd1veqq1kqfc2jodihmmv6.apps.googleusercontent.com',
+        clientId: process.env.CLIENT_ID,
         codeChallengeMethod: '',
         responseType: 'token id_token',
       },
