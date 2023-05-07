@@ -233,8 +233,10 @@ def simulate(start_date: datetime.date, num_weeks: int, min_profit: float) -> No
 
 
 def main() -> None:   
-    start_date: datetime.date = datetime.date(2022, 2, 21)
+    # start_date: datetime.date = datetime.date(2022, 2, 21)
+    end_date: datetime.date = datetime.date(2023, 5, 8)
     num_weeks = 100
+    start_date: datetime.date = end_date - datetime.timedelta(days=(num_weeks * 7))
     profit = 1900000.00
     print("Beginning simulation . . . ")
     print(f"\tBegin on {start_date},\n\tSimulate for {num_weeks} weeks,\n\tGenerate a minimum profit of ${profit}")
