@@ -14,28 +14,34 @@ module.exports = (app, pool) => {
         console.log("Hello");
         try {
             const { date } = req.body;
-            const query = `WITH cte AS (
-          SELECT 
-              ingredient, 
-              qty_sod, 
-              SUM(qty_sold) as total_qty_sold, 
-              ((qty_sod - SUM(qty_sold))/qty_sod)*100 as percentage_diff
-          FROM 
-              daily_inventory
-          WHERE 
-              entry_date >= '${date}' 
-          GROUP BY 
-              ingredient, qty_sod
-      )
-      SELECT 
-          ingredient, 
-          qty_sod, 
-          total_qty_sold, 
-          percentage_diff
-      FROM 
-          cte
-      WHERE 
-          percentage_diff > 90;`;
+            const query = `
+            WITH cte AS (
+                SELECT 
+                  ingredient, 
+                  qty_sod,
+                  ((qty_sod - (
+                    SELECT SUM(qty_sold) 
+                    FROM daily_inventory 
+                    WHERE entry_date >= '${date}' AND ingredient = di.ingredient
+                  ))/qty_sod)*100 as percentage_diff
+                FROM 
+                  daily_inventory di
+                WHERE 
+                  entry_date = '${date}' 
+              )
+              SELECT 
+                ingredient, 
+                qty_sod, 
+                ((SELECT SUM(qty_sold) 
+                  FROM daily_inventory 
+                  WHERE entry_date >= '${date}' AND ingredient = cte.ingredient)
+                 ) as total_qty_sold, 
+                percentage_diff
+              FROM 
+                cte
+              WHERE 
+                percentage_diff > 90;
+            `;
 
             const result = await pool.query(query);
             res.json(result.rows);

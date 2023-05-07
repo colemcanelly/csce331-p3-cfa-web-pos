@@ -42,8 +42,10 @@ export default {
     table: 'supply',
     headers: [
       { text: 'Ingredient', value: 'ingredient', sortable: false },
-      { text: 'Threshold', value: 'threshold' },
+      { text: 'Current Quantity', value: 'current_quantity' },
       { text: 'Restock Quantity', value: 'restock_quantity' },
+      { text: 'Threshold', value: 'threshold' },
+      
     ],
   })
 }

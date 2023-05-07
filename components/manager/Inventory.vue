@@ -162,8 +162,9 @@
       async getTable () {
         try {
           // console.log("Getting table");
-          const response = await this.$axios.get(`/${this.table}`);
+          const response = await this.$axios.get(`/supply`);
           this.table_data = response.data;
+          console.log(response.data);
         } catch (err) {
           console.log("ERROR");
           console.log("ERROR getTable()");

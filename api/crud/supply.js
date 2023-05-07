@@ -30,7 +30,30 @@ module.exports = (app, pool) => {
     // READ
     app.get("/supply", async (req, res) => {
         try {
-            const allTodos = await pool.query("SELECT * FROM supply");
+            const q = `
+            SELECT 
+            s.*, 
+            di.qty_eod AS current_quantity
+          FROM 
+            supply s
+          JOIN 
+            (
+              SELECT 
+                ingredient, 
+                MAX(entry_date) AS max_date 
+              FROM 
+                daily_inventory 
+              GROUP BY 
+                ingredient
+            ) latest_di
+          ON 
+            s.ingredient = latest_di.ingredient
+          JOIN 
+            daily_inventory di
+          ON 
+            latest_di.ingredient = di.ingredient 
+            AND latest_di.max_date = di.entry_date;`;
+            const allTodos = await pool.query(q);
             res.json(allTodos.rows);
         } catch (err) {
             console.error(err.message);
@@ -53,21 +76,56 @@ module.exports = (app, pool) => {
      * @param  res - confirmation that supply ingredient was updated
      * @return {void}
      */
+    // app.put("/supply", async (req, res) => {
+    //     try {
+    //         const { ingredient, threshold, restock_quantity } = req.body;
+    //         const q = `
+    //             UPDATE supply
+    //             SET threshold = '${threshold}', restock_quantity = ${restock_quantity}
+    //             WHERE ingredient = '${ingredient}'`;
+    //         console.log(q);
+    //         const updateSupply = await pool.query(q);
+    //         res.json("Supply was updated!");
+    //     } catch (err) {
+    //         console.error("Error updating supply item:", err.message);
+    //         res.status(500).send("Error updating supply item");
+    //     }
+    // });
     app.put("/supply", async (req, res) => {
         try {
-            const { ingredient, threshold, restock_quantity } = req.body;
-            const q = `
-                UPDATE supply
-                SET threshold = '${threshold}', restock_quantity = ${restock_quantity}
-                WHERE ingredient = '${ingredient}'`;
-            console.log(q);
-            const updateSupply = await pool.query(q);
-            res.json("Supply was updated!");
+          const { ingredient, threshold, restock_quantity, current_quantity } = req.body;
+      
+          // update the supply table
+          const updateSupplyQuery = `
+            UPDATE 
+              supply 
+            SET 
+              restock_quantity = ${restock_quantity}, 
+              threshold = '${threshold}'
+            WHERE 
+              ingredient = '${ingredient}';
+          `;
+          await pool.query(updateSupplyQuery);
+      
+          // update the daily_inventory table with the current_quantity
+          const updateInventoryQuery = `
+            UPDATE daily_inventory
+            SET qty_eod = ${current_quantity}
+            WHERE ingredient = '${ingredient}'
+            AND entry_date = (
+                SELECT MAX(entry_date)
+                FROM daily_inventory
+                WHERE ingredient = '${ingredient}'
+            )
+          `;
+          const response = await pool.query(updateInventoryQuery);
+            console.log(response)
+          res.json(response);
         } catch (err) {
-            console.error("Error updating supply item:", err.message);
-            res.status(500).send("Error updating supply item");
+          console.error("Error updating supply item:", err.message);
+          res.status(500).send("Error updating supply item");
         }
-    });
+      });
 
 
     /**
