@@ -62,64 +62,10 @@
        * @type {array}
        */
       headers: [
-        {
-          /**
-           * The text displayed in the table header for the 'Ingredient' column
-           * @type {string}
-           */
-          text: 'Ingredient',
-
-          /**
-           * The value used for sorting in the 'Ingredient' column
-           * @type {string}
-           */
-          value: 'ingredient',
-
-          /**
-           * Whether or not the 'Ingredient' column is sortable
-           * @type {boolean}
-           */
-          sortable: false,
-        },
-        {
-          /**
-           * The text displayed in the table header for the 'Start Quantity' column
-           * @type {string}
-           */
-          text: 'Start Quantity',
-
-          /**
-           * The value used for sorting in the 'Start Quantity' column
-           * @type {string}
-           */
-          value: 'qty_sod',
-        },
-        {
-          /**
-           * The text displayed in the table header for the 'Quantity Sold' column
-           * @type {string}
-           */
-          text: 'Quatity Sold',
-
-          /**
-           * The value used for sorting in the 'Quantity Sold' column
-           * @type {string}
-           */
-          value: 'total_qty_sold',
-        },
-        {
-          /**
-           * The text displayed in the table header for the 'Percent Difference' column
-           * @type {string}
-           */
-          text: 'Percent Difference',
-
-          /**
-           * The value used for sorting in the 'Percent Difference' column
-           * @type {string}
-           */
-          value: 'percentage_diff',
-        },
+        { text: 'Ingredient', value: 'ingredient', sortable: false },
+        { text: 'Start Quantity', value: 'qty_sod' },
+        { text: 'Quantity Sold', value: 'total_qty_sold' },
+        { text: 'Percent Difference', value: 'percentage_diff' },
       ],
     }),
   };

@@ -72,6 +72,9 @@
       :search="search"
       sort-by="calories"
     >
+    <template v-slot:item.current_quantity="{ item }">
+      {{ item.current_quantity.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+    </template>
       <template v-slot:top>
         <!-- Delete Item -->
         <v-dialog v-model="dialogDelete" max-width="500px">
@@ -111,7 +114,7 @@
       headers: Array,
       title: String,
       table: String,
-      table: String
+      table: String,
       // table: {
       //   type: String,
       //   validator(value) { return ['menu', 'supply'].includes(value); }

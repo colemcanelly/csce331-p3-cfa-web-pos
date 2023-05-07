@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="server-container">
     <v-row>
       <v-col cols="8">
         <!-- <v-btn @click="translatePage('fr')">Translate to French</v-btn> -->
@@ -20,8 +20,9 @@
                     <v-card class="menu-button" elevation="2" @click="addItemToOrder(menuItem)" style="padding: 0px;">
                         <v-card-title class="text-sm-center wrap-word keep-words " style="font-size: 14px; padding: 0px;">{{ menuItem.menu_item }}</v-card-title>
                         <!-- <v-img max-height="100" max-width="150" :src="menuItem.img"></v-img> -->
-                        <v-card-text class="text-center" style="padding: 0px;">{{  menuItem.food_price }}</v-card-text>
-                      
+                        <v-card-text class="text-center" style="padding: 0px;">
+                          {{ menuItem.food_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+                        </v-card-text>     
                     </v-card>
                   </v-col>
                 </v-row>
@@ -40,6 +41,9 @@
             hide-default-footer
             sort-by="calories"
             >
+              <template v-slot:item.food_price="{ item }">
+                {{ item.food_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+              </template>
               <template v-slot:top>
                 <!-- Delete Item -->
                 <v-dialog v-model="dialogDelete" max-width="500px">
@@ -67,7 +71,7 @@
 
         <div class="text-center">
           <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
-          <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
+          <!-- <v-card-text class = "text-center">Total Price: ${{ totalPrice }}</v-card-text> -->
         </div>
         
       </v-col>
@@ -77,6 +81,10 @@
 </template>
 
 <style>
+body {
+  position: fixed;
+  overflow: hidden;
+}
 .overflow-y-auto {
   max-height: 62vh;
   min-height: 62vh;
@@ -93,6 +101,9 @@
 
 .orders {
   margin-bottom: 20px;
+}
+.server-container {
+  /* overflow: hidden; */
 }
 
 </style>
@@ -119,8 +130,6 @@ export default {
       tab: 1,
       /** The active window tab index */
       windowTab: 1,
-      /** The total price of the current order */
-      totalPrice: 2,
       /** The items in the current order */
       currentOrder: [],
       /** The menu items */
@@ -158,6 +167,7 @@ export default {
         console.error(error);
       }
     },
+
     /** Gets the menu items */
     async getMenu () {
       try {
@@ -174,7 +184,7 @@ export default {
      */
     addItemToOrder(item) {
       console.log(item);
-      this.$set(this.currentOrder, this.currentOrder.length, item);
+      this.$set(this.currentOrder, this.currentOrder.length, item);   
     },
     /**
      * Removes an item from the current order
@@ -223,6 +233,9 @@ export default {
         },
     },
     computed: {
+      totalPrice() {
+    return this.currentOrder.reduce((acc, item) => acc + parseFloat(item.food_price), 0).toFixed(2);
+      },
       currentCategory() {
         console.log(this.tab);
         switch (this.tab) {
@@ -245,6 +258,12 @@ export default {
         return this.tableData.filter((menuItem) => menuItem.menu_cat === this.currentCategory);
       },
     },
+    watch: {
+    totalPrice: function(newTotalPrice, oldTotalPrice) {
+      console.log("Emmiting Price", newTotalPrice)
+      this.$root.$emit('total-price-updated', newTotalPrice);
+    }
+}
 
 };
 </script>
