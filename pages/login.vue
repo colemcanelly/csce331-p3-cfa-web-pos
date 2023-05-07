@@ -160,10 +160,8 @@ export default {
       try {
         // console.log(`Logging in as ${this.loginEmail}, with pw = ${this.loginPassword}`);
         const response = await this.$axios.post(`/login`, {
-          auth: {
-            username: this.loginEmail,
-            password: this.loginPassword
-          }
+          username: this.loginEmail,
+          password: this.loginPassword
         });
         this.$router.push(response.data);
       } catch (err) {
