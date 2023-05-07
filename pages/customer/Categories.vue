@@ -8,7 +8,7 @@
                     <div><img src="/combos.png" class="image"></div>
                 </v-col>
                 <v-col cols="5" align-self-center>
-                        <v-card elevation="0"><v-card-title text-center style="vertical-align: center">Combos</v-card-title></v-card>
+                        <v-card elevation="0"><v-card-title text-center style="vertical-align: center">Main</v-card-title></v-card>
                 </v-col>
             </v-row>
         </v-card>
