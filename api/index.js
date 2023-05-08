@@ -28,7 +28,7 @@ passport.use(
     new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/api/googlelogin/callback"
+        callbackURL: "https://cfapos.fly.dev/api/googlelogin/callback"
     },
     (accessToken, refreshToken, profile, callback) => {
         userProfile = profile;
