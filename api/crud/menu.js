@@ -71,7 +71,17 @@ module.exports = (app, pool) => {
         try {
             const { menu_item, food_price, combo, menu_cat } = req.body;
             const delete_menu_item = await pool.query(
-                `DELETE FROM menu WHERE menu_item = '${menu_item}';`
+                `
+                DELETE FROM order_items
+                WHERE menu_item = '${menu_item}';
+
+                DELETE FROM recipes 
+                WHERE menu_item = '${menu_item}';
+
+                DELETE FROM menu 
+                WHERE menu_item = '${menu_item}';
+                
+                ;`
             );
             res.json(`Menu item successfully deleted`);
         } catch (err) {

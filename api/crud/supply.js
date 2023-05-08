@@ -14,16 +14,33 @@ module.exports = (app, pool) => {
      * @return {void}
      */
     app.post("/supply", async (req, res) => {
-        try {
-            const { ingredient, threshold, restock_quantity } = req.body;
-            const q = `INSERT INTO supply VALUES ('${ingredient}', ${threshold}, ${restock_quantity});`;
-            // console.log(q);
-            const newItem = await pool.query(q);
-            res.json(newItem.rows[0]);
-        } catch (err) {
-            console.error("Error posting new supply item:", err);
-            res.status(500).send("Error posting new supply item");
-        }
+      try {
+        const { ingredient, threshold, restock_quantity, current_quantity } = req.body;
+    
+        // Insert new row in supply table
+        const insertSupplyQuery = `
+          INSERT INTO supply (ingredient, threshold, restock_quantity)
+          VALUES ('${ingredient}', ${threshold}, ${restock_quantity})
+          RETURNING *
+        `;
+        const newSupplyItem = await pool.query(insertSupplyQuery);
+    
+        // Insert new row in daily_inventory table
+        const insertInventoryQuery = `
+          INSERT INTO daily_inventory (ingredient, entry_date, qty_sod, qty_eod)
+          VALUES ('${ingredient}', NOW(), ${current_quantity}, ${current_quantity})
+          RETURNING *
+        `;
+        const newInventoryItem = await pool.query(insertInventoryQuery);
+    
+        res.json({
+          supply: newSupplyItem.rows[0],
+          inventory: newInventoryItem.rows[0]
+        });
+      } catch (err) {
+        console.error("Error posting new supply item:", err);
+        res.status(500).send("Error posting new supply item");
+      }
     });
 
 
@@ -139,7 +156,16 @@ module.exports = (app, pool) => {
         try {
             const { ingredient, threshold, restock_quantity } = req.body;
             const delete_ingredient = await pool.query(
-                `DELETE FROM supply WHERE ingredient = '${ingredient}';`
+                `
+                DELETE FROM daily_inventory 
+                WHERE ingredient = '${ingredient}';
+
+                DELETE FROM recipes 
+                WHERE ingredient = '${ingredient}';
+
+                DELETE FROM supply 
+                WHERE ingredient = '${ingredient}';
+                `
             );
             // console.log(`Deleting ${ingredient}`);
             res.json(`Supply item successfully deleted`);
