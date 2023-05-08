@@ -26,7 +26,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/cfa-favicon.png' }
     ]
   },
 
@@ -64,19 +64,22 @@ export default {
     redirect: {
       login: '/login',
       logout: false,
-      callback: '/auth/googlelogin',
+      callback: '/api/googlelogin',
       home: '/login'
     },
     strategies: {
       google: {
-        clientId: '511540623278-r0vkbv8mojsd1veqq1kqfc2jodihmmv6.apps.googleusercontent.com',
+        clientId: process.env.CLIENT_ID,
         codeChallengeMethod: '',
         responseType: 'token id_token',
+        endpoints: {
+          // userInfo: '/googlelogin/user'
+        }
       },
     }
   },
   router: {
-    middleware: ['auth']
+    // middleware: ['auth']
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

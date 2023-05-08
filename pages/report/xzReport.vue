@@ -6,6 +6,7 @@
           <v-btn
             color="primary"
             outlined
+            x-large
             @click="getXReport"
           >
             Generate X Report
@@ -17,6 +18,7 @@
           <v-btn
             color="primary"
             outlined
+            x-large
             @click="getZReport"
           >
             Generate Z Report
@@ -26,17 +28,19 @@
           <v-row>
             <v-col cols="12">
                 <v-card>
-                  <v-card-title>{{ reportType }}</v-card-title>
+                  <v-card-title style="font-size: 30px;">{{ reportType }}</v-card-title>
                 </v-card>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="6">
                 <v-card>
-                  <v-card-text>
+                  <v-card-text style="font-size:25px; ">
                     This report covers all sales since 
                     <br>
+                    <br>
                     {{ startString }}
+                    <br>
                     <br>
                     {{ endDate  }} , {{ endTime }}
                   </v-card-text>
@@ -44,8 +48,9 @@
             </v-col>
             <v-col cols="6">
                 <v-card>
-                  <v-card-text>
+                  <v-card-text style="font-size:25px; ">
                     Sales:
+                    <br>
                     <br>
                     ${{  numSales }}
                   </v-card-text>

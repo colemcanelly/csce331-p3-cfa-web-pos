@@ -1,11 +1,14 @@
 <template>
   <v-app>
+    <v-container>
      <v-row>
-       <v-col cols="12"><v-card ><v-card-title class="text-center">Nearby Chick-Fil-A Locations</v-card-title ></v-card></v-col>
-      
-         <v-col cols="12"><v-card id="map" style="height: 500px;"></v-card></v-col>
+       <v-col style="padding: 4px;" cols="12" md="6"><v-card ><v-card-title style="font-size:35px" class="text-center font-weight-bold">Nearby Chick-Fil-A Locations</v-card-title ></v-card></v-col>
+
+         <v-col style="padding: 4px;" cols="12" md="6"><v-card id="map" style="height: 500px;"></v-card></v-col>
+        </v-row>
+      </v-container>
     
-       </v-row>
+       
   
   
     
@@ -13,7 +16,9 @@
   </template>
     <script>
    export default {
-  
+    /**
+   * @module Nearby
+   */
   
      name: "NearbyPage",
      layout: 'customer',
@@ -28,8 +33,8 @@
          ],
        };
      },
-     /**
-    * creates the Map object by calling on the Google API
+    /**
+    * @function creates the Map object by calling on the Google API
     * and initializing it, looping through the listed
     * coordinates of Chick-Fil-A locations to place markers on it,
     * and finally appending it to the actual page
@@ -41,8 +46,8 @@
        script.async = true;
         window.initMap = () => {
          const map = new google.maps.Map(document.getElementById('map'), {
-           center: { lat: 30.6219, lng: -96.3263 },
-           zoom: 12
+           center: { lat: 30.61246, lng: -96.34091 },
+           zoom: 16
          });
   
   

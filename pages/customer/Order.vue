@@ -3,7 +3,7 @@
     <v-container>
     
     
-       <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Order Summary</v-card-title ></v-card></v-col></v-row>
+       <v-row><v-col cols="12"><v-card ><v-card-title style="font-size:40px" class="text-center font-weight-bold">Order Summary</v-card-title ></v-card></v-col></v-row>
       
        <v-row>
            <v-col cols="12" v-for="item in currentOrder" :key="item.id">
@@ -15,12 +15,12 @@
                </v-card>
            </v-col>
            <v-col cols = "12">
-               <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
+               <v-card-text class = "text-center" style="font-size:30px;">Total Price: ${{ this.totalPrice }}</v-card-text>
            </v-col>
        </v-row>
        <v-row>
-           <v-col justify>
-               <v-btn justify mb-2 ml-2 mr-2 x-large elevation="2" @click="submitOrder">Submit Order</v-btn>
+           <v-col cols="12" class="text-center">
+               <v-btn mb-2 ml-2 mr-2 x-large block elevation="2" style="font-size: 30px" @click="submitOrder">Submit Order</v-btn>
            </v-col>
        </v-row>
       
@@ -32,8 +32,28 @@
     
     
     <script>
+/**
+ * Importing the currentOrder object from temp-data file
+ * @module CustomerPage
+ */
+
     import { currentOrder } from '~/static/temp-data';
     // import {totalPrice} from '~/static/temp-data'
+
+    /**
+ * The OrderPage component
+ * @typedef {Object} OrderPage
+ * @property {string} name - The name of the component
+ * @property {string} layout - The name of the layout
+ * @property {Object} data - The component data
+ * @property {Array} currentOrder - The current order items
+ * @property {number} totalPrice - The total price of the order
+ * @property {number} i - The index of the current order item
+ * @property {Object} methods - The component methods
+ * @property {Function} removeItemFromOrder - A method that removes an item from the order
+ * @property {Function} submitOrder - A method that submits the order to the database
+ * @property {Function} mounted - A lifecycle hook that runs when the component is mounted
+ */
     
     
     export default {
@@ -48,12 +68,10 @@
        },
        methods: {
             /**
-            * splices off the input item from the currentOrder array so that
-            * it will not be included in eitehr display or submission
-            * @param {menuItem} item - the menuItem that is attached to the same
-            * component of the remove item button that was pressed
-            * @return {void}
-            */
+     * A method that removes an item from the order
+     * @param {Object} item - The menuItem that is attached to the same component of the remove item button that was pressed
+     * @return {void}
+     */
            removeItemFromOrder(item) {
                const index = this.currentOrder.findIndex(obj => obj === item)
                if (index !== -1) {
@@ -69,6 +87,7 @@
             * then clears array and refreshes the page
             * @return {void}
             */
+
            async submitOrder() {
              console.log(this.currentOrder);
              if (this.currentOrder.length > 0) {

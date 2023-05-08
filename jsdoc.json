@@ -1,9 +1,14 @@
 {
     "source": {
-        "include": ["./api", "./pages", "./layouts", "./components"],
-        "exclude": ["node_modules", "dist"]
-      },
-    "plugins": ["plugins/markdown"],
+      "include": ["./api", "./pages", "./layouts", "./docs/components", "./pages/report", "./pages/customer"],
+      "includePattern": "\\.(vue|js)$",
+      "exclude": ["node_modules"]
+    },
+    "plugins": [
+      "plugins/markdown",
+      "node_modules/jsdoc-vue-component",
+      "node_modules/jsdoc-vuejs"
+    ],
     "opts": {
       "destination": "docs"
     },

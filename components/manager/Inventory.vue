@@ -72,6 +72,9 @@
       :search="search"
       sort-by="calories"
     >
+    <template v-slot:item.current_quantity="{ item }">
+      {{ item.current_quantity.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+    </template>
       <template v-slot:top>
         <!-- Delete Item -->
         <v-dialog v-model="dialogDelete" max-width="500px">
@@ -85,6 +88,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <div v-if="errorMessage">
+            <v-snackbar v-model="snackbar">
+            <span v-if="errorMessage">{{ errorMessage }}</span>
+            <v-btn color="error" text @click="snackbar = false">
+              Close
+            </v-btn>
+          </v-snackbar>
+          </div>
       </template>
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
@@ -103,7 +114,7 @@
       headers: Array,
       title: String,
       table: String,
-      table: String
+      table: String,
       // table: {
       //   type: String,
       //   validator(value) { return ['menu', 'supply'].includes(value); }
@@ -130,6 +141,9 @@
         carbs: null,
         protein: null,
       },
+      snackbar:false,
+    errorMessage:'',
+
     }),
     computed: {
       formTitle () {
@@ -162,8 +176,9 @@
       async getTable () {
         try {
           // console.log("Getting table");
-          const response = await this.$axios.get(`/${this.table}`);
+          const response = await this.$axios.get(`/supply`);
           this.table_data = response.data;
+          console.log(response.data);
         } catch (err) {
           console.log("ERROR");
           console.log("ERROR getTable()");
@@ -176,7 +191,7 @@
           const response = await this.$axios.delete(`/${this.table}`, { data: item });
           console.log(response);
         } catch (err) { 
-          console.log("ERROR deleteDBItem()");
+          console.log("ERROR deleteDBInventory()");
           console.log(err);
         }
       },
@@ -185,7 +200,7 @@
           const response = await this.$axios.post(`/${this.table}`, item);
           console.log(response);
         } catch (err) { 
-          console.log("ERROR newDBItem()");
+          console.log("ERROR newDBInventory()");
           console.log(err);
         }
       },
@@ -195,7 +210,7 @@
           const response = await this.$axios.put(`/${this.table}`, item);
           console.log(response);
         } catch (err) { 
-          console.log("ERROR updateDBItem()");
+          console.log("ERROR updateDBInventory()");
           console.log(err);
         }
       },
@@ -243,23 +258,40 @@
         })
       },
       save () {
-        if (this.edited_index > -1) {
-          // Editing Current item       NEED AXIOS HERE
-          Object.assign(this.table_data[this.edited_index], this.edited_item)
-          this.updateDBItem(this.edited_item);
-          Object.assign(this.table_data[this.edited_index], this.edited_item);
-        } else {
-          // Creating new item          NEED AXIOS HERE
-          this.table_data.push(this.edited_item)
-          this.newDBItem(this.edited_item);
-          this.table_data.push(this.edited_item);
+        try {
+          if (this.edited_item.threshold <= 0 || isNaN(this.edited_item.threshold)) {
+            throw new Error("Threshold must be a positive number");
+          }
+          if(this.edited_item.restock_quantity <= 0 || isNaN(this.edited_item.restock_quantity)){
+            throw new Error("Restock Quantity must be a positive number");
+          }
+          if (this.edited_item.current_quantity <= 0 || isNaN(this.edited_item.current_quantity)) {
+            throw new Error("Current Quanity must be a positive number");
+          }          
+          else{
+            if (this.edited_index > -1) {
+            // Editing Current item       NEED AXIOS HERE
+            Object.assign(this.table_data[this.edited_index], this.edited_item)
+            this.updateDBItem(this.edited_item);
+            Object.assign(this.table_data[this.edited_index], this.edited_item);
+            } else {
+            // Creating new item          NEED AXIOS HERE
+            this.table_data.push(this.edited_item)
+            this.newDBItem(this.edited_item);
+            this.table_data.push(this.edited_item);
+            }
+            this.close();
+          }
+        } catch (error) {
+          console.error(error);
+          this.errorMessage = error.message; // set the error message
+          this.snackbar = true; // show the snackbar
         }
-        this.close()
         this.close();
       },
       onResize() {
         this.windowWidth = window.innerWidth;
-      }
+      },
     },
   }
 </script>

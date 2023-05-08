@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/customer/Categories.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/customer/Categories.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+&lt;v-app>
+&lt;v-container>
+    &lt;NuxtLink to="./Combos" class="link">
+        &lt;v-card class="center">
+            &lt;v-row>
+                &lt;v-col cols="7">
+                    &lt;div>&lt;img src="/combos.png" class="image">&lt;/div>
+                &lt;/v-col>
+                &lt;v-col cols="5" align-self-center>
+                        &lt;v-card elevation="0">&lt;v-card-title text-center style="vertical-align: center">Combos&lt;/v-card-title>&lt;/v-card>
+                &lt;/v-col>
+            &lt;/v-row>
+        &lt;/v-card>
+    &lt;/NuxtLink> 
+    &lt;NuxtLink to="./Breakfast" class="link">
+        &lt;v-card class="center">
+            &lt;v-row>
+                &lt;v-col cols="7">
+                        &lt;div>&lt;img src="/breakfast.png" class="image">&lt;/div>
+                &lt;/v-col>
+                &lt;v-col cols="5" align-self-center>
+                        &lt;v-card elevation="0">&lt;v-card-title text-center style="display: flex; align-items: center;">Breakfast&lt;/v-card-title>&lt;/v-card>
+                &lt;/v-col>
+            &lt;/v-row>
+        &lt;/v-card>
+    &lt;/NuxtLink>
+    &lt;NuxtLink to="./Drinks" class="link">
+        &lt;v-card class="center">
+            &lt;v-row>
+                &lt;v-col cols="7">
+                        &lt;div>&lt;img src="/drink.jpeg" class="image">&lt;/div>
+                &lt;/v-col>
+                &lt;v-col cols="5" align-self-center>
+                        &lt;div>&lt;v-card-title class="text-center">Drinks&lt;/v-card-title>&lt;/div>
+                &lt;/v-col>
+            &lt;/v-row>
+        &lt;/v-card>
+    &lt;/NuxtLink>
+    &lt;NuxtLink to="./Desserts" class="link">
+        &lt;v-card class="center">
+            &lt;v-row>
+                &lt;v-col cols="7">
+                        &lt;div>&lt;img src="/dessert.png" class="image">&lt;/div>
+                &lt;/v-col>
+                &lt;v-col cols="5" align-self-center>
+                        &lt;div>&lt;v-card-title class="text-center">Desserts&lt;/v-card-title>&lt;/div>
+                &lt;/v-col>
+            &lt;/v-row>
+        &lt;/v-card>
+    &lt;/NuxtLink>
+    &lt;NuxtLink to="./Seasonal" class="link">
+        &lt;v-card class="center">
+            &lt;v-row>
+                &lt;v-col cols="7">
+                        &lt;div>&lt;img src="/seasonal.png" class="image">&lt;/div>
+                &lt;/v-col>
+                &lt;v-col cols="5" align-self-center>
+                        &lt;div>&lt;v-card-title class="text-center">Seasonal&lt;/v-card-title>&lt;/div>
+                &lt;/v-col>
+            &lt;/v-row>
+        &lt;/v-card>
+    &lt;/NuxtLink>
+&lt;/v-container>
+&lt;/v-app>
+&lt;/template>
+
+&lt;script>
+/**
+ * @module Categories
+ */
+
+export default {
+    name: "CategoriesPage",
+    layout: 'customer',
+}
+&lt;/script>
+
+&lt;style scoped>
+
+.link {
+    text-decoration: none;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    vertical-align: center;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: center;
+  height: 200px; /* Set the height of the container as needed */
+}
+
+.cfa-red-text {
+    text-decoration: cfa-red;
+}
+
+&lt;/style scoped></code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Breakfeast.html">Breakfeast</a></li><li><a href="module-Categories.html">Categories</a></li><li><a href="module-Combos.html">Combos</a></li><li><a href="module-CustomerPage.html">CustomerPage</a></li><li><a href="module-Drinks.html">Drinks</a></li><li><a href="module-ManagerInventoryPage.html">ManagerInventoryPage</a></li><li><a href="module-ManagerMenuPage.html">ManagerMenuPage</a></li><li><a href="module-Nearby.html">Nearby</a></li><li><a href="module-ReportsPage.html">ReportsPage</a></li><li><a href="module-Seasonal.html">Seasonal</a></li><li><a href="module-ServerPage.html">ServerPage</a></li><li><a href="module-components_Login.html">components/Login</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue May 02 2023 23:06:28 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

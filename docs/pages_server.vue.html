@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/server.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/server.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;v-container>
+    &lt;v-row>
+      &lt;v-col cols="8">
+        &lt;!-- &lt;v-btn @click="translatePage('fr')">Translate to French&lt;/v-btn> -->
+        &lt;v-card>
+          &lt;v-tabs v-model="tab" show-arrows color="deep-purple-accent-4" align-tabs="center">
+            &lt;v-tab :value="0">Main&lt;/v-tab>
+            &lt;v-tab :value="1">breakfast&lt;/v-tab>
+            &lt;v-tab :value="2">Drinks&lt;/v-tab>
+            &lt;v-tab :value="3">Condiments&lt;/v-tab>
+            &lt;v-tab :value="4">Desserts&lt;/v-tab>
+            &lt;v-tab :value="5">Seasonal&lt;/v-tab>
+          &lt;/v-tabs>
+          &lt;v-window v-model="windowTab" class="overflow-y-auto">
+            &lt;v-window-item v-for="n in 5" :key="n" :value="n">
+              &lt;v-container fluid>
+                &lt;v-row>
+                  &lt;v-col v-for="menuItem in currentMenuItems" :key="menuItem.id" cols="4" md="4">
+                    &lt;v-card class="menu-button" elevation="2" @click="addItemToOrder(menuItem)" style="padding: 0px;">
+                        &lt;v-card-title class="text-sm-center wrap-word keep-words " style="font-size: 14px; padding: 0px;">{{ menuItem.menu_item }}&lt;/v-card-title>
+                        &lt;!-- &lt;v-img max-height="100" max-width="150" :src="menuItem.img">&lt;/v-img> -->
+                        &lt;v-card-text class="text-center" style="padding: 0px;">{{  menuItem.food_price }}&lt;/v-card-text>
+                      
+                    &lt;/v-card>
+                  &lt;/v-col>
+                &lt;/v-row>
+              &lt;/v-container>
+            &lt;/v-window-item>
+          &lt;/v-window>
+        &lt;/v-card>
+      &lt;/v-col>
+      &lt;v-col cols="4">
+        &lt;v-card class="overflow-y-auto orders">
+          &lt;p>Order&lt;/p>
+            &lt;v-data-table
+            :headers="headers.concat({text: 'Actions', value: 'actions', sortable: false})"
+            :items="currentOrder"
+            :search="search"
+            hide-default-footer
+            sort-by="calories"
+            >
+              &lt;template v-slot:top>
+                &lt;!-- Delete Item -->
+                &lt;v-dialog v-model="dialogDelete" max-width="500px">
+                  &lt;v-card>
+                    &lt;v-card-title class="text-h5">Are you sure you want to delete this item?&lt;/v-card-title>
+                    &lt;v-card-actions>
+                      &lt;v-spacer>&lt;/v-spacer>
+                      &lt;v-btn color="blue darken-1" text @click="closeDelete">Cancel&lt;/v-btn>
+                      &lt;v-btn color="blue darken-1" text @click="deleteItemConfirm">OK&lt;/v-btn>
+                      &lt;v-spacer>&lt;/v-spacer>
+                    &lt;/v-card-actions>
+                  &lt;/v-card>
+                &lt;/v-dialog>
+              &lt;/template>
+              &lt;template v-slot:item.actions="{ item }">
+                &lt;v-icon small @click="removeItemFromOrder(item)">mdi-delete&lt;/v-icon>
+              &lt;/template>
+              &lt;template v-slot:no-data>
+                &lt;v-btn color="primary">Add Menu Items&lt;/v-btn>
+            &lt;/template>
+          &lt;/v-data-table>
+                              
+          &lt;!-- &lt;v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="removeItemFromOrder(item)">Remove From Order&lt;/v-btn> -->
+        &lt;/v-card>
+
+        &lt;div class="text-center">
+          &lt;v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order&lt;/v-btn>
+          &lt;v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}&lt;/v-card-text>
+        &lt;/div>
+        
+      &lt;/v-col>
+
+    &lt;/v-row>
+  &lt;/v-container>
+&lt;/template>
+
+&lt;style>
+.overflow-y-auto {
+  max-height: 62vh;
+  min-height: 62vh;
+}
+
+.wrap-word {
+  word-wrap: break-word;
+  word-break: keep-all;
+}
+
+.menu-button {
+  min-height: 100px;
+}
+
+.orders {
+  margin-bottom: 20px;
+}
+
+&lt;/style>
+
+&lt;script>
+import Header from '@/components/server/Header.vue';
+
+/**
+ * Server Page Component
+ * @module ServerPage
+ * @component
+ */
+export default {
+  /** The layout for this component */
+  layout: 'server',
+  /** The child components for this component */
+  components: {
+    Header
+  },
+  /** The data properties for this component */
+  data() {
+    return {
+      /** The active tab index */
+      tab: 1,
+      /** The active window tab index */
+      windowTab: 1,
+      /** The total price of the current order */
+      totalPrice: 2,
+      /** The items in the current order */
+      currentOrder: [],
+      /** The menu items */
+      tableData: [],
+      /** The headers for the menu table */
+      headers: [
+        {text: 'Item', value: 'menu_item'},
+        {text: 'Price', value: 'food_price'}
+      ]
+    };
+  },
+  /** The mounted hook for this component */
+  mounted: function() {
+    this.getMenu();
+    for (this.i = 0; this.i &lt; this.currentOrder.length; this.i++) {
+      this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
+    }
+    this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
+  },
+  /** The methods for this component */
+  methods: {
+    /**
+     * Translates the page to the specified target language
+     * @async
+     * @param {string} target - The target language
+     */
+    async translatePage(target) {
+      console.log("START - Translate page");
+      //const body = { text: document.documentElement.innerHTML, target };
+      const body = {text: 'Only work no play makes johnny goes crazy.', target};
+      try {
+        const response = await this.$axios.post('/translate', body);
+        document.documentElement.innerHTML = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    /** Gets the menu items */
+    async getMenu () {
+      try {
+        const response = await this.$axios.get('/menu');
+        this.tableData = response.data;
+      } catch (err) {
+        console.log("ERROR");
+        console.log(err);
+      }
+    },
+    /**
+     * Adds an item to the current order
+     * @param {object} item - The item to add
+     */
+    addItemToOrder(item) {
+      console.log(item);
+      this.$set(this.currentOrder, this.currentOrder.length, item);
+    },
+    /**
+     * Removes an item from the current order
+     * @param {object} item - The item to remove
+     */
+    removeItemFromOrder(item) {
+      const index = this.currentOrder.findIndex(obj => obj === item)
+      if (index !== -1) {
+        this.currentOrder.splice(index,1);
+      }
+      console.log(this.currentOrder)
+      localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+      this.totalPrice = this.computedTotalPrice;
+    },
+    /** Submits the current order */
+        async submitOrder() {
+          console.log(this.currentOrder);
+          if (this.currentOrder.length > 0) {
+            console.log("Trying to submit order");
+            const orderData = {
+              order_date: new Date().toISOString().slice(0, 10), // get current date in YYYY-MM-DD format
+              order_time: new Date().toLocaleTimeString('en-US', { hour12: false }).substring(0, new Date().toLocaleTimeString('en-US', { hour12: false }).lastIndexOf(':')) + ':00',
+              customer_fname: 'John', // replace with actual customer name
+              currentOrder: this.currentOrder,
+              order_creator: 1,
+            };
+            try {
+              const response = await this.$axios.post('/order', orderData);
+              console.log(response);
+              //this.tableData = response.data
+              //this.tableData = response.data;
+            } catch (err) {
+              console.log("ERROR");
+              console.log(err);
+            }
+            var index = 0
+            for (index;index &lt; this.currentOrder.length;index++) {
+                this.currentOrder.splice(index,1);
+            }
+            this.currentOrder.length = 0;
+            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+          }
+          else{
+            console.log("CurrentOrder.length == 0");
+          }
+        },
+    },
+    computed: {
+      currentCategory() {
+        console.log(this.tab);
+        switch (this.tab) {
+          case 0:
+            return 'main';
+          case 1:
+            return 'breakfast';
+          case 2:
+            return 'drink';
+          case 3:
+            return 'condiment';
+          case 4:
+            return 'dessert';
+          case 5:
+            return 'seasonal';
+        }
+      },
+      currentMenuItems() {
+        console.log(this.currentCategory);
+        return this.tableData.filter((menuItem) => menuItem.menu_cat === this.currentCategory);
+      },
+    },
+
+};
+&lt;/script>
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Breakfeast.html">Breakfeast</a></li><li><a href="module-Combos.html">Combos</a></li><li><a href="module-CustomerPage.html">CustomerPage</a></li><li><a href="module-Drinks.html">Drinks</a></li><li><a href="module-ManagerInventoryPage.html">ManagerInventoryPage</a></li><li><a href="module-ManagerMenuPage.html">ManagerMenuPage</a></li><li><a href="module-Nearby.html">Nearby</a></li><li><a href="module-ReportsPage.html">ReportsPage</a></li><li><a href="module-Seasonal.html">Seasonal</a></li><li><a href="module-ServerPage.html">ServerPage</a></li><li><a href="module-components_Login.html">components/Login</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue May 02 2023 23:06:58 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

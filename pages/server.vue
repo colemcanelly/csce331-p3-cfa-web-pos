@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="server-container">
     <v-row>
       <v-col cols="8">
         <!-- <v-btn @click="translatePage('fr')">Translate to French</v-btn> -->
@@ -20,8 +20,9 @@
                     <v-card class="menu-button" elevation="2" @click="addItemToOrder(menuItem)" style="padding: 0px;">
                         <v-card-title class="text-sm-center wrap-word keep-words " style="font-size: 14px; padding: 0px;">{{ menuItem.menu_item }}</v-card-title>
                         <!-- <v-img max-height="100" max-width="150" :src="menuItem.img"></v-img> -->
-                        <v-card-text class="text-center" style="padding: 0px;">{{  menuItem.food_price }}</v-card-text>
-                      
+                        <v-card-text class="text-center" style="padding: 0px;">
+                          {{ menuItem.food_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+                        </v-card-text>     
                     </v-card>
                   </v-col>
                 </v-row>
@@ -40,6 +41,9 @@
             hide-default-footer
             sort-by="calories"
             >
+              <template v-slot:item.food_price="{ item }">
+                {{ item.food_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}
+              </template>
               <template v-slot:top>
                 <!-- Delete Item -->
                 <v-dialog v-model="dialogDelete" max-width="500px">
@@ -67,7 +71,7 @@
 
         <div class="text-center">
           <v-btn class="mb-2 ml-2 mr-2" elevation="2" @click="submitOrder">Submit Order</v-btn>
-          <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
+          <!-- <v-card-text class = "text-center">Total Price: ${{ totalPrice }}</v-card-text> -->
         </div>
         
       </v-col>
@@ -77,6 +81,10 @@
 </template>
 
 <style>
+body {
+  position: fixed;
+  overflow: hidden;
+}
 .overflow-y-auto {
   max-height: 62vh;
   min-height: 62vh;
@@ -94,75 +102,104 @@
 .orders {
   margin-bottom: 20px;
 }
+.server-container {
+  /* overflow: hidden; */
+}
 
 </style>
 
 <script>
-import Header from '@/components/server/Header.vue'
-// import {currentOrder} from '~/static/temp-data'
+import Header from '@/components/server/Header.vue';
 
+/**
+ * Server Page Component
+ * @module ServerPage
+ * @component
+ */
 export default {
+  /** The layout for this component */
   layout: 'server',
+  /** The child components for this component */
   components: {
     Header
   },
+  /** The data properties for this component */
   data() {
     return {
+      /** The active tab index */
       tab: 1,
+      /** The active window tab index */
       windowTab: 1,
-      totalPrice: 2,
+      /** The items in the current order */
       currentOrder: [],
+      /** The menu items */
       tableData: [],
+      /** The headers for the menu table */
       headers: [
         {text: 'Item', value: 'menu_item'},
         {text: 'Price', value: 'food_price'}
-
       ]
     };
   },
+  /** The mounted hook for this component */
   mounted: function() {
-      this.getMenu();
-      for (this.i; this.i < this.currentOrder.length; this.i++) {
-              this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
-          }
-          this.totalPrice = parseFloat(this.totalPrice).toFixed(2); 
+    this.getMenu();
+    for (this.i = 0; this.i < this.currentOrder.length; this.i++) {
+      this.totalPrice += parseFloat(this.currentOrder[this.i].food_price);
+    }
+    this.totalPrice = parseFloat(this.totalPrice).toFixed(2);
+  },
+  /** The methods for this component */
+  methods: {
+    /**
+     * Translates the page to the specified target language
+     * @async
+     * @param {string} target - The target language
+     */
+    async translatePage(target) {
+      console.log("START - Translate page");
+      //const body = { text: document.documentElement.innerHTML, target };
+      const body = {text: 'Only work no play makes johnny goes crazy.', target};
+      try {
+        const response = await this.$axios.post('/translate', body);
+        document.documentElement.innerHTML = response.data;
+      } catch (error) {
+        console.error(error);
+      }
     },
-    methods: {
 
-        async translatePage(target) {
-          console.log("START - Translate page");
-          //const body = { text: document.documentElement.innerHTML, target };
-          const body = {text: 'Only work no play makes johnny goes crazy.', target};
-          try {
-            const response = await this.$axios.post('/translate', body);
-            document.documentElement.innerHTML = response.data;
-          } catch (error) {
-            console.error(error);
-          }
-        },
-        async getMenu () {
-            try {
-                const response = await this.$axios.get('/menu');
-                this.tableData = response.data;
-            } catch (err) {
-                console.log("ERROR");
-                console.log(err);
-            }
-        },
-        addItemToOrder(item) {
-            console.log(item);
-            this.$set(this.currentOrder, this.currentOrder.length, item);
-        },
-        removeItemFromOrder(item) {
-            const index = this.currentOrder.findIndex(obj => obj === item)
-            if (index !== -1) {
-                this.currentOrder.splice(index,1);
-            }
-            console.log(this.currentOrder)
-            localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
-            this.totalPrice = this.computedTotalPrice;
-        },
-        
+    /** Gets the menu items */
+    async getMenu () {
+      try {
+        const response = await this.$axios.get('/menu');
+        this.tableData = response.data;
+      } catch (err) {
+        console.log("ERROR");
+        console.log(err);
+      }
+    },
+    /**
+     * Adds an item to the current order
+     * @param {object} item - The item to add
+     */
+    addItemToOrder(item) {
+      console.log(item);
+      this.$set(this.currentOrder, this.currentOrder.length, item);   
+    },
+    /**
+     * Removes an item from the current order
+     * @param {object} item - The item to remove
+     */
+    removeItemFromOrder(item) {
+      const index = this.currentOrder.findIndex(obj => obj === item)
+      if (index !== -1) {
+        this.currentOrder.splice(index,1);
+      }
+      console.log(this.currentOrder)
+      localStorage.setItem('currentOrder', JSON.stringify(this.currentOrder));
+      this.totalPrice = this.computedTotalPrice;
+    },
+    /** Submits the current order */
         async submitOrder() {
           console.log(this.currentOrder);
           if (this.currentOrder.length > 0) {
@@ -196,6 +233,9 @@ export default {
         },
     },
     computed: {
+      totalPrice() {
+    return this.currentOrder.reduce((acc, item) => acc + parseFloat(item.food_price), 0).toFixed(2);
+      },
       currentCategory() {
         console.log(this.tab);
         switch (this.tab) {
@@ -218,6 +258,13 @@ export default {
         return this.tableData.filter((menuItem) => menuItem.menu_cat === this.currentCategory);
       },
     },
+    watch: {
+    totalPrice: function(newTotalPrice, oldTotalPrice) {
+      console.log("Emmiting Price", newTotalPrice)
+      this.$root.$emit('total-price-updated', newTotalPrice);
+    }
+}
 
 };
 </script>
+

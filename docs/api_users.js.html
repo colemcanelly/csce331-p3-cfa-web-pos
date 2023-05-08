@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: api/users.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: api/users.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @overview This file contains utility functions for OAuth and our user psql table.
+ * @author Cole McAnelly
+ * @param {import('express').Application} app - Express app instance
+ * @param {import('pg').Pool} pool - Postgres connection pool instance
+ * @param {import('express-session').Session} session - Express session instance
+ */
+module.exports = (app, pool, session) => {
+
+    // LOGIN
+  
+    /**
+     * Handles login request and checks the database for user data before sending that data as a response to the client
+     * @param {import('express').Request} req - Express request instance
+     * @param {import('express').Response} res - Express response instance
+     * @return {void}
+     */
+    app.post("/login", async (req, res) => {
+      try {
+        const { auth } = req.body;
+  
+        // Query the username and password
+        const q = `
+          SELECT user_id, permissions, fname, lname FROM users
+          WHERE user_email = '${auth.username}' AND user_pw = '${auth.password}';`;
+        const result = await pool.query(q);
+  
+        // Get result
+        const user = result.rows.at(0);
+  
+        // Create a session
+        session = req.session;
+  
+        // SERVER SIDE: Store userID and permission level
+        session.userid = user.user_id;
+        session.permissions = user.permissions;
+  
+        // CLIENT SIDE: Store first and last name
+        res.cookie('fname', user.fname);
+        res.cookie('lname', user.lname);
+  
+        // Send the URL to redirect the user to
+        let url = (session.permissions == 0) ? '/customer/categories' : (session.permissions == 1) ? '/server' : '/managerMenu';
+        res.send(url);
+      }
+      catch (err) {
+        console.error(err.message);
+        res.status(401).send('Invalid username or password');
+      }
+    });
+  
+    /**
+     * Handles Google login callback
+     * @param {import('express').Request} req - Express request instance
+     * @param {import('express').Response} res - Express response instance
+     * @return {void}
+     */
+    app.get('/auth/googlelogin', (req, res) => {
+      console.log("Running /auth/googlelogin");
+      req.session.user = { user: req.user };
+    });
+  
+    /**
+     * Handles logout request
+     * @param {import('express').Request} req - Express request instance
+     * @param {import('express').Response} res - Express response instance
+     * @return {void}
+     */
+    app.get('/logout', (req, res) => {
+      req.session.destroy();
+      res.redirect('/');
+    });
+  
+    // Register
+  
+    /**
+     * Handles register request and creates a new entry in the user database with all the provided user data
+     * @param {import('express').Request} req - Express request instance
+     * @param {import('express').Response} res - Express response instance
+     * @return {void}
+     */
+    app.post("/register", async (req, res) => {
+      try {
+        const { auth } = req.body;
+        const permissions = 0;
+  
+        // Post to server
+        const q = `
+          INSERT INTO users (permissions, user_email, user_pw, fname, lname)
+          SELECT ${permissions},'${auth.email}','${auth.password}','${auth.fname}','${auth.lname}'
+          WHERE
+              NOT EXISTS (
+                  SELECT user_id FROM users WHERE user_email = '${auth.email}'
+              )
+          RETURNING user_id;`;
+        const result = await pool.query(q);
+
+            // Get result
+            const user_id = result.rows.at(0).user_id;
+
+            // Create a session
+            session = req.session;
+
+            // SERVER SIDE: Store userID and permission level
+            session.userid = user_id;
+            session.permissions = permissions;
+
+            // CLIENT SIDE: Store first and last name
+            res.cookie('fname', auth.fname);
+            res.cookie('lname', auth.lname);
+
+            // Send the URL to redirect the user to
+            let url = '/customer/categories';
+            res.send(url);
+        }
+        catch (err) {
+            console.error(err.message);
+            res.status(401).send('Account already exists');
+        }
+    });
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Breakfeast.html">Breakfeast</a></li><li><a href="module-Combos.html">Combos</a></li><li><a href="module-CustomerPage.html">CustomerPage</a></li><li><a href="module-Drinks.html">Drinks</a></li><li><a href="module-ManagerInventoryPage.html">ManagerInventoryPage</a></li><li><a href="module-ManagerMenuPage.html">ManagerMenuPage</a></li><li><a href="module-Nearby.html">Nearby</a></li><li><a href="module-ReportsPage.html">ReportsPage</a></li><li><a href="module-Seasonal.html">Seasonal</a></li><li><a href="module-ServerPage.html">ServerPage</a></li><li><a href="module-components_Login.html">components/Login</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue May 02 2023 23:06:58 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

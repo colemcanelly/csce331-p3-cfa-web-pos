@@ -17,7 +17,7 @@
         {
             icon: 'mdi-home',
             label: 'Home',
-            to: '/'
+            to: '/login'
           },
           {
             icon: 'mdi-silverware  ',

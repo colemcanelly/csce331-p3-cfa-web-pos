@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <Header :total-price="totalPrice" />
   <v-card>
     <v-card-title>
       {{ title }}
@@ -69,7 +71,11 @@
       :items="table_data"
       :search="search"
     ></v-data-table>
+    <template v-slot:item.percentage_diff="{ item }">
+      {{ item.percentage_diff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+    </template>
   </v-card>
+</div>
 </template>
 
 <script>

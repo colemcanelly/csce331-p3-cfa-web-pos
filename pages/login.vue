@@ -93,26 +93,75 @@
 
 
 <script>
-import OAuthBtn from '~/components/OAuthButton.vue'
+/**
+ * @file Login component for authentication
+ * @module components/Login
+ */
+
+ import OAuthBtn from '~/components/OAuthButton.vue'
+
+/**
+ * Login component
+ * @typedef {Object} Login
+ * @property {string} name - The name of the component
+ * @property {Object} components - The child components of this component
+ * @property {Object} computed - The computed properties of this component
+ * @property {Object} methods - The methods of this component
+ * @property {Object} data - The data of this component
+ * @property {boolean} data.dialog - The dialog visibility state
+ * @property {number} data.tab - The currently active tab index
+ * @property {Object[]} data.tabs - The tab data objects
+ * @property {string} data.tabs[].name - The name of the tab
+ * @property {string} data.tabs[].icon - The icon for the tab
+ * @property {boolean} data.valid - The form validation state
+ * @property {string} data.firstName - The first name of the user
+ * @property {string} data.lastName - The last name of the user
+ * @property {string} data.email - The email of the user
+ * @property {string} data.password - The password of the user
+ * @property {string} data.verify - The password verification string of the user
+ * @property {string} data.loginPassword - The password for logging in
+ * @property {string} data.loginEmail - The email for logging in
+ * @property {Object[]} data.loginEmailRules - The validation rules for the login email
+ * @property {Function} data.loginEmailRules[].function - The validation function
+ * @property {string} data.loginEmailRules[].error - The error message to display if validation fails
+ * @property {Object[]} data.emailRules - The validation rules for the email
+ * @property {Function} data.emailRules[].function - The validation function
+ * @property {string} data.emailRules[].error - The error message to display if validation fails
+ * @property {boolean} data.show1 - The visibility state of the password fields
+ * @property {Object} data.rules - The validation rules for the form
+ * @property {Function} data.rules.required - The validation function for required fields
+ * @property {Function} data.rules.min - The validation function for minimum character length
+ */
 export default {
   name: 'login',
   components: {
     OAuthBtn
   },
   computed: {
+    /**
+     * Computed property for password matching validation
+     * @memberof module:components/Login~Login
+     * @function passwordMatch
+     * @returns {Function} - A function that returns a boolean or error message string
+     */
     passwordMatch() {
       return () => this.password === this.verify || "Password must match";
     }
   },
   methods: {
+    /**
+     * Method for handling login form submission
+     * @memberof module:components/Login~Login
+     * @async
+     * @function login
+     * @returns {void}
+     */
     async login () {
       try {
         // console.log(`Logging in as ${this.loginEmail}, with pw = ${this.loginPassword}`);
         const response = await this.$axios.post(`/login`, {
-          auth: {
-            username: this.loginEmail,
-            password: this.loginPassword
-          }
+          username: this.loginEmail,
+          password: this.loginPassword
         });
         this.$router.push(response.data);
       } catch (err) {

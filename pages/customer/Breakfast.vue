@@ -1,7 +1,7 @@
 <template>
     <v-app>
     <v-container>
-        <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Breakfast</v-card-title ></v-card></v-col></v-row>
+        <v-row><v-col cols="12"><v-card ><v-card-title style="font-size:30px" class="text-center text-h3 font-weight-bold">Breakfast</v-card-title ></v-card></v-col></v-row>
         
 
 
@@ -22,6 +22,9 @@
     </template>
 
 <script>
+/**
+ * @module Breakfeast
+ */
 import {currentOrder} from '~/static/temp-data'
 
 export default {

@@ -5,6 +5,7 @@
       <v-icon>mdi-chevron-left</v-icon>
       Back
     </v-card>
+  
     <v-spacer></v-spacer>
     <!-- <span>Total Price: {{ totalPrice }}</span> -->
     <div id="google_translate_element"></div>
@@ -28,7 +29,10 @@
 
 
     <v-spacer></v-spacer>
-    <h2 class="blue-grey--text text--darken-3">{{ kiosk_num }}</h2>
+    <div>
+      Total price: ${{ totalPrice.toLocaleString(undefined, { style: 'currency', currency: 'USD' }) }}
+      <!-- rest of the template -->
+    </div>
   </v-app-bar>
 </template>
 
@@ -38,19 +42,26 @@ export default {
   name: 'Header',
   data: function () {
     return {
-      kiosk_num: '#'
+      kiosk_num: '#',
+      totalPrice: 0
     };
   },
   props: {
-    totalPrice: {
-      type: Number,
-      required: true
-    }
+    // totalPrice: {
+    //     type: String,
+    //     required: true
+    //   }
   },
   methods: {
     back() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/');
     }
-  }
+  },
+  mounted() {
+  this.$root.$on('total-price-updated', (totalPrice) => {
+    console.log("Total Price Passed in", totalPrice);
+    this.totalPrice = totalPrice;
+  });
+}
 }
 </script>

@@ -49,12 +49,33 @@
           <v-row>
             <v-col 
               v-for="(field, index) in headers"
-              v-if="field.text != 'Actions'"
+              v-if="field.text !== 'Actions'"
               :key="index"
               cols="12" sm="6" md="4"
             >
-              <v-text-field v-model="edited_item[field.value]" :label="field.text" required ></v-text-field>
-          <!-- {{ console.log(index) }} -->
+              <template v-if="field.value == 'menu_cat'">
+                <v-autocomplete
+                  v-model="edited_item[field.value]"
+                  :label="field.text"
+                  :items="categories"
+                  required
+                ></v-autocomplete>
+              </template>
+              <!-- <template v-else-if="field.value == 'combo'">
+                <v-autocomplete
+                v-model="edited_item[field.value]"
+                  :label="field.text"
+                  :items="combos"
+                  required
+                ></v-autocomplete>
+              </template> -->
+              <template v-else>
+                <v-text-field
+                  v-model="edited_item[field.value]"
+                  :label="field.text"
+                  required
+                ></v-text-field>
+              </template>
             </v-col>
           </v-row>
           <v-row>
@@ -123,6 +144,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <div v-if="errorMessage">
+          <v-snackbar v-model="snackbar">
+          <span v-if="errorMessage">{{ errorMessage }}</span>
+          <v-btn color="error" text @click="snackbar = false">
+            Close
+          </v-btn>
+        </v-snackbar>
+        </div>
   </v-container>
 </template>
         </v-card>
@@ -170,6 +199,14 @@
         <v-btn color="primary" @click="getTable">Reset</v-btn>
       </template>
     </v-data-table>
+    <div v-if="errorMessage">
+            <v-snackbar v-model="snackbar">
+            <span v-if="errorMessage">{{ errorMessage }}</span>
+            <v-btn color="error" text @click="snackbar = false">
+              Close
+            </v-btn>
+          </v-snackbar>
+          </div>
   </v-card>
 </template>
 
@@ -179,7 +216,7 @@
     data: () => ({
       title: "Menu",
       headers: [
-        { text: 'Item Name', value: 'menu_item', sortable: false },
+        { text: 'Item Name', value: 'menu_item', },
           { text: 'Price ($)', value: 'food_price' },
           { text: 'Combo (T/F)', value: 'combo' },
           { text: 'Category', value: 'menu_cat' },
@@ -187,6 +224,18 @@
       ingredientHeaders:[
         { text: 'Ingredient', value: 'ingredient' },
         { text: 'Quantity', value: 'portion_count' },
+      ],
+      categories:[
+          'main',
+          'breakfast',
+          'dessert',
+          'drink',
+          'condiment',
+          'seasonal',
+      ],
+      combos:[
+        'true',
+        'false'
       ],
       search: '',
       windowWidth: null,
@@ -225,6 +274,8 @@
       ingredientQuantity:'',
       // showIng: false,
       newIngredients:[],
+      errorMessage:'',
+      snackbar:false
 
 
     }),
@@ -336,15 +387,10 @@
         }
       },
 /**
-
- * Generates a query for deleting the menu item, price, combo, and cateogry from the menu
-
-
- * @author Ryan Paul 
-  * @param item - the whole menu item consisting of the menu items
-
- * @return {void}
-
+ * This function adds two numbers.
+ * @param {number} a - The first number.
+ * @param {number} b - The second number.
+ * @returns {number} - The sum of the two numbers.
  */
       async deleteDBItem ( item ) {
         try {
@@ -369,10 +415,10 @@
       async deleteDBIng ( item ) {
         try {
           console.log(item);
-          const response = await this.$axios.delete(`/itemRecipe`, { data: item });
+          const response = await this.$axios.delete(`/recipes`, { data: item });
           console.log("deleted;",response);
         } catch (err) { 
-          console.log("ERROR deleteDBItem()");
+          console.log("ERROR deleteDBIng()");
           console.log(err);
         }
       },
@@ -408,7 +454,7 @@
       async newDBIng ( item ) {
         try {
           console.log("NewDB: ",item);
-          const response = await this.$axios.post(`/itemRecipe`, item);
+          const response = await this.$axios.post(`/recipes`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR newDBIng()");
@@ -448,7 +494,7 @@
  */    
       async updateDBIng ( item ) {
         try {
-          const response = await this.$axios.put(`/itemRecipe`, item);
+          const response = await this.$axios.put(`/recipes`, item);
           console.log(response);
         } catch (err) { 
           console.log("ERROR updateDBIng()");
@@ -503,16 +549,46 @@
         console.log(err);
       }
     },
+    /**
+
+ * Function that combines getting the ingredients in recipe and supply
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     async getIngredientsAndAllIngredients() {
       await this.getIngredients();
       await this.getAllIngredients();
       await this.getSupply();
     },
+    /**
+
+ * Function that changes the ingredient based on which one is selected when adding an ingredient
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
+
     onIngredientChange(newValue) {
       // set selectedIngredient to null if newValue is not in allIngredients
       this.selectedIngredient = this.supplyIngredients.includes(newValue) ? newValue : null;
     },
+    /**
 
+ * Function that saves the ingredient after editing it 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     saveIngredient() {
       if (this.editMode) {
         this.saveEditedIngredient();
@@ -520,7 +596,16 @@
         this.saveNewIngredient();
       }
     },
+    /**
 
+ * Function that allows for the edited changes for an ingredient to be saved
+
+
+ * @author Ryan Paul 
+  * @param - ingredient items of current menu item
+ * @return {void}
+
+ */
     editIngredients(item) {
       this.editMode = true;
       this.editedIngredient = Object.assign({}, item);
@@ -529,6 +614,16 @@
       console.log(this.edited_ing_index);
       this.editDialog = true;
     },
+        /**
+
+ * Function that allows to add a new ingredient to the menu items
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     addNewIngredient() {
       this.editMode = false;
       this.editedIngredient = {
@@ -537,35 +632,63 @@
       };
       this.editDialog = true;
     },
-    saveNewIngredient() {
-        this.editDialog = false;
-        if (this.edited_index > -1) {
-          // Editing Current item       NEED AXIOS HERE
-          this.updateDBItem(this.edited_item);
-          Object.assign(this.table_data[this.edited_index], this.edited_item);
-          this.updateDBIng(this.edited_item)
-          console.log("Edited Item= ", this.edited_item.menu_item)
+            /**
+
+ * Function that allows to add a save a new ingredient once the add button is clicked
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
+ saveNewIngredient() {
+      this.editDialog = false;
+      if (this.edited_index > -1) {
+        // Editing Current item       NEED AXIOS HERE
+        this.updateDBItem(this.edited_item);
+        Object.assign(this.table_data[this.edited_index], this.edited_item);
+        this.updateDBIng(this.edited_item)
+        console.log("Edited Item= ", this.edited_item.menu_item)
+      } else {
+        // Creating new item          NEED AXIOS HERE
+        this.newDBItem(this.edited_item);
+        this.table_data.push(this.edited_item);
+      }
+      console.log("Combo",this.edited_item.combo)
+      try {
+        const currIngredient = {
+          menu_item: this.edited_item.menu_item,
+          ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
+          portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
+        };
+        console.log(typeof currIngredient);
+        console.log(currIngredient.menu_item," ", currIngredient.ingredient," ",currIngredient.portion_count);
+        if (currIngredient.portion_count <= 0 || isNaN(currIngredient.portion_count)) {
+          throw new Error("Quantity must be a positive number");
         } else {
-          // Creating new item          NEED AXIOS HERE
-          this.newDBItem(this.edited_item);
-          this.table_data.push(this.edited_item);
-        }
-        try {
-          const currIngredient = {
-            menu_item: this.edited_item.menu_item,
-            ingredient: this.editedIngredient[this.ingredientHeaders[0].value],
-            portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
-          };
-          console.log(typeof currIngredient);
-          console.log(currIngredient.menu_item," ", currIngredient.ingredient," ",currIngredient.portion_count);
           this.newDBIng(currIngredient);
           this.ingredients.push(currIngredient); // add new ingredient to ingredients array
           this.closeIngDelete();
-        } catch (error) {
-          console.error(error);
         }
-      },
+      } catch (error) {
+        console.error(error);
+        this.errorMessage = error.message; // set the error message
+        this.snackbar = true; // show the snackbar
+      }
+    },
+       /**
+
+ * Function that allows to save an edit on a new ingredient once the save button is clicked
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     saveEditedIngredient() {
+      this.editDialog = false;
       console.log("saveEditedIngredient called");
       // this.editDialog = true;
       this.editMode = true;
@@ -585,13 +708,30 @@
             portion_count: this.editedIngredient[this.ingredientHeaders[1].value]
           };
           console.log("Edited:", currIngredient.portion_count);
-          this.updateDBIng(currIngredient)
-          Object.assign(this.ingredients[this.edited_ing_index], this.editedIngredient);
-          this.closeIngDelete();
+          if (currIngredient.portion_count <= 0 || isNaN(currIngredient.portion_count)) {
+            throw new Error("Quantity must be a positive number");
+          }
+          else{
+            this.updateDBIng(currIngredient)
+            Object.assign(this.ingredients[this.edited_ing_index], this.editedIngredient);
+            this.closeIngDelete();
+          }
         } catch (error) {
           console.error(error);
+          this.errorMessage = error.message; // set the error message
+          this.snackbar = true; // show the snackbar
         }
     },
+     /**
+
+ * Function that allows the dialog to close when clicking close
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
     closeEditDialog() {
       this.editDialog = false;
       this.$nextTick(() => {
@@ -607,6 +747,16 @@
     //   // Remove the item from the ingredients array
     //   this.ingredients.splice(index, 1);
     // },
+         /**
+
+ * Function that allows the edited Item to be stored
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       editItem (item) {
         this.edited_index = this.table_data.indexOf(item);
         console.log(this.edited_index);
@@ -614,26 +764,66 @@
         console.log(this.edited_item);
         this.dialog = true;
       },
+         /**
 
+ * Function that allows an Item to be deleted
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteItem (item) {
         this.edited_index = this.table_data.indexOf(item);
         this.edited_item = Object.assign({}, item);
         this.dialogDelete = true;
       },
 
+               /**
+
+ * Function that allows an ingredient to be deleted
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteIng (item) {
         this.edited_ing_index = this.ingredients.indexOf(item);
         this.editedIngredient = Object.assign({}, item);
         this.dialogIngDelete = true;
       },
+         /**
 
+ * Function that warns the user before a delete and actualy runs the delete query for menu items
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteItemConfirm () {
         // Delete an item               NEED AXIOS HERE
-        this.deleteDBItem(this.table_data[this.edited_index]);
+        const deletedItem = {
+          menu_item: this.edited_item.menu_item,
+        };
+        this.deleteDBItem(deletedItem);
         this.table_data.splice(this.edited_index, 1)
         this.closeDelete();
       },
+         /**
 
+ * Function that warns the user before a delete and actualy runs the delete query for ingredients
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       deleteIngConfirm(){
         const deleteIngr = {
           menu_item: this.edited_item.menu_item,
@@ -643,7 +833,16 @@
         this.ingredients.splice(this.edited_ing_index, 1)
         this.closeIngDelete();
       },
+         /**
 
+ * Function that closes the dialog 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       close () {
         this.dialog = false;
         this.$nextTick(() => {
@@ -651,7 +850,16 @@
           this.edited_index = -1;
         })
       },
+         /**
 
+ * Function that closes the dialog for delete button for menu 
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       closeDelete () {
         this.dialogDelete = false;
         this.$nextTick(() => {
@@ -659,6 +867,16 @@
           this.edited_index = -1;
         })
       },
+               /**
+
+ * Function that closes the dialog for delete button for ingredients
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       closeIngDelete () {
         this.dialogIngDelete = false;
         this.$nextTick(() => {
@@ -666,19 +884,48 @@
           this.edited_ing_index = -1;
         })
       },
+         /**
 
+ * Function that saves everything that is written in the edit/new item
+
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
       save () {
-        if (this.edited_index > -1) {
-          // Editing Current item       NEED AXIOS HERE
-          this.updateDBItem(this.edited_item);
-          Object.assign(this.table_data[this.edited_index], this.edited_item);
-        } else {
-          // Creating new item          NEED AXIOS HERE
-          this.newDBItem(this.edited_item);
-          this.table_data.push(this.edited_item);
+        try {
+          if (this.edited_item.food_price <= 0 || isNaN(this.edited_item.food_price)) {
+            throw new Error("Price must be a positive number");
+          }
+          else{
+            if (this.edited_index > -1) {
+              // Editing Current item       NEED AXIOS HERE
+              this.updateDBItem(this.edited_item);
+              Object.assign(this.table_data[this.edited_index], this.edited_item);
+            } else {
+              // Creating new item          NEED AXIOS HERE
+              this.newDBItem(this.edited_item);
+              this.table_data.push(this.edited_item);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+          this.errorMessage = error.message; // set the error message
+          this.snackbar = true; // show the snackbar
         }
         this.close();
       },
+               /**
+
+ * Function that allows for resize and adjsts page width
+
+ * @author Ryan Paul 
+
+ * @return {void}
+
+ */
 
       onResize() {
         this.windowWidth = window.innerWidth;

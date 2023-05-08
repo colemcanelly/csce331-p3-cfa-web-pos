@@ -32,7 +32,7 @@ export default {
         {
           icon: 'mdi-account',
           label: 'Account',
-          to: ''
+          to: '/customer/Account' 
         }
       ],
     };
