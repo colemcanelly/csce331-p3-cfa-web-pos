@@ -7,8 +7,8 @@
                 <v-col cols="7">
                     <div><img src="/combos.png" class="image"></div>
                 </v-col>
-                <v-col cols="5" align-self-center>
-                        <v-card elevation="0"><v-card-title text-center style="vertical-align: center">Main</v-card-title></v-card>
+                <v-col class="d-flex align-center text-center" cols="5" align-self-center>
+                        <v-card elevation="0"><v-card-title text-center style="vertical-align: center">Meals</v-card-title></v-card>
                 </v-col>
             </v-row>
         </v-card>
@@ -19,7 +19,7 @@
                 <v-col cols="7">
                         <div><img src="/breakfast.png" class="image"></div>
                 </v-col>
-                <v-col cols="5" align-self-center>
+                <v-col class="d-flex align-center text-center" cols="5" align-self-center>
                         <v-card elevation="0"><v-card-title text-center style="display: flex; align-items: center;">Breakfast</v-card-title></v-card>
                 </v-col>
             </v-row>
@@ -31,7 +31,7 @@
                 <v-col cols="7">
                         <div><img src="/drink.jpeg" class="image"></div>
                 </v-col>
-                <v-col cols="5" align-self-center>
+                <v-col class="d-flex align-center text-center" cols="5" align-self-center>
                         <div><v-card-title class="text-center">Drinks</v-card-title></div>
                 </v-col>
             </v-row>
@@ -43,7 +43,7 @@
                 <v-col cols="7">
                         <div><img src="/dessert.png" class="image"></div>
                 </v-col>
-                <v-col cols="5" align-self-center>
+                <v-col class="d-flex align-center text-center" cols="5" align-self-center>
                         <div><v-card-title class="text-center">Desserts</v-card-title></div>
                 </v-col>
             </v-row>
@@ -55,8 +55,8 @@
                 <v-col cols="7">
                         <div><img src="/seasonal.png" class="image"></div>
                 </v-col>
-                <v-col cols="5" align-self-center>
-                        <div><v-card-title class="text-center">Seasonal</v-card-title></div>
+                <v-col class="d-flex align-center text-center" cols="5" align-self-center>
+                        <div><v-card-title>Seasonal</v-card-title></div>
                 </v-col>
             </v-row>
         </v-card>

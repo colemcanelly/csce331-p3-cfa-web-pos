@@ -1,7 +1,7 @@
 <template>
     <v-app>
     <v-container>
-        <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Desserts</v-card-title ></v-card></v-col></v-row>
+        <v-row><v-col cols="12"><v-card ><v-card-title style="font-size:30px" class="text-center text-h3 font-weight-bold">Desserts</v-card-title ></v-card></v-col></v-row>
        
         <v-row>
             <v-col cols="6" v-for="menuItem in dessertMenuItems" :key="menuItem.id" class="d-flex justify-center">

@@ -3,7 +3,7 @@
     <v-container>
     
     
-       <v-row><v-col cols="12"><v-card ><v-card-title class="text-center">Order Summary</v-card-title ></v-card></v-col></v-row>
+       <v-row><v-col cols="12"><v-card ><v-card-title style="font-size:40px" class="text-center font-weight-bold">Order Summary</v-card-title ></v-card></v-col></v-row>
       
        <v-row>
            <v-col cols="12" v-for="item in currentOrder" :key="item.id">
@@ -15,12 +15,12 @@
                </v-card>
            </v-col>
            <v-col cols = "12">
-               <v-card-text class = "text-center">Total Price: ${{ this.totalPrice }}</v-card-text>
+               <v-card-text class = "text-center" style="font-size:30px;">Total Price: ${{ this.totalPrice }}</v-card-text>
            </v-col>
        </v-row>
        <v-row>
-           <v-col justify>
-               <v-btn justify mb-2 ml-2 mr-2 x-large elevation="2" @click="submitOrder">Submit Order</v-btn>
+           <v-col cols="12" class="text-center">
+               <v-btn mb-2 ml-2 mr-2 x-large block elevation="2" style="font-size: 30px" @click="submitOrder">Submit Order</v-btn>
            </v-col>
        </v-row>
       
