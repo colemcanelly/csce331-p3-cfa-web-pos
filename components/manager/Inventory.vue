@@ -191,7 +191,7 @@
           const response = await this.$axios.delete(`/${this.table}`, { data: item });
           console.log(response);
         } catch (err) { 
-          console.log("ERROR deleteDBItem()");
+          console.log("ERROR deleteDBInventory()");
           console.log(err);
         }
       },
@@ -200,7 +200,7 @@
           const response = await this.$axios.post(`/${this.table}`, item);
           console.log(response);
         } catch (err) { 
-          console.log("ERROR newDBItem()");
+          console.log("ERROR newDBInventory()");
           console.log(err);
         }
       },
@@ -210,7 +210,7 @@
           const response = await this.$axios.put(`/${this.table}`, item);
           console.log(response);
         } catch (err) { 
-          console.log("ERROR updateDBItem()");
+          console.log("ERROR updateDBInventory()");
           console.log(err);
         }
       },
@@ -265,6 +265,9 @@
           if(this.edited_item.restock_quantity <= 0 || isNaN(this.edited_item.restock_quantity)){
             throw new Error("Restock Quantity must be a positive number");
           }
+          if (this.edited_item.current_quantity <= 0 || isNaN(this.edited_item.current_quantity)) {
+            throw new Error("Current Quanity must be a positive number");
+          }          
           else{
             if (this.edited_index > -1) {
             // Editing Current item       NEED AXIOS HERE

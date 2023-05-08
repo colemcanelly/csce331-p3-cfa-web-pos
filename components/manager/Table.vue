@@ -418,7 +418,7 @@
           const response = await this.$axios.delete(`/recipes`, { data: item });
           console.log("deleted;",response);
         } catch (err) { 
-          console.log("ERROR deleteDBItem()");
+          console.log("ERROR deleteDBIng()");
           console.log(err);
         }
       },
@@ -807,7 +807,10 @@
  */
       deleteItemConfirm () {
         // Delete an item               NEED AXIOS HERE
-        this.deleteDBItem(this.table_data[this.edited_index]);
+        const deletedItem = {
+          menu_item: this.edited_item.menu_item,
+        };
+        this.deleteDBItem(deletedItem);
         this.table_data.splice(this.edited_index, 1)
         this.closeDelete();
       },
