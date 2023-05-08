@@ -156,7 +156,16 @@ module.exports = (app, pool) => {
         try {
             const { ingredient, threshold, restock_quantity } = req.body;
             const delete_ingredient = await pool.query(
-                `DELETE FROM supply WHERE ingredient = '${ingredient}';`
+                `
+                DELETE FROM daily_inventory 
+                WHERE ingredient = '${ingredient}';
+
+                DELETE FROM recipes 
+                WHERE ingredient = '${ingredient}';
+
+                DELETE FROM supply 
+                WHERE ingredient = '${ingredient}';
+                `
             );
             // console.log(`Deleting ${ingredient}`);
             res.json(`Supply item successfully deleted`);
