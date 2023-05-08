@@ -37,6 +37,7 @@ module.exports = (app, pool, session) => {
             // CLIENT SIDE: Store first and last name
             res.cookie('fname', user.fname);
             res.cookie('lname', user.lname);
+            res.cookie('permissions', user.permissions);
 
             // Send the URL to redirect the user to
             let url = (session.permissions == 0) ? '/customer/categories' : (session.permissions == 1) ? '/server' : '/managerMenu';
@@ -54,15 +55,15 @@ module.exports = (app, pool, session) => {
      * @param {import('express').Response} res - Express response instance
      * @return {void}
      */
-    app.get('/googlelogin', (req, res) => {
-        try {
-            res.send("Running /googlelogin");
-            req.session.user = { user: req.user };
-        } catch (err) {
-            console.error(err.message);
-            res.status(401).send('Google login failed');
-        }
-    });
+    // app.get('/googlelogin', (req, res) => {
+    //     try {
+    //         res.send(`Running /googlelogin. what is: ${req.params}`);
+    //         // req.session.user = { user: req.user };
+    //     } catch (err) {
+    //         console.error(err.message);
+    //         res.status(401).send('Google login failed');
+    //     }
+    // });
 
     /**
      * Handles logout request
@@ -70,9 +71,14 @@ module.exports = (app, pool, session) => {
      * @param {import('express').Response} res - Express response instance
      * @return {void}
      */
-    app.get('/logout', (req, res) => {
+    app.post('/logout', (req, res) => {
         req.session.destroy();
-        res.redirect('/');
+        res.clearCookie('fname');
+        res.clearCookie('lname');
+        res.clearCookie('permissions');
+
+        res.end();
+        // res.redirect('/login');
     });
 
     // Register
@@ -112,6 +118,8 @@ module.exports = (app, pool, session) => {
             // CLIENT SIDE: Store first and last name
             res.cookie('fname', auth.fname);
             res.cookie('lname', auth.lname);
+            res.cookie('permissions', permissions);
+
 
             // Send the URL to redirect the user to
             let url = '/customer/categories';

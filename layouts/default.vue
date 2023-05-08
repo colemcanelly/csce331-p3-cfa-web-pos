@@ -25,12 +25,6 @@ export default {
       title: "Vuetify.js",
     };
   },
-  mounted() {
-    console.log(
-      this.$auth.loggedIn ? "You are Logged In!" : "You are NOT logged in"
-    );
-    console.log(this.$auth.user);
-  },
   components: { Header },
 };
 </script>

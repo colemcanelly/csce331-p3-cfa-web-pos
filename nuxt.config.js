@@ -26,7 +26,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/cfa-favicon.png' }
     ]
   },
 
@@ -72,6 +72,9 @@ export default {
         clientId: process.env.CLIENT_ID,
         codeChallengeMethod: '',
         responseType: 'token id_token',
+        endpoints: {
+          // userInfo: '/googlelogin/user'
+        }
       },
     }
   },
